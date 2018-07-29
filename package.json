@@ -10,6 +10,9 @@
     "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
   },
   "description": "Glorified curly bubbly templates",
+  "devDependencies": {
+    "ava": "0.x"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -25,7 +28,7 @@
     "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
   },
   "scripts": {
-    "test": "ava"
+    "test": "npx ava"
   },
   "version": "0.1.0"
 }
