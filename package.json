@@ -1,0 +1,31 @@
+{
+  "authors": [
+    "Cristi Constantin <cristi.constantin@live.com>"
+  ],
+  "ava": {
+    "failFast": true,
+    "powerAssert": false
+  },
+  "bugs": {
+    "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
+  },
+  "description": "Glorified curly bubbly templates",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "homepage": "https://github.com/ShinyTrinkets/twofold.js#readme",
+  "keywords": [
+    "template"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "name": "twofold",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
+  },
+  "scripts": {
+    "test": "ava"
+  },
+  "version": "0.1.0"
+}
