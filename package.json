@@ -9,9 +9,16 @@
   "bugs": {
     "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
   },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "minimist-options": "^3.0.2",
+    "voca": "^1.4.0"
+  },
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
-    "ava": "0.x"
+    "ava": "*",
+    "prettier": "1.14.0",
+    "standard": "*"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -28,7 +35,8 @@
     "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
   },
   "scripts": {
-    "test": "npx ava"
+    "format": "npx prettier --write ./src/*.js && npx standard --fix ./src/*.js",
+    "test": "npx ava --fail-fast --serial --verbose test/*.test.js"
   },
   "version": "0.1.0"
 }
