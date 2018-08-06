@@ -10,35 +10,50 @@ function extractBlocks (text) {
    */
   const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-(\\w+) /${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
-    `${OPEN_TAG}${IDENTIFIER}-(\\w+)${CLOSE_TAG}[\\w\\W]+?${OPEN_TAG}/${IDENTIFIER}-\\1${CLOSE_TAG}`,
+    `(${OPEN_TAG}${IDENTIFIER}-(\\w+)${CLOSE_TAG})([\\w\\W]+?)(${OPEN_TAG}/${IDENTIFIER}-\\2${CLOSE_TAG})`,
     'g'
   )
 
-  const output = {}
-  const addMatch = function (m) {
-    output[m.index] = {
-      textInside: m[0],
-      textBefore: str.substring(text, 0, m.index),
-      textAfter: str.substring(text, m.index + m[0].length)
-    }
-  }
+  let m
+  const output = []
 
-  let matches
-  while ((matches = lineRegex.exec(text))) {
-    addMatch(matches)
+  while ((m = lineRegex.exec(text))) {
+    output.push({
+      index: m.index,
+      name: m[1], // the block name
+      textInside: '', // text inside the block
+      tagBefore: m[0],
+      tagAfter: '',
+      textBefore: str.substring(text, 0, m.index), // text before the block
+      textAfter: str.substring(text, m.index + m[0].length) // text after the block
+    })
   }
-  while ((matches = blockRegex.exec(text))) {
-    addMatch(matches)
+  while ((m = blockRegex.exec(text))) {
+    output.push({
+      index: m.index,
+      name: m[2], // the block name
+      textInside: m[3], // text inside the block
+      tagBefore: m[1],
+      tagAfter: m[4],
+      textBefore: str.substring(text, 0, m.index), // text before the block
+      textAfter: str.substring(text, m.index + m[0].length) // text after the block
+    })
   }
 
   return output
 }
 
-function renderBlock ({ textBefore, textAfter, textInside }, func) {
+function renderText (text, data) {
   /**
-   * TwoFold render function. Super mega basic :)
+   * TwoFold render function.
    */
-  return func({ textBefore, textAfter, textInside })
+  const blocks = extractBlocks(text)
+  for (const b of blocks) {
+    const func = data[b.name]
+    const result = func(b)
+    text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
+  }
+  return text
 }
 
-module.exports = { extractBlocks, renderBlock }
+module.exports = { extractBlocks, renderText }
