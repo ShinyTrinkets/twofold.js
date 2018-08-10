@@ -35,7 +35,7 @@
     "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
   },
   "scripts": {
-    "format": "npx prettier --write ./src/*.js && npx standard --fix ./src/*.js",
+    "fmt": "npx prettier --write ./src/*.js && npx standard --fix ./src/*.js",
     "test": "npx ava --fail-fast --serial --verbose test/*.test.js"
   },
   "version": "0.1.0"

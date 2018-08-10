@@ -8,6 +8,8 @@
 
 # Experimental templating tools
 
+My idea about this library is crystal clear, but the implementation lacks behind massively.
+
 Glorified curly bubbly templates.<br />
 Templates with a twist.<br />
 Duplex templates.<br />
@@ -20,7 +22,7 @@ Self-replicating, self-terminating templates.<br />
 
 [MIT](LICENSE) © Cristi Constantin.
 
-[project-img]: https://badgen.net/badge/Project/Trinkets/4B0082
+[project-img]: https://badgen.net/badge/⚙/Trinkets/4B0082
 [project-url]: https://github.com/ShinyTrinkets
 [stability-img]: https://badgen.net/badge/Stability/experimental/red
 [stability-url]: https://nodejs.org/api/documentation.html#documentation_stability_index
