@@ -1,4 +1,3 @@
-const str = require('voca')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
 
@@ -17,9 +16,7 @@ function main () {
 
   if (args.help) {
     console.log('Some helpful info ...')
-    return
   }
-
 }
 
 main()

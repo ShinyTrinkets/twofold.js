@@ -1,4 +1,6 @@
+const fs = require('fs')
 const str = require('voca')
+const helpers = require('./helpers')
 
 const IDENTIFIER = 'replace'
 const OPEN_TAG = '<'
@@ -45,11 +47,12 @@ function extractBlocks (text) {
 
 function renderText (text, data) {
   /**
-   * TwoFold render function.
+   * TwoFold render text string.
    */
+  const moreData = Object.assign({}, helpers, data)
   const blocks = extractBlocks(text)
   for (const b of blocks) {
-    const func = data[b.name]
+    const func = moreData[b.name]
     const result = func(b)
     text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
   }
