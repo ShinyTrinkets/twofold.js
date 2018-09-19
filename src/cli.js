@@ -1,3 +1,5 @@
+const fs = require('fs')
+const xfold = require('./')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
 
@@ -15,7 +17,17 @@ function main () {
   const args = minimist(process.argv.slice(2), options)
 
   if (args.help) {
-    console.log('TwoFold.js (2✂︎f) helpful info ...')
+    console.log('TwoFold (2✂︎f) helpful info ...')
+    return
+  }
+
+  if (args._ && args._.length) {
+    for (const f of args._) {
+      console.log('(2✂︎f)', f)
+      const txt = xfold.renderFile(f)
+      fs.writeFileSync(f, txt, { encoding: 'utf8' })
+    }
+    return
   }
 }
 
