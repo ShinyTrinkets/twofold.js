@@ -1,4 +1,4 @@
-# TwoFold.js
+# TwoFold.js (2✂︎f)
 
 [![Project name][project-img]][project-url]
 [![API stability][stability-img]][stability-url]

@@ -1,17 +1,56 @@
+function multiply ({ textInside }, number = 1) {
+  /**
+   * TwoFold helper: multiply a number.
+   * The number can be any integer, or float.
+   */
+  return parseInt(textInside) * number
+}
+
 function increment ({ textInside }, number = 1) {
   /**
    * TwoFold helper: increment a number.
+   * The increment can be any integer, or float, positive or negative.
    */
   return parseInt(textInside) + number
 }
 
-function sort ({ textInside }) {
+function randomFloat (whatever, min = 1, max = 100) {
   /**
-   * TwoFold helper: increment a number.
+   * TwoFold helper: random float number.
+   * Returns a pseudo-random float in the range min–max (inclusive of min, but not max).
    */
-  const lines = textInside.split(/[\r\n]/)
-  lines.sort()
+  return Math.random() * (max - min) + min;
+}
+
+function randomInt (whatever, min = 1, max = 100) {
+  /**
+   * TwoFold helper: random integer number.
+   * Returns a pseudo-random integer in the range min–max (inclusive of min, but not max).
+   */
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function sortLines ({ textInside }) {
+  /**
+   * TwoFold helper: sort lines of text alphabetically.
+   */
+  const lines = []
+  const group = []
+  for (let line of textInside.split(/[\r\n]/)) {
+    group.push(line)
+    if (!line) {
+      group.sort()
+      lines.push(group.join('\n'))
+      group.length = 0
+    }
+  }
+  if (group.length) {
+    group.sort()
+    lines.push(group.join('\n'))
+  }
   return lines.join('\n')
 }
 
-module.exports = { increment, sort }
+module.exports = { multiply, increment, randomFloat, randomInt, sortLines }
