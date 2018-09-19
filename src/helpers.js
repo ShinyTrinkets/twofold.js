@@ -93,18 +93,22 @@ function emojiClock (whatever, { date = null, showHalf = true } = {}) {
   }
   let h = date.getHours()
   if (h > 12) {
-    h += 12
-  }
-  if (!showHalf) {
-    return fixHours[h]
+    h -= 12
   }
   const m = date.getMinutes()
-  // The interval for showing the "and a half" clock
+  let result = fixHours[h]
   if (m >= 15 && m <= 45) {
-    return halfHours[h]
-  } else {
-    return fixHours[h]
+    if (showHalf) {
+      result = halfHours[h]
+    }
+  } else if (m > 45) {
+    h += 1
+    if (h > 12) {
+      h = 0
+    }
+    result = fixHours[h]
   }
+  return result
 }
 
 function sortLines ({ textInside }) {

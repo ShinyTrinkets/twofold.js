@@ -10,9 +10,9 @@ function extractBlocks (text) {
   /**
    * Extract all template blocks.
    */
-  const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-(\\w+) /${CLOSE_TAG}`, 'g')
+  const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+/${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
-    `(${OPEN_TAG}${IDENTIFIER}-(\\w+)${CLOSE_TAG})([\\w\\W]*?)(${OPEN_TAG}/${IDENTIFIER}-\\2${CLOSE_TAG})`,
+    `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${CLOSE_TAG})([\\w\\W]*?)(${OPEN_TAG}/${IDENTIFIER}-\\2${CLOSE_TAG})`,
     'g'
   )
 

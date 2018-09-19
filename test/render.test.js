@@ -21,19 +21,43 @@ test('simple increment render', async t => {
 })
 
 test('simple random integer', async t => {
-  const txt = `random <replace-randomInt></replace-randomInt> ...`
-  const tmp = xfold.renderText(txt)
-  t.not(tmp, txt)
-  t.true(tmp.length > txt.length)
+  // Also check camelCase-ing template names
+  const txt1 = `random <replace-randomInt></replace-randomInt> ...`
+  const txt2 = `random <replace-random-int></replace-random-int> ...`
+  const tmp1 = xfold.renderText(txt1)
+  const tmp2 = xfold.renderText(txt2)
+  t.not(tmp1, txt1)
+  t.not(tmp2, txt2)
+  t.true(tmp1.length > txt1.length)
+  t.true(tmp2.length > txt2.length)
 })
 
 test('simple sort render', async t => {
   const li = ['z', 'x', 'a', 'm']
-  const txt = `qwerty <replace-sort>\n${li.join('\n')}</replace-sort> ...`
-  const tmp = xfold.renderText(txt, {}, { sort: helpers.sortLines })
+  const txt = `qwerty <replace-sort-lines>\n${li.join('\n')}</replace-sort-lines> ...`
+  const tmp = xfold.renderText(txt)
   t.not(tmp, txt)
   li.sort()
-  t.is(tmp, `qwerty <replace-sort>\n${li.join('\n')}</replace-sort> ...`)
+  t.is(tmp, `qwerty <replace-sort-lines>\n${li.join('\n')}</replace-sort-lines> ...`)
+})
+
+test('emoji clock render', async t => {
+  const txt = `clock <replace-emojiClock></replace-emojiClock> ...`
+  let tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 14) })
+  t.not(tmp, txt)
+  t.true(tmp.indexOf('🕚') > 0)
+
+  tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 15) })
+  t.true(tmp.indexOf('🕦') > 0)
+
+  tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 12, 46) })
+  t.true(tmp.indexOf('🕛') > 0)
+
+  tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 15), showHalf: false })
+  t.true(tmp.indexOf('🕚') > 0)
+
+  tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 12, 46), showHalf: false })
+  t.true(tmp.indexOf('🕛') > 0)
 })
 
 test('separated sort render', async t => {
