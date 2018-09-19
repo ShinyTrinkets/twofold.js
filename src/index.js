@@ -12,7 +12,7 @@ function extractBlocks (text) {
    */
   const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-(\\w+) /${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
-    `(${OPEN_TAG}${IDENTIFIER}-(\\w+)${CLOSE_TAG})([\\w\\W]+?)(${OPEN_TAG}/${IDENTIFIER}-\\2${CLOSE_TAG})`,
+    `(${OPEN_TAG}${IDENTIFIER}-(\\w+)${CLOSE_TAG})([\\w\\W]*?)(${OPEN_TAG}/${IDENTIFIER}-\\2${CLOSE_TAG})`,
     'g'
   )
 
@@ -45,15 +45,15 @@ function extractBlocks (text) {
   return output
 }
 
-function renderText (text, data) {
+function renderText (text, data, customHelpers) {
   /**
    * TwoFold render text string.
    */
-  const moreData = Object.assign({}, helpers, data)
+  const allHelpers = Object.assign({}, helpers, customHelpers)
   const blocks = extractBlocks(text)
   for (const b of blocks) {
-    const func = moreData[b.name]
-    const result = func(b)
+    const func = allHelpers[b.name]
+    const result = func(b, data)
     text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
   }
   return text

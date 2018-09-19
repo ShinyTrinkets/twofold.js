@@ -1,4 +1,4 @@
-function multiply ({ textInside }, number = 1) {
+function multiply ({ textInside }, { number = 1 } = {}) {
   /**
    * TwoFold helper: multiply a number.
    * The number can be any integer, or float.
@@ -6,7 +6,7 @@ function multiply ({ textInside }, number = 1) {
   return parseInt(textInside) * number
 }
 
-function increment ({ textInside }, number = 1) {
+function increment ({ textInside }, { number = 1 } = {}) {
   /**
    * TwoFold helper: increment a number.
    * The increment can be any integer, or float, positive or negative.
@@ -14,22 +14,22 @@ function increment ({ textInside }, number = 1) {
   return parseInt(textInside) + number
 }
 
-function randomFloat (whatever, min = 1, max = 100) {
+function randomFloat (whatever, { min = 1, max = 100 } = {}) {
   /**
    * TwoFold helper: random float number.
    * Returns a pseudo-random float in the range min–max (inclusive of min, but not max).
    */
-  return Math.random() * (max - min) + min;
+  return Math.random() * (max - min) + min
 }
 
-function randomInt (whatever, min = 1, max = 100) {
+function randomInt (whatever, { min = 1, max = 100 } = {}) {
   /**
    * TwoFold helper: random integer number.
    * Returns a pseudo-random integer in the range min–max (inclusive of min, but not max).
    */
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 function sortLines ({ textInside }) {
