@@ -32,16 +32,16 @@ function randomInt (whatever, { min = 1, max = 100 } = {}) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-function randomChoice(choices) {
-  const index = Math.floor(Math.random() * choices.length);
-  return choices[index];
+function randomChoice (choices) {
+  const index = Math.floor(Math.random() * choices.length)
+  return choices[index]
 }
 
 function blackOrWhite () {
   /**
    * TwoFold helper: random black or white.
    */
-  return randomChoice(['◻️','◼️'])
+  return randomChoice(['◻️', '◼️'])
 }
 
 function randomSlice () {
@@ -49,6 +49,62 @@ function randomSlice () {
    * TwoFold helper: random quadrant.
    */
   return randomChoice(['◴', '◵', '◶', '◷'])
+}
+
+// Fix hours
+const fixHours = {
+  0: '🕛',
+  1: '🕐',
+  2: '🕑',
+  3: '🕒',
+  4: '🕓',
+  5: '🕓',
+  6: '🕕',
+  7: '🕖',
+  8: '🕗',
+  9: '🕘',
+  10: '🕙',
+  11: '🕚',
+  12: '🕛'
+}
+// ... and a half
+const halfHours = {
+  0: '🕧',
+  1: '🕜',
+  2: '🕝',
+  3: '🕞',
+  4: '🕟',
+  5: '🕠',
+  6: '🕡',
+  7: '🕢',
+  8: '🕣',
+  9: '🕤',
+  10: '🕥',
+  11: '🕦',
+  12: '🕧'
+}
+
+function emojiClock (whatever, { date = null, showHalf = true } = {}) {
+  /**
+   * TwoFold helper: random quadrant.
+   */
+  if (!date || typeof date !== 'object') {
+    date = new Date()
+  }
+  let h = date.getHours()
+  if (h > 12) {
+    h += 12
+  }
+  if (!showHalf) {
+    return fixHours[h]
+  }
+  const m = date.getMinutes()
+  // The interval for showing the "and a half" clock
+  if (m >= 15 && m <= 45) {
+    return halfHours[h]
+  } else {
+    return fixHours[h]
+  }
 }
 
 function sortLines ({ textInside }) {
@@ -79,5 +135,6 @@ module.exports = {
   randomInt,
   blackOrWhite,
   randomSlice,
+  emojiClock,
   sortLines
 }
