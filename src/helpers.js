@@ -32,6 +32,25 @@ function randomInt (whatever, { min = 1, max = 100 } = {}) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
+function randomChoice(choices) {
+  const index = Math.floor(Math.random() * choices.length);
+  return choices[index];
+}
+
+function blackOrWhite () {
+  /**
+   * TwoFold helper: random black or white.
+   */
+  return randomChoice(['◻️','◼️'])
+}
+
+function randomSlice () {
+  /**
+   * TwoFold helper: random quadrant.
+   */
+  return randomChoice(['◴', '◵', '◶', '◷'])
+}
+
 function sortLines ({ textInside }) {
   /**
    * TwoFold helper: sort lines of text alphabetically.
@@ -53,4 +72,12 @@ function sortLines ({ textInside }) {
   return lines.join('\n')
 }
 
-module.exports = { multiply, increment, randomFloat, randomInt, sortLines }
+module.exports = {
+  multiply,
+  increment,
+  randomFloat,
+  randomInt,
+  blackOrWhite,
+  randomSlice,
+  sortLines
+}

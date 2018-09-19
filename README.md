@@ -13,8 +13,9 @@ My idea about this library is crystal clear, but the implementation lacks behind
 Glorified curly bubbly templates.<br />
 Templates with a twist.<br />
 Duplex templates.<br />
-Context aware templates.<br />
-Self-replicating, self-terminating templates.<br />
+Mirroring blueprints.<br />
+Context aware frames.<br />
+Self-replicating, self-terminating forms.<br />
 
 -----
 

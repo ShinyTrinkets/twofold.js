@@ -15,7 +15,7 @@ function main () {
   const args = minimist(process.argv.slice(2), options)
 
   if (args.help) {
-    console.log('Some helpful info ...')
+    console.log('TwoFold.js (2✂︎f) helpful info ...')
   }
 }
 

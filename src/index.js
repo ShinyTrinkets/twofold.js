@@ -52,11 +52,30 @@ function renderText (text, data, customHelpers) {
   const allHelpers = Object.assign({}, helpers, customHelpers)
   const blocks = extractBlocks(text)
   for (const b of blocks) {
-    const func = allHelpers[b.name]
+    if (!b.name) {
+      // maybe a debug message ?
+      // shouldn't be necessary, because maybe the block is intentionally invalid
+      continue
+    }
+    const func = allHelpers[str.camelCase(b.name)]
     const result = func(b, data)
     text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
   }
   return text
 }
 
-module.exports = { extractBlocks, renderText }
+function renderFile (fname, data) {
+  /**
+   * TwoFold render text file.
+   */
+  if (!fname) {
+    throw new Error('File name cannot be empty')
+  }
+  const text = fs.readFileSync(fname, { encoding: 'utf8' })
+  if (!text) {
+    return ''
+  }
+  return renderText(text, data)
+}
+
+module.exports = { extractBlocks, renderText, renderFile }
