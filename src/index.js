@@ -4,9 +4,22 @@ const helpers = require('./helpers')
 // As in <replace-random-int />
 // If you change it to "x", it will become: <x-random-int />
 const IDENTIFIER = 'replace'
-// As in <replace-random-int />
+
+// In <replace-random-int />
 // If you change it to "?", it will become: <replace-random-int ?>
-const STOPPER = '/'
+// In single tag, the stopper only affects the end of the tag
+// In <replace-random-int></replace-random-int>
+// If you change it to "?", it will become: <replace-random-int><?replace-random-int>
+// In double tags, the stopper only affects the start of the last tag
+const LAST_STOPPER = '/'
+// In <replace-random-int></replace-random-int>
+// If you change it to "?", it will become: <replace-random-int?></replace-random-int>
+// In <replace-random-int> </replace-random-int>,
+// If you change first stopper to ">" and last stopper to "<" it will become:
+// <replace-random-int>> <<replace-random-int>
+// Second stopper only affects the end of the first tag, for double tags
+const FIRST_STOPPER = ''
+
 // As in <replace-random-int />
 // If you change OPEN_TAG to "{" and CLOSE_TAG to "}"
 // it will become: {replace-random-int /}
@@ -17,11 +30,11 @@ function extractBlocks (text) {
   /**
    * Extract all template blocks.
    */
-  const lineRegex = new RegExp(`${OPEN_TAG}[ ]*${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${STOPPER}[ ]*${CLOSE_TAG}`, 'g')
+  const lineRegex = new RegExp(`${OPEN_TAG}[ ]*${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${LAST_STOPPER}[ ]*${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
-    `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${CLOSE_TAG})` +
+    `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${FIRST_STOPPER}${CLOSE_TAG})` +
       `([\\w\\W]*?)` +
-      `(${OPEN_TAG}${STOPPER}${IDENTIFIER}-\\2${CLOSE_TAG})`,
+      `(${OPEN_TAG}${LAST_STOPPER}${IDENTIFIER}-\\2${CLOSE_TAG})`,
     'g'
   )
 
@@ -68,7 +81,13 @@ function renderText (text, data, customHelpers) {
     }
     const func = allHelpers[str.camelCase(b.name)]
     const result = func(b, data)
-    text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
+    // Self destructing tag
+    // TODO: This is buggy, so fit it
+    if (!b.tagAfter) {
+      text = b.textBefore + result + b.textAfter
+    } else {
+      text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
+    }
   }
   return text
 }
