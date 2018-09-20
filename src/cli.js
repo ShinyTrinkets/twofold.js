@@ -9,6 +9,11 @@ const options = cmdOptions({
     type: 'boolean',
     default: false
   },
+  'dry-run': {
+    alias: 'n',
+    type: 'boolean',
+    default: false
+  },
   // Special option for positional arguments (`_` in minimist)
   arguments: 'string'
 })
@@ -22,12 +27,22 @@ function main () {
   }
 
   if (args._ && args._.length) {
-    for (const f of args._) {
-      console.log('(2✂︎f)', f)
-      const txt = xfold.renderFile(f)
-      fs.writeFileSync(f, txt, { encoding: 'utf8' })
+    for (const fname of args._) {
+      if (!fname) {
+        continue
+      }
+      console.log('(2✂︎f)', fname)
+      const text = fs.readFileSync(fname, { encoding: 'utf8' })
+      if (!text) {
+        continue
+      }
+      const result = xfold.renderText(text)
+      if (args.n) {
+        console.log(result)
+      } else {
+        fs.writeFileSync(fname, result, { encoding: 'utf8' })
+      }
     }
-    return
   }
 }
 

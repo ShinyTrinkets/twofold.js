@@ -1,8 +1,15 @@
-const fs = require('fs')
 const str = require('voca')
 const helpers = require('./helpers')
 
+// As in <replace-random-int />
+// If you change it to "x", it will become: <x-random-int />
 const IDENTIFIER = 'replace'
+// As in <replace-random-int />
+// If you change it to "?", it will become: <replace-random-int ?>
+const STOPPER = '/'
+// As in <replace-random-int />
+// If you change OPEN_TAG to "{" and CLOSE_TAG to "}"
+// it will become: {replace-random-int /}
 const OPEN_TAG = '<'
 const CLOSE_TAG = '>'
 
@@ -10,9 +17,11 @@ function extractBlocks (text) {
   /**
    * Extract all template blocks.
    */
-  const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+/${CLOSE_TAG}`, 'g')
+  const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${STOPPER}${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
-    `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${CLOSE_TAG})([\\w\\W]*?)(${OPEN_TAG}/${IDENTIFIER}-\\2${CLOSE_TAG})`,
+    `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${CLOSE_TAG})` +
+      `([\\w\\W]*?)` +
+      `(${OPEN_TAG}${STOPPER}${IDENTIFIER}-\\2${CLOSE_TAG})`,
     'g'
   )
 
@@ -64,18 +73,4 @@ function renderText (text, data, customHelpers) {
   return text
 }
 
-function renderFile (fname, data) {
-  /**
-   * TwoFold render text file.
-   */
-  if (!fname) {
-    throw new Error('File name cannot be empty')
-  }
-  const text = fs.readFileSync(fname, { encoding: 'utf8' })
-  if (!text) {
-    return ''
-  }
-  return renderText(text, data)
-}
-
-module.exports = { extractBlocks, renderText, renderFile }
+module.exports = { extractBlocks, renderText }

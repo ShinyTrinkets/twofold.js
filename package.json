@@ -4,7 +4,8 @@
   ],
   "ava": {
     "failFast": true,
-    "powerAssert": false
+    "powerAssert": false,
+    "verbose": true
   },
   "bugs": {
     "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
@@ -36,7 +37,7 @@
   },
   "scripts": {
     "fmt": "npx prettier --write ./src/*.js && npx standard --fix ./src/*.js",
-    "test": "npx ava --fail-fast --serial --verbose test/*.test.js"
+    "test": "npx ava test/*.test.js"
   },
   "version": "0.1.0"
 }
