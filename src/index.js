@@ -17,7 +17,7 @@ function extractBlocks (text) {
   /**
    * Extract all template blocks.
    */
-  const lineRegex = new RegExp(`${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${STOPPER}${CLOSE_TAG}`, 'g')
+  const lineRegex = new RegExp(`${OPEN_TAG}[ ]*${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${STOPPER}[ ]*${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
     `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${CLOSE_TAG})` +
       `([\\w\\W]*?)` +

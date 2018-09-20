@@ -44,11 +44,50 @@ function blackOrWhite () {
   return randomChoice(['◻️', '◼️'])
 }
 
+function leftOrRight () {
+  /**
+   * TwoFold helper: random left or right.
+   */
+  return randomChoice(['←', '→'])
+}
+
+function upOrDown () {
+  /**
+   * TwoFold helper: random up or down.
+   */
+  return randomChoice(['↑', '↓'])
+}
+
 function randomSlice () {
   /**
    * TwoFold helper: random quadrant.
    */
   return randomChoice(['◴', '◵', '◶', '◷'])
+}
+
+function randomDice () {
+  /**
+   * TwoFold helper: random die from 1 to 6.
+   */
+  return randomChoice(['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'])
+}
+
+function randomCard () {
+  /**
+   * TwoFold helper: random game card.
+   * Aces, Twos, Threes, Fours, Fives, Sixes, Sevens, Eights, Nines, Tens,
+   * Jacks, Queens, Kings
+   * Spades (♠) Hearts (♥) Diamonds (♦) Clubs (♣)
+   */
+  const suits = ['♤', '♡', '♢', '♧']
+  const cards = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
+  const all = []
+  for (const c of cards) {
+    for (const s of suits) {
+      all.push(`${c}${s}`)
+    }
+  }
+  return randomChoice(all)
 }
 
 // Fix hours
@@ -138,7 +177,11 @@ module.exports = {
   randomFloat,
   randomInt,
   blackOrWhite,
+  leftOrRight,
+  upOrDown,
   randomSlice,
+  randomDice,
+  randomCard,
   emojiClock,
   sortLines
 }
