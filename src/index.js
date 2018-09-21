@@ -1,5 +1,5 @@
 const str = require('voca')
-const helpers = require('./helpers')
+const functions = require('./functions')
 
 // As in <replace-random-int />
 // If you change it to "x", it will become: <x-random-int />
@@ -83,17 +83,17 @@ function extractBlock (text) {
   }
 }
 
-function renderText (text, data, customHelpers) {
+function renderText (text, data, customFunctions) {
   /**
    * TwoFold render text string.
    */
-  const allHelpers = Object.assign({}, helpers, customHelpers)
+  const allHelpers = Object.assign({}, functions, customFunctions)
   const b = extractBlock(text)
   if (!b || !b.name) {
     return text
   }
   const func = allHelpers[str.camelCase(b.name)]
-  const endText = renderText(b.textAfter, data, customHelpers)
+  const endText = renderText(b.textAfter, data, customFunctions)
   let result
   try {
     result = func(b, data)
