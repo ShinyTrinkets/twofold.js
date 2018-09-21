@@ -1,4 +1,4 @@
-const str = require('voca')
+const util = require('./util')
 const functions = require('./functions')
 
 // As in <replace-random-int />
@@ -33,8 +33,8 @@ function lineMatchResult (m, text) {
     textInside: '', // text inside the block
     tagBefore: m[0],
     tagAfter: '',
-    textBefore: str.substring(text, 0, m.index), // text before the block
-    textAfter: str.substring(text, m.index + m[0].length) // text after the block
+    textBefore: text.substring(0, m.index), // text before the block
+    textAfter: text.substring(m.index + m[0].length) // text after the block
   }
 }
 
@@ -45,8 +45,8 @@ function blockMatchResult (m, text) {
     textInside: m[3], // text inside the block
     tagBefore: m[1],
     tagAfter: m[4],
-    textBefore: str.substring(text, 0, m.index), // text before the block
-    textAfter: str.substring(text, m.index + m[0].length) // text after the block
+    textBefore: text.substring(0, m.index), // text before the block
+    textAfter: text.substring(m.index + m[0].length) // text after the block
   }
 }
 
@@ -92,7 +92,7 @@ function renderText (text, data, customFunctions) {
   if (!b || !b.name) {
     return text
   }
-  const func = allHelpers[str.camelCase(b.name)]
+  const func = allHelpers[util.toCamelCase(b.name)]
   const endText = renderText(b.textAfter, data, customFunctions)
   let result
   try {

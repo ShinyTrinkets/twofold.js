@@ -1,5 +1,3 @@
-import fs from 'fs'
-import str from 'voca'
 import test from 'ava'
 import xfold from '../src'
 import helpers from '../src/functions'

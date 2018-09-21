@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "minimist": "^1.2.0",
-    "minimist-options": "^3.0.2",
-    "voca": "^1.4.0"
+    "minimist-options": "^3.0.2"
   },
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
@@ -31,6 +30,11 @@
   "license": "MIT",
   "main": "src/index.js",
   "name": "twofold",
+  "prettier": {
+    "printWidth": 120,
+    "semi": false,
+    "singleQuote": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
