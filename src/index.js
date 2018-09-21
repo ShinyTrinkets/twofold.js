@@ -28,25 +28,27 @@ const CLOSE_TAG = '>'
 
 function lineMatchResult (m, text) {
   return {
-  index: m.index,
-  name: m[1], // the block name
-  textInside: '', // text inside the block
-  tagBefore: m[0],
-  tagAfter: '',
-  textBefore: str.substring(text, 0, m.index), // text before the block
-  textAfter: str.substring(text, m.index + m[0].length) // text after the block
-}}
+    index: m.index,
+    name: m[1], // the block name
+    textInside: '', // text inside the block
+    tagBefore: m[0],
+    tagAfter: '',
+    textBefore: str.substring(text, 0, m.index), // text before the block
+    textAfter: str.substring(text, m.index + m[0].length) // text after the block
+  }
+}
 
 function blockMatchResult (m, text) {
   return {
-  index: m.index,
-  name: m[2], // the block name
-  textInside: m[3], // text inside the block
-  tagBefore: m[1],
-  tagAfter: m[4],
-  textBefore: str.substring(text, 0, m.index), // text before the block
-  textAfter: str.substring(text, m.index + m[0].length) // text after the block
-}}
+    index: m.index,
+    name: m[2], // the block name
+    textInside: m[3], // text inside the block
+    tagBefore: m[1],
+    tagAfter: m[4],
+    textBefore: str.substring(text, 0, m.index), // text before the block
+    textAfter: str.substring(text, m.index + m[0].length) // text after the block
+  }
+}
 
 function extractBlock (text) {
   /**
@@ -98,7 +100,7 @@ function renderText (text, data, customHelpers) {
   } catch (err) {
     if (!b.tagAfter) {
       // Single tag
-      return b.textBefore + b.tagBefore  + endText
+      return b.textBefore + b.tagBefore + endText
     } else {
       return b.textBefore + b.tagBefore + b.textInside + b.tagAfter + endText
     }

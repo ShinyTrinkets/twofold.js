@@ -43,6 +43,23 @@ function main () {
         fs.writeFileSync(fname, result, { encoding: 'utf8' })
       }
     }
+  } else {
+    const stdin = process.stdin
+    stdin.setEncoding('utf8')
+
+    let textChunks = ''
+    stdin.on('data', function (chunk) {
+      textChunks += chunk
+    })
+    stdin.on('end', function () {
+      const result = xfold.renderText(textChunks)
+      console.log(result)
+    })
+    setTimeout(function () {
+      if (!textChunks && !textChunks.trim()) {
+        process.exit()
+      }
+    }, 25)
   }
 }
 

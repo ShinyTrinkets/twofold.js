@@ -83,6 +83,27 @@ test('separated sort render', async t => {
   t.is(tmp.length, txt.length)
 })
 
+test('mixed tags', async t => {
+  // This test validates a lot of usecases for multiple mixed tags
+  // Wrong tags, wrong helper names
+  const txt = `qaz <mumu /> ...\n` +
+    `rand slice <replace-random-slice />\n` +
+    `xyz <replace-xyz />\n` +
+    `rand int <replace-random-int>\n</replace-random-int>\n` +
+    `wrong <replace-wrong />`
+  const tmp = xfold.renderText(txt)
+  t.not(txt, tmp)
+  const lines = tmp.split(/[\n]/)
+  // Not touched
+  t.is(lines[0], 'qaz <mumu /> ...')
+  t.is(lines[2], 'xyz <replace-xyz />')
+  t.is(lines[4], 'wrong <replace-wrong />')
+  // Replaced
+  t.is(lines[1].indexOf('rand slice '), 0)
+  t.is(lines[1].length, 'rand slice '.length + 1)
+  t.is(lines[3].indexOf('rand int '), 0)
+})
+
 test('single tag not found', async t => {
   const txt = `qwerty <mumu /> ...`
   const tmp = xfold.renderText(txt)
