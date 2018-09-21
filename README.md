@@ -1,14 +1,14 @@
 # TwoFold.js (2✂︎f)
 
 [![Project name][project-img]][project-url]
-[![API stability][stability-img]][stability-url]
+[![Build status][build-img]][build-url]
 [![Standard Style Guide][style-img]][style-url]
 
 > Glorified curly bubbly templates
 
-# Experimental templating tools
+## Templates with a twist 🔀
 
-My idea about this library is crystal clear, but the implementation lacks behind massively.
+TODO: Add the nice description that this library deserves.
 
 Glorified curly bubbly templates.<br />
 Templates with a twist.<br />
@@ -25,7 +25,7 @@ Self-replicating, self-terminating forms.<br />
 
 [project-img]: https://badgen.net/badge/%E2%AD%90/Trinkets/4B0082
 [project-url]: https://github.com/ShinyTrinkets
-[stability-img]: https://badgen.net/badge/Stability/experimental/red
-[stability-url]: https://nodejs.org/api/documentation.html#documentation_stability_index
+[build-img]: https://badgen.net/travis/ShinyTrinkets/twofold.js
+[build-url]: https://travis-ci.org/ShinyTrinkets/twofold.js
 [style-img]: https://badgen.net/badge/Code%20style/standard/f2a
 [style-url]: https://standardjs.com
