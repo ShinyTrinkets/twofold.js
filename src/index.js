@@ -26,9 +26,31 @@ const FIRST_STOPPER = ''
 const OPEN_TAG = '<'
 const CLOSE_TAG = '>'
 
-function extractBlocks (text) {
+function lineMatchResult (m, text) {
+  return {
+  index: m.index,
+  name: m[1], // the block name
+  textInside: '', // text inside the block
+  tagBefore: m[0],
+  tagAfter: '',
+  textBefore: str.substring(text, 0, m.index), // text before the block
+  textAfter: str.substring(text, m.index + m[0].length) // text after the block
+}}
+
+function blockMatchResult (m, text) {
+  return {
+  index: m.index,
+  name: m[2], // the block name
+  textInside: m[3], // text inside the block
+  tagBefore: m[1],
+  tagAfter: m[4],
+  textBefore: str.substring(text, 0, m.index), // text before the block
+  textAfter: str.substring(text, m.index + m[0].length) // text after the block
+}}
+
+function extractBlock (text) {
   /**
-   * Extract all template blocks.
+   * Extract the first template block.
    */
   const lineRegex = new RegExp(`${OPEN_TAG}[ ]*${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${LAST_STOPPER}[ ]*${CLOSE_TAG}`, 'g')
   const blockRegex = new RegExp(
@@ -37,34 +59,26 @@ function extractBlocks (text) {
       `(${OPEN_TAG}${LAST_STOPPER}${IDENTIFIER}-\\2${CLOSE_TAG})`,
     'g'
   )
-
-  let m
-  const output = []
-
-  while ((m = lineRegex.exec(text))) {
-    output.push({
-      index: m.index,
-      name: m[1], // the block name
-      textInside: '', // text inside the block
-      tagBefore: m[0],
-      tagAfter: '',
-      textBefore: str.substring(text, 0, m.index), // text before the block
-      textAfter: str.substring(text, m.index + m[0].length) // text after the block
-    })
+  // Match single tag
+  const lm = lineRegex.exec(text)
+  // Match double tag
+  const bm = blockRegex.exec(text)
+  // If nothing matches, the result is null
+  if (!lm && !bm) {
+    return null
   }
-  while ((m = blockRegex.exec(text))) {
-    output.push({
-      index: m.index,
-      name: m[2], // the block name
-      textInside: m[3], // text inside the block
-      tagBefore: m[1],
-      tagAfter: m[4],
-      textBefore: str.substring(text, 0, m.index), // text before the block
-      textAfter: str.substring(text, m.index + m[0].length) // text after the block
-    })
+  // If only one matches, return that one
+  if (lm && !bm) {
+    return lineMatchResult(lm, text)
+  } else if (bm && !lm) {
+    return blockMatchResult(bm, text)
   }
-
-  return output
+  // If both match, return the smaller index
+  if (lm.index < bm.index) {
+    return lineMatchResult(lm, text)
+  } else {
+    return blockMatchResult(bm, text)
+  }
 }
 
 function renderText (text, data, customHelpers) {
@@ -72,24 +86,29 @@ function renderText (text, data, customHelpers) {
    * TwoFold render text string.
    */
   const allHelpers = Object.assign({}, helpers, customHelpers)
-  const blocks = extractBlocks(text)
-  for (const b of blocks) {
-    if (!b.name) {
-      // maybe a debug message ?
-      // shouldn't be necessary, because maybe the block is intentionally invalid
-      continue
-    }
-    const func = allHelpers[str.camelCase(b.name)]
-    const result = func(b, data)
-    // Self destructing tag
-    // TODO: This is buggy, so fit it
+  const b = extractBlock(text)
+  if (!b || !b.name) {
+    return text
+  }
+  const func = allHelpers[str.camelCase(b.name)]
+  const endText = renderText(b.textAfter, data, customHelpers)
+  let result
+  try {
+    result = func(b, data)
+  } catch (err) {
     if (!b.tagAfter) {
-      text = b.textBefore + result + b.textAfter
+      // Single tag
+      return b.textBefore + b.tagBefore  + endText
     } else {
-      text = b.textBefore + b.tagBefore + result + b.tagAfter + b.textAfter
+      return b.textBefore + b.tagBefore + b.textInside + b.tagAfter + endText
     }
   }
-  return text
+  if (!b.tagAfter) {
+    // Single tag
+    return b.textBefore + result + endText
+  } else {
+    return b.textBefore + b.tagBefore + result + b.tagAfter + endText
+  }
 }
 
-module.exports = { extractBlocks, renderText }
+module.exports = { extractBlock, renderText }

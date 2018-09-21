@@ -82,3 +82,27 @@ test('separated sort render', async t => {
   t.not(tmp, txt)
   t.is(tmp.length, txt.length)
 })
+
+test('single tag not found', async t => {
+  const txt = `qwerty <mumu /> ...`
+  const tmp = xfold.renderText(txt)
+  t.is(txt, tmp)
+})
+
+test('function not found single tag', async t => {
+  const txt = `qwerty <replace-xyz /> ...`
+  const tmp = xfold.renderText(txt)
+  t.is(txt, tmp)
+})
+
+test('double tag not found', async t => {
+  const txt = `qwerty <mumu> </mumu> ...`
+  const tmp = xfold.renderText(txt)
+  t.is(txt, tmp)
+})
+
+test('function not found double tag', async t => {
+  const txt = `qwerty <replace-xyz> </replace-xyz> ...`
+  const tmp = xfold.renderText(txt)
+  t.is(txt, tmp)
+})
