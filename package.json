@@ -13,6 +13,8 @@
   "bugs": {
     "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
   },
+  "contributors": [
+  ],
   "dependencies": {
     "minimist": "^1.2.0",
     "minimist-options": "^3.0.2"

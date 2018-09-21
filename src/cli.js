@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const xfold = require('./')
+const p = require('../package')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
 
@@ -11,8 +12,8 @@ const options = cmdOptions({
     type: 'boolean',
     default: false
   },
-  'dry-run': {
-    alias: 'n',
+  version: {
+    alias: 'v',
     type: 'boolean',
     default: false
   },
@@ -20,11 +21,33 @@ const options = cmdOptions({
   arguments: 'string'
 })
 
+const usage = `TwoFold (2✂︎f) v${p.version}
+
+Process a file that contains TwoFold template tags
+and overwrite the original file:
+
+  $ 2fold <file>
+
+You can also pipe a stream and see the result on
+the screen:
+
+  $ echo "yes or no: <replace-yes-or-no />" | 2fold
+  $ cat my-file.md | 2fold
+
+If you want to test some tags, or chain multiple
+CLI apps together, just use the stdin.
+`
+
 function main () {
   const args = minimist(process.argv.slice(2), options)
 
+  if (args.version) {
+    console.log('TwoFold (2✂︎f) v' + p.version)
+    return
+  }
+
   if (args.help) {
-    console.log('TwoFold (2✂︎f) helpful info ...')
+    console.log(usage)
     return
   }
 
@@ -39,11 +62,7 @@ function main () {
         continue
       }
       const result = xfold.renderText(text)
-      if (args.n) {
-        console.log(result)
-      } else {
-        fs.writeFileSync(fname, result, { encoding: 'utf8' })
-      }
+      fs.writeFileSync(fname, result, { encoding: 'utf8' })
     }
   } else {
     const stdin = process.stdin
@@ -59,6 +78,7 @@ function main () {
     })
     setTimeout(function () {
       if (!textChunks && !textChunks.trim()) {
+        console.log('(2✂︎f) Nothing to to')
         process.exit()
       }
     }, 25)

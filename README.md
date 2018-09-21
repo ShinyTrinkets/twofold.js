@@ -21,7 +21,7 @@ Self-replicating, self-terminating forms.<br />
 
 ## License
 
-[MIT](LICENSE) © Cristi Constantin.
+[MIT](LICENSE) © Shiny Trinkets.
 
 [project-img]: https://badgen.net/badge/%E2%AD%90/Trinkets/4B0082
 [project-url]: https://github.com/ShinyTrinkets
