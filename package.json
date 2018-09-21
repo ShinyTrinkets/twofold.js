@@ -7,6 +7,9 @@
     "powerAssert": false,
     "verbose": true
   },
+  "bin": {
+    "2fold": "./src/cli.js"
+  },
   "bugs": {
     "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
   },
@@ -25,6 +28,8 @@
   },
   "homepage": "https://github.com/ShinyTrinkets/twofold.js#readme",
   "keywords": [
+    "app",
+    "cli",
     "template"
   ],
   "license": "MIT",
@@ -40,7 +45,7 @@
     "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
   },
   "scripts": {
-    "fmt": "npx prettier --write ./src/*.js && npx standard --fix ./src/*.js",
+    "fmt": "npx prettier --write ./src/{*,*/}*.js && npx standard --fix ./src/{*,*/}*.js",
     "test": "npx ava test/*.test.js"
   },
   "version": "0.1.0"

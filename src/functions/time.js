@@ -4,8 +4,8 @@ function emojiDayNight (whatever, { date = null } = {}) {
    * Day=🏙 ; Night=🌃 ;
    */
   if (!date || typeof date !== 'object') {
-     date = new Date()
-   }
+    date = new Date()
+  }
   const h = date.getHours()
   if (h <= 6 && h < 18) {
     return '🏙'

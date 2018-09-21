@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs')
 const xfold = require('./')
 const minimist = require('minimist')
