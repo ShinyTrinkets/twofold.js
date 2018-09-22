@@ -10,14 +10,6 @@ test('simple increment render', async t => {
   let tmp = xfold.renderText(txt)
   t.not(tmp, txt)
   t.is(tmp, `qwerty <replace-increment>${nr + 1}</replace-increment> ...`)
-
-  tmp = xfold.renderText(txt, { number: 2.0 })
-  t.not(tmp, txt)
-  t.is(tmp, `qwerty <replace-increment>${nr + 2.0}</replace-increment> ...`)
-
-  tmp = xfold.renderText(txt, { number: -9 })
-  t.not(tmp, txt)
-  t.is(tmp, `qwerty <replace-increment>${nr - 9}</replace-increment> ...`)
 })
 
 test('simple random integer', async t => {
@@ -43,15 +35,9 @@ test('simple sort render', async t => {
 
 test('emoji clock render', async t => {
   const txt = `clock <replace-emojiClock></replace-emojiClock> ...`
-  let tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 14) })
+  let tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 11) })
   t.not(tmp, txt)
   t.true(tmp.indexOf('🕚') > 0)
-
-  tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 15) })
-  t.true(tmp.indexOf('🕦') > 0)
-
-  tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 12, 46) })
-  t.true(tmp.indexOf('🕛') > 0)
 
   tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 15), showHalf: false })
   t.true(tmp.indexOf('🕚') > 0)
