@@ -1,13 +1,38 @@
-function emojiDayNight (whatever, { date = null } = {}) {
+function getDayOrNight (date = null, splitHour = 6) {
   /**
-   * Returns an emoji representing day or night.
-   * Day=🏙 ; Night=🌃 ;
+   * Helper that returns day or night.
    */
   if (!date || typeof date !== 'object') {
     date = new Date()
   }
   const h = date.getHours()
-  if (h <= 6 && h < 18) {
+  if (h > splitHour && h <= splitHour + 12) {
+    return 'd'
+  } else {
+    return 'n'
+  }
+}
+
+function emojiSunMoon (whatever, { date = null, splitHour = 6 } = {}) {
+  /**
+   * Returns an emoji representing day or night.
+   * Day=☀️ ; Night=🌙 ;
+   */
+  const dn = getDayOrNight(date, splitHour)
+  if (dn === 'd') {
+    return '☀️'
+  } else {
+    return '🌙'
+  }
+}
+
+function emojiDayNight (whatever, { date = null, splitHour = 6 } = {}) {
+  /**
+   * Returns an emoji representing day or night.
+   * Day=🏙 ; Night=🌃 ;
+   */
+  const dn = getDayOrNight(date, splitHour)
+  if (dn === 'd') {
     return '🏙'
   } else {
     return '🌃'
@@ -76,5 +101,6 @@ function emojiClock (whatever, { date = null, showHalf = true } = {}) {
 
 module.exports = {
   emojiDayNight,
+  emojiSunMoon,
   emojiClock
 }

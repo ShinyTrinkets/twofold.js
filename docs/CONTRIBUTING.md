@@ -57,7 +57,7 @@ formatting tools. The coding standard is "prettier" + "standard":
 - no semicolons at the end of statements
 - etc.
 
-Just run `npm run format` before running the tests, to have all that fixed automatically.
+Just run `npm run fmt` before running the tests, to have all that fixed automatically.
 
 ## Everyone is happy!
 
