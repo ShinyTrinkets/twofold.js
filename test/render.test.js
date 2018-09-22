@@ -1,7 +1,9 @@
 import test from 'ava'
 import xfold from '../src'
 import helpers from '../src/functions'
-
+//
+// General testing of the render function
+//
 test('simple increment render', async t => {
   const nr = 999
   const txt = `qwerty <replace-increment>${nr}</replace-increment> ...`
@@ -84,7 +86,8 @@ test('separated sort render', async t => {
 test('mixed tags', async t => {
   // This test validates a lot of usecases for multiple mixed tags
   // Wrong tags, wrong helper names
-  const txt = `qaz <mumu /> ...\n` +
+  const txt =
+    `qaz <mumu /> ...\n` +
     `rand slice <replace-random-slice />\n` +
     `xyz <replace-xyz />\n` +
     `rand int <replace-random-int>\n</replace-random-int>\n` +

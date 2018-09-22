@@ -1,7 +1,10 @@
 import fs from 'fs'
 import test from 'ava'
 import xfold from '../src'
-
+//
+// Testing the extraction of the blocks
+// A more serious testing is done in render tests
+//
 test('no blocks found', async t => {
   const txt = fs.readFileSync(__dirname + '/fixtures/text0.md', { encoding: 'utf8' })
   const b = xfold.extractBlock(txt)
