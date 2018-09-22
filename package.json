@@ -13,8 +13,7 @@
   "bugs": {
     "url": "https://github.com/ShinyTrinkets/twofold.js/issues"
   },
-  "contributors": [
-  ],
+  "contributors": [],
   "dependencies": {
     "minimist": "^1.2.0",
     "minimist-options": "^3.0.2"
@@ -50,5 +49,5 @@
     "fmt": "npx prettier --write ./src/{*,*/}*.js && npx standard --fix ./src/{*,*/}*.js",
     "test": "npx ava test/*.test.js"
   },
-  "version": "0.0.0"
+  "version": "0.1.0"
 }
