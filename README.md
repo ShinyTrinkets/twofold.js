@@ -2,6 +2,7 @@
 
 [![Project name][project-img]][project-url]
 [![Build status][build-img]][build-url]
+[![Coverage][coverage-img]][coverage-url]
 [![Standard Style Guide][style-img]][style-url]
 
 > Glorified curly bubbly templates,<br />
@@ -76,5 +77,7 @@ https://github.com/croqaz/awesome-markup
 [project-url]: https://github.com/ShinyTrinkets
 [build-img]: https://badgen.net/travis/ShinyTrinkets/twofold.js
 [build-url]: https://travis-ci.org/ShinyTrinkets/twofold.js
+[coverage-img]: https://codecov.io/gh/ShinyTrinkets/twofold.js/branch/master/graph/badge.svg
+[coverage-url]: https://codecov.io/gh/ShinyTrinkets/twofold.js
 [style-img]: https://badgen.net/badge/Code%20style/standard/f2a
 [style-url]: https://standardjs.com

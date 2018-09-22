@@ -91,6 +91,58 @@ test('mixed tags', async t => {
   t.is(lines[3].indexOf('rand int '), 0)
 })
 
+test('custom single tag', async t => {
+  let tmp
+  const mumu = () => 'ok'
+  tmp = xfold.renderText('<mumu />', {}, { mumu })
+  t.is(tmp, 'ok')
+  // Test open and close tag for single
+  tmp = xfold.renderText('<mumu />', {}, { mumu }, { openTag: '{', closeTag: '}' })
+  t.is(tmp, '<mumu />')
+  tmp = xfold.renderText('{mumu /}', {}, { mumu }, { openTag: '{', closeTag: '}' })
+  t.is(tmp, 'ok')
+  // Test last stopper for single
+  // Because it's a regex, it needs to be escaped
+  tmp = xfold.renderText('<mumu />', {}, { mumu }, { lastStopper: '[?]' })
+  t.is(tmp, '<mumu />')
+  tmp = xfold.renderText('<mumu ?>', {}, { mumu }, { lastStopper: '[?]' })
+  t.is(tmp, 'ok')
+  tmp = xfold.renderText('< mumu ? >', {}, { mumu }, { lastStopper: '[?]' })
+  t.is(tmp, 'ok')
+  // Full test
+  const cfg = { openTag: '{%', closeTag: '%}', lastStopper: '[?]' }
+  tmp = xfold.renderText('<mumu />', {}, { mumu }, cfg)
+  t.is(tmp, '<mumu />')
+  tmp = xfold.renderText('{% mumu ? %}', {}, { mumu }, cfg)
+  t.is(tmp, 'ok')
+})
+
+test('custom double tag', async t => {
+  let tmp, cfg
+  const mumu = () => 'ok'
+  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu })
+  t.is(tmp, '<replace-mumu>ok</replace-mumu>')
+  // Test open and close tag
+  cfg = { openTag: '{', closeTag: '}' }
+  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<replace-mumu></replace-mumu>')
+  tmp = xfold.renderText('{replace-mumu}{/replace-mumu}', {}, { mumu }, cfg)
+  t.is(tmp, '{replace-mumu}ok{/replace-mumu}')
+  // Test last stopper for double
+  // Because it's a regex, it needs to be escaped
+  cfg = { lastStopper: '[?]' }
+  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<replace-mumu></replace-mumu>')
+  tmp = xfold.renderText('<replace-mumu><?replace-mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<replace-mumu>ok<?replace-mumu>')
+  // Full test
+  cfg = { openTag: '{', closeTag: '}', firstStopper: '[>]', lastStopper: '[<]' }
+  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<replace-mumu></replace-mumu>')
+  tmp = xfold.renderText('{replace-mumu>} {<replace-mumu}', {}, { mumu }, cfg)
+  t.is(tmp, '{replace-mumu>}ok{<replace-mumu}')
+})
+
 test('single tag not found', async t => {
   const txt = `qwerty <mumu /> ...`
   const tmp = xfold.renderText(txt)

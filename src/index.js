@@ -1,30 +1,6 @@
 const util = require('./util')
+const config = require('./config')
 const functions = require('./functions')
-
-// As in <replace-random-int />
-// If you change it to "x", it will become: <x-random-int />
-const IDENTIFIER = 'replace'
-
-// In <replace-random-int />
-// If you change it to "?", it will become: <replace-random-int ?>
-// In single tag, the stopper only affects the end of the tag
-// In <replace-random-int></replace-random-int>
-// If you change it to "?", it will become: <replace-random-int><?replace-random-int>
-// In double tags, the stopper only affects the start of the last tag
-const LAST_STOPPER = '/'
-// In <replace-random-int></replace-random-int>
-// If you change it to "?", it will become: <replace-random-int?></replace-random-int>
-// In <replace-random-int> </replace-random-int>,
-// If you change first stopper to ">" and last stopper to "<" it will become:
-// <replace-random-int>> <<replace-random-int>
-// Second stopper only affects the end of the first tag, for double tags
-const FIRST_STOPPER = ''
-
-// As in <replace-random-int />
-// If you change OPEN_TAG to "{" and CLOSE_TAG to "}"
-// it will become: {replace-random-int /}
-const OPEN_TAG = '<'
-const CLOSE_TAG = '>'
 
 function lineMatchResult (m, text) {
   return {
@@ -50,15 +26,26 @@ function blockMatchResult (m, text) {
   }
 }
 
-function extractBlock (text) {
+function extractBlock (text, customConfig) {
   /**
-   * Extract the first template block.
+   * Extract the first found template block.
    */
-  const lineRegex = new RegExp(`${OPEN_TAG}[ ]*${IDENTIFIER}-((?:\\w+-)*\\w+)[ ]+${LAST_STOPPER}[ ]*${CLOSE_TAG}`, 'g')
+  const { identifier, openTag, closeTag, lastStopper, firstStopper } = Object.assign({}, config, customConfig)
+  const lineRegex = new RegExp(
+    `${openTag}` + // Open the tag
+    `[ ]*` + // Zero or more spaces
+    `(?:${identifier}-)?` + // Optional identifier (replace, insert, append)
+    `((?:\\w+-)*\\w+)` + // The name of the template function
+    `[ ]+` + // One or more spaces
+    `${lastStopper}` + // The stopper char
+    `[ ]*` + // Zero or more spaces
+    `${closeTag}`, // Close the tag
+    'g'
+  )
   const blockRegex = new RegExp(
-    `(${OPEN_TAG}${IDENTIFIER}-((?:\\w+-)*\\w+)${FIRST_STOPPER}${CLOSE_TAG})` +
-      `([\\w\\W]*?)` +
-      `(${OPEN_TAG}${LAST_STOPPER}${IDENTIFIER}-\\2${CLOSE_TAG})`,
+    `(${openTag}${identifier}-((?:\\w+-)*\\w+)${firstStopper}${closeTag})` +
+      `([\\w\\W]*?)` + // Text inside the tmpl
+      `(${openTag}${lastStopper}${identifier}-\\2${closeTag})`,
     'g'
   )
   // Match single tag
@@ -83,17 +70,17 @@ function extractBlock (text) {
   }
 }
 
-function renderText (text, data, customFunctions) {
+function renderText (text, data, customFunctions, customConfig) {
   /**
    * TwoFold render text string.
    */
   const allHelpers = Object.assign({}, functions, customFunctions)
-  const b = extractBlock(text)
+  const b = extractBlock(text, customConfig)
   if (!b || !b.name) {
     return text
   }
   const func = allHelpers[util.toCamelCase(b.name)]
-  const endText = renderText(b.textAfter, data, customFunctions)
+  const endText = renderText(b.textAfter, data, customFunctions, customConfig)
   let result
   try {
     result = func(b, data)
