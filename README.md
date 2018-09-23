@@ -41,6 +41,45 @@ This repository provides the core framework and some of the tools for doing that
 * well tested
 * fun fun fun
 
+### Install and use
+
+Simply install with npm:
+
+> $ npm install twofold --global
+
+The NPM package is called `twofold` and the CLI is called `2fold`.
+
+Create a file called for example `something.md` and write inside it:
+
+```md
+## Hello world!
+It's a nice <emoji-sun-moon /> outside and the time is <emoji-clock /> .
+Should I play with TwoFold some more ? <replace-yes-or-no></replace-yes-or-no> ugh...
+```
+
+Now, from command line, call TwoFold to convert your file:
+
+> $ 2fold something.md
+
+Open the file again and look at the changes :D You should see something like:
+
+```md
+## Hello world!
+It's a nice ☀️ outside and the time is 🕜 .
+Should I play with TwoFold some more ? <replace-yes-or-no>Yes</replace-yes-or-no> ugh...
+```
+
+If you're editing your file with Atom editor, or Sublime text, you'll see the changes instantly, because they automatically refresh the editor when the file changes.
+
+To quickly test some built-in templates, without writing a text file:
+
+> $ echo "yes or no ? <yes-or-no />" | 2fold<br />
+> $ echo "< left < or > right > ? <left-or-right />" | 2fold<br />
+> $ echo "random number: <random-int />" | 2fold<br />
+> $ echo "gimme a random game card ! <random-card />" | 2fold<br />
+> $ echo "sun / moon ? <emoji-sun-moon />" | 2fold<br />
+> $ echo "emoji time hehe <emoji-clock />" | 2fold
+
 ### Notes
 
 * TwoFold is designed for Node.js. It will work on browsers with small changes, but I think it wouldn't make much sense if you're not working with files.
