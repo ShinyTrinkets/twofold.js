@@ -34,7 +34,6 @@ function extractBlock (text, customConfig) {
   const lineRegex = new RegExp(
     `${openTag}` + // Open the tag
     `[ ]*` + // Zero or more spaces
-    `(?:${identifier}-)?` + // Optional identifier (replace, insert, append)
     `((?:\\w+-)*\\w+)` + // The name of the template function
     `[ ]+` + // One or more spaces
     `${lastStopper}` + // The stopper char

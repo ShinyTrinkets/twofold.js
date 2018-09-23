@@ -74,17 +74,17 @@ test('mixed tags', async t => {
   // Wrong tags, wrong helper names
   const txt =
     `qaz <mumu /> ...\n` +
-    `rand slice <replace-random-slice />\n` +
-    `xyz <replace-xyz />\n` +
+    `rand slice <random-slice />\n` +
+    `xyz <xyz />\n` +
     `rand int <replace-random-int>\n</replace-random-int>\n` +
-    `wrong <replace-wrong />`
+    `wrong <wrong />`
   const tmp = xfold.renderText(txt)
   t.not(txt, tmp)
   const lines = tmp.split(/[\n]/)
   // Not touched
   t.is(lines[0], 'qaz <mumu /> ...')
-  t.is(lines[2], 'xyz <replace-xyz />')
-  t.is(lines[4], 'wrong <replace-wrong />')
+  t.is(lines[2], 'xyz <xyz />')
+  t.is(lines[4], 'wrong <wrong />')
   // Replaced
   t.is(lines[1].indexOf('rand slice '), 0)
   t.is(lines[1].length, 'rand slice '.length + 1)
