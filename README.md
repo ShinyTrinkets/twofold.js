@@ -73,12 +73,12 @@ If you're editing your file with Atom editor, or Sublime text, you'll see the ch
 
 To quickly test some built-in templates, without writing a text file:
 
-> $ echo "yes or no ? <yes-or-no />" | 2fold<br />
-> $ echo "< left < or > right > ? <left-or-right />" | 2fold<br />
-> $ echo "random number: <random-int />" | 2fold<br />
-> $ echo "gimme a random game card ! <random-card />" | 2fold<br />
-> $ echo "sun / moon ? <emoji-sun-moon />" | 2fold<br />
-> $ echo "emoji time hehe <emoji-clock />" | 2fold
+> $ echo "yes or no ? &lt;yes-or-no />" | 2fold<br />
+> $ echo "< left < or > right > ? &lt;left-or-right />" | 2fold<br />
+> $ echo "random number: &lt;random-int />" | 2fold<br />
+> $ echo "gimme a random game card ! &lt;random-card />" | 2fold<br />
+> $ echo "sun / moon ? &lt;emoji-sun-moon />" | 2fold<br />
+> $ echo "emoji time hehe &lt;emoji-clock />" | 2fold
 
 ### Notes
 

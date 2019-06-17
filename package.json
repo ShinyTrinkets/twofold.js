@@ -15,18 +15,18 @@
   "contributors": [],
   "dependencies": {
     "minimist": "^1.2.0",
-    "minimist-options": "^3.0.2"
+    "minimist-options": "^4.0.1"
   },
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
     "ava": "*",
     "codecov": "3.x",
-    "nyc": "13.x",
-    "prettier": "1.14.2",
+    "nyc": "14.x",
+    "prettier": "1.18.2",
     "standard": "12.0.1"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "homepage": "https://github.com/ShinyTrinkets/twofold.js#readme",
   "keywords": [
