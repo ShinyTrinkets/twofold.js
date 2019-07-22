@@ -28,7 +28,7 @@ function blockMatchResult (m, text) {
 
 function extractBlock (text, customConfig) {
   /**
-   * Extract the first found template block.
+   * Extract the first template block.
    */
   const { identifier, openTag, closeTag, lastStopper, firstStopper } = Object.assign({}, config, customConfig)
   const lineRegex = new RegExp(
