@@ -3,39 +3,72 @@ import tf from '../src/parse2'
 //
 // Parse version 2
 //
-test('test1', async t => {
-    const txt = '?asd 123 qwerty!'
-    const expected = [{ rawText: '?asd 123 qwerty!' }]
-
-    const p = new tf.Parser()
-    p.push(txt)
-    const parsed = p.finish()
-    t.deepEqual(expected, parsed)
-})
-
-test('test2', async t => {
-    const txt = 'asd <'
-    const expected = [{ rawText: 'asd <' }]
-
-    const p = new tf.Parser()
-    p.push(txt)
-    const parsed = p.finish()
-    t.deepEqual(expected, parsed)
-})
-
-test('test3', async t => {
-    const txt = 'asd <tesTing> zxc'
-    const expected = [
-        { rawText: 'asd ' },
-        {
-            rawText: '<tesTing>',
-            name: 'tesTing'
-        },
-        { rawText: ' zxc' }
+// Tests: raw text and expected result after parsing
+const TESTS = [
+    [
+        '?asd 123 qwerty!',
+        [{ rawText: '?asd 123 qwerty!' }]
+    ],
+    [
+        'asd >>',
+        [{ rawText: 'asd >>' }]
+    ],
+    [
+        'asd <<',
+        [{ rawText: 'asd <<' }]
+    ],
+    [
+        '<x>',
+        [{ rawText: '<x>', name: 'x' }]
+    ],
+    [
+        'q <X> a',
+        [{ rawText: 'q <X> a' }]
+    ],
+    [
+        '<X>',
+        [{ rawText: '<X>' }]
+    ],
+    [
+        'asd <tesTing> zxc',
+        [
+            { rawText: 'asd ' },
+            {
+                rawText: '<tesTing>',
+                name: 'tesTing'
+            },
+            { rawText: ' zxc' }
+        ]
     ]
+]
 
-    const p = new tf.Parser()
-    p.push(txt)
-    const parsed = p.finish()
-    t.deepEqual(expected, parsed)
+test('testTests', async t => {
+    for (const [text, expected] of TESTS) {
+        const p = new tf.Parser()
+        for (const chunk of chunkText(text, 5)) {
+            p.push(chunk)
+        }
+        const parsed = p.finish()
+        // console.log('--- PARSED ::', parsed)
+
+        let parsedTxt = ''
+        for (const s of parsed) {
+            parsedTxt += s.rawText
+        }
+        t.true(parsedTxt === text)
+        t.deepEqual(expected, parsed)
+    }
 })
+
+function chunkText(txt, len) {
+    let t = '', c = []
+    for (let x of txt) {
+        t += x
+        if (t.length === len) {
+            c.push(t)
+            t = ''
+        }
+    }
+    if (t) { c.push(t) }
+    return c
+}

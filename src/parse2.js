@@ -42,6 +42,7 @@ class Parser {
     constructor() {
         // super()
         this.state = STATE_RAW_TEXT
+        this.priorState = STATE_RAW_TEXT
 
         // Already processed tags
         this._processed = []
@@ -63,69 +64,81 @@ class Parser {
         }
 
         for (const char of text) {
-            console.log('CHAR ::', char)
+            // console.log(`CHAR :: ${char} ;; STATE :: ${this.state}`)
 
             if (this.state === STATE_RAW_TEXT) {
                 // Is this the beggining of a new tag?
                 if (char === config.openTag[0]) {
-                    this._commitState()
+                    this._commitAndTransition(STATE_OPEN_TAG)
+                }
+                // Just append the text to pendingState
+                this.pendingState.rawText += char
+            }
+            else if (this.state === STATE_OPEN_TAG) {
+                // Is this letter the beggining of the tag name?
+                if (LOWER_LETTERS.test(char) && !this.pendingState.name) {
+                    this.pendingState.rawText += char
+                    this.pendingState.name = char
                     this._transition(STATE_TAG_NAME)
+                } else {
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
             else if (this.state === STATE_TAG_NAME) {
-                // Is this letter the beggining of the tag name?
-                if (LOWER_LETTERS.test(char) && !this.pendingState.name) {
-                    this.pendingState.name = char
-                }
                 // Is this letter the middle of a tag name?
-                else if (ALL_LETTERS.test(char) && this.pendingState.name) {
+                if (ALL_LETTERS.test(char) && this.pendingState.name) {
+                    this.pendingState.rawText += char
                     this.pendingState.name += char
                 } else {
-                    // delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitState()
-                    this._transition(STATE_RAW_TEXT)
-                    continue
+                    this._commitAndTransition(STATE_RAW_TEXT)
                 }
             }
             else if (this.state === STATE_INSIDE_TAG) {
                 // Is this the end of a tag?
                 if (char === config.closeTag[0]) {
                     this.pendingState.rawText += char
-                    this._commitState()
-                    this._transition(STATE_RAW_TEXT)
-                    continue
+                    this._commitAndTransition(STATE_RAW_TEXT)
                 }
             }
-
-            // Just append the text to pendingState
-            this.pendingState.rawText += char
         }
     }
 
     finish() {
         // move the state machine to drop all the pending states
         // and convert all remaining state text to raw-text
-        this._commitState()
-        this.state = STATE_FINAL
+        this._commitAndTransition(STATE_FINAL)
 
         // some other stuff ...
         return this._processed
+    }
+
+    _commitAndTransition(newState, toProcessed) {
+        // Commit old state in the processed list
+        // and transition to a new state.
+
+        // console.log('Commit STATE:', this.state, this.pendingState)
+        if (this.pendingState.rawText) {
+            if (toProcessed && this.state !== STATE_RAW_TEXT && newState === STATE_RAW_TEXT) {
+                let lastProcessed = { rawText: '' }
+                if (this._processed.length) {
+                    lastProcessed = this._processed.pop()
+                }
+                lastProcessed.rawText += this.pendingState.rawText
+                this.pendingState = { rawText: lastProcessed.rawText }
+            } else {
+                this._processed.push(this.pendingState)
+                this.pendingState = { rawText: '' }
+            }
+        }
+        this._transition(newState)
     }
 
     _transition(newState) {
         // console.log(`Transition FROM (${this.state}) TO (${newState})`)
         this.priorState = this.state
         this.state = newState
-    }
-
-    _commitState() {
-        // Commit old state in the processed list
-        // console.log('Commit State:', this.state, this.pendingState)
-        if (this.pendingState.rawText) {
-            this._processed.push(this.pendingState)
-        }
-        this.pendingState = { rawText: ''}
     }
 }
 
