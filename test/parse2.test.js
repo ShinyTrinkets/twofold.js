@@ -10,6 +10,10 @@ const TESTS = [
     ['asd <<', [{ rawText: 'asd <<' }]],
     ['<x>', [{ rawText: '<x>' }]],
     ['< x>', [{ rawText: '< x>' }]],
+    ['<x/ >', [{ rawText: '<x/ >' }]],
+    ['<x///', [{ rawText: '<x///' }]],
+    ['<x 1 />', [{ rawText: '<x 1 />' }]],
+    ['<A B />', [{ rawText: '<A B />' }]],
     [
         '<x/>',
         [{ rawText: '<x/>', name: 'x', single: true }],

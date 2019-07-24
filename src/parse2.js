@@ -104,7 +104,7 @@ class Parser {
                     this._commitAndTransition(STATE_RAW_TEXT)
                 } else {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
