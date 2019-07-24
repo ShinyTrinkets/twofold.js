@@ -39,9 +39,9 @@ const LETTERS_AND_NUMBERS = /[0-9a-zA-Z]/
 class Parser {
     /*
      * A parser is a state machine.
-     * Push text into the machine to make it move (aka process text).
      * The machine moves only when receiving text, or on finish.
-     * Call finish() to finish processing all the remaining text
+     * Push text into the machine to make it process the text.
+     * Press "finish" to finish processing all the remaining text
      * and return the processed tags.
      * The parser should never crash, even if the text is "bad".
      */
@@ -217,11 +217,9 @@ class Parser {
     }
 
     finish() {
-        // move the state machine to drop all the pending states
-        // and convert all remaining state text to raw-text
+        // Move the machine to drop all the pending states
+        // and convert any remaining state text to raw-text.
         this._commitAndTransition(STATE_FINAL)
-
-        // some other stuff ...
         return this._processed
     }
 
@@ -252,5 +250,25 @@ class Parser {
         this.state = newState
     }
 }
+
+// async function readFile(fname) {
+//     return new Promise(resolve => {
+//         const label = `read-${fname}`
+//         console.time(label)
+//         let fsize = 0
+//         const stream = fs.createReadStream(fname, { encoding: 'utf8' })
+//         stream.on('data', data => {
+//             // console.log(`Received ${data.length} bytes`)
+//             fsize += data.length
+//         })
+//         stream.on('close', () => {
+//             console.timeEnd(label)
+//             console.log(`Final size ${fsize} bytes`)
+//             resolve()
+//         })
+//     })
+// }
+// const fname = 'README.md'
+// readFile(fname).then(txt => console.log)
 
 module.exports = { Parser }
