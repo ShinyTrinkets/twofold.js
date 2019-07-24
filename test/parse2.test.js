@@ -42,12 +42,32 @@ const TESTS = [
         [{ rawText: '< x />', name: 'x' }]
     ],
     [
+        '<   x />',
+        [{ rawText: '<   x />', name: 'x' }]
+    ],
+    [
+        '< x   />',
+        [{ rawText: '< x   />', name: 'x' }]
+    ],
+    [
         'q <X/> a',
         [{ rawText: 'q <X/> a' }]
     ],
     [
         '<X/>',
         [{ rawText: '<X/>' }]
+    ],
+    [
+        '< X/>',
+        [{ rawText: '< X/>' }]
+    ],
+    [
+        '<X />',
+        [{ rawText: '<X />' }]
+    ],
+    [
+        '< X />',
+        [{ rawText: '< X />' }]
     ],
     [
         'blah <tesTing>!',
@@ -74,7 +94,17 @@ const TESTS = [
             },
             { rawText: ' blah blah' }
         ]
-    ]
+    ],
+    // [
+    //     '.. < tag x=1 />',
+    //     [
+    //         { rawText: '.. ' },
+    //         {
+    //             rawText: '< tag x=1 />',
+    //             name: 'tag'
+    //         }
+    //     ]
+    // ]
 ]
 
 test('test all tests', t => {

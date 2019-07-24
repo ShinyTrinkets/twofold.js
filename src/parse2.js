@@ -27,20 +27,23 @@ const ALL_LETTERS = /[a-zA-Z]/
  * This text:
  * blah <increment number=5>..</increment> blah
  * Should become:
- * [ {rawText: 'blah '}, {rawText: '<increment number=5>..</increment>'}, {rawText: ' blah'} ]
+ * [
+ *   {rawText: 'blah '},
+ *   {rawText: '<increment number=5>..</increment>', name: 'increment'},
+ *   {rawText: ' blah'}
+ * ]
  */
 
 class Parser {
     /*
      * A parser is a state machine.
-     * Push text into the machine to make it move, aka process text.
+     * Push text into the machine to make it move (aka process text).
      * The machine moves only when receiving text, or on finish.
      * Call finish() to finish processing all the remaining text
      * and return the processed tags.
      * The parser should never crash, even if the text is "bad".
      */
     constructor() {
-        // super()
         this.state = STATE_RAW_TEXT
         this.priorState = STATE_RAW_TEXT
 
@@ -49,6 +52,7 @@ class Parser {
 
         // Current State Data
         // * rawText - the text that represents the current state
+        // * name - the name of the tag
         this.pendingState = { rawText: '' }
     }
 
@@ -91,6 +95,17 @@ class Parser {
                 }
             }
 
+            else if (this.state === STATE_CLOSE_TAG) {
+                // Is this the end of a tag?
+                if (char === config.closeTag[0]) {
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT)
+                } else {
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT)
+                }
+            }
+
             else if (this.state === STATE_TAG_NAME) {
                 // Is this the middle of a tag name?
                 if (ALL_LETTERS.test(char) && this.pendingState.name.trim()) {
@@ -100,6 +115,7 @@ class Parser {
                 // Is this a space after the tag name?
                 else if (char === ' ' && this.pendingState.name.trim()) {
                     this.pendingState.rawText += char
+                    this._transition(STATE_INSIDE_TAG)
                 }
                 // Is this a tag stopper?
                 else if (char === config.lastStopper[0] && this.pendingState.name) {
@@ -112,24 +128,21 @@ class Parser {
                 }
             }
 
-            else if (this.state === STATE_CLOSE_TAG) {
-                // Is this the end of a tag?
-                if (char === config.closeTag[0]) {
+            else if (this.state === STATE_INSIDE_TAG) {
+                // Is this a tag stopper?
+                if (char === config.lastStopper[0] && this.pendingState.name) {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
+                    this._transition(STATE_CLOSE_TAG)
+                }
+                // Is this a space before the tag stopper?
+                else if (char === ' ' && this.pendingState.name.trim()) {
+                    this.pendingState.rawText += char
                 } else {
+                    delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
-
-            // else if (this.state === STATE_INSIDE_TAG) {
-            //     // Is this the end of a tag?
-            //     if (char === config.closeTag[0]) {
-            //         this.pendingState.rawText += char
-            //         this._commitAndTransition(STATE_RAW_TEXT)
-            //     }
-            // }
         }
     }
 
