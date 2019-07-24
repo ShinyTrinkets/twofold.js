@@ -5,81 +5,64 @@ import tf from '../src/parse2'
 //
 // Tests: raw text and expected result after parsing
 const TESTS = [
-    [
-        '?asd 123 qwerty!',
-        [{ rawText: '?asd 123 qwerty!' }]
-    ],
-    [
-        'asd >>',
-        [{ rawText: 'asd >>' }]
-    ],
-    [
-        'asd <<',
-        [{ rawText: 'asd <<' }]
-    ],
-    [
-        '<x>',
-        [{ rawText: '<x>' }]
-    ],
-    [
-        '< x>',
-        [{ rawText: '< x>' }]
-    ],
+    ['?asd 123 qwerty!', [{ rawText: '?asd 123 qwerty!' }]],
+    ['asd >>', [{ rawText: 'asd >>' }]],
+    ['asd <<', [{ rawText: 'asd <<' }]],
+    ['<x>', [{ rawText: '<x>' }]],
+    ['< x>', [{ rawText: '< x>' }]],
     [
         '<x/>',
-        [{ rawText: '<x/>', name: 'x' }]
+        [{ rawText: '<x/>', name: 'x', single: true }],
     ],
     [
         '< x/>',
-        [{ rawText: '< x/>', name: 'x' }]
+        [{ rawText: '< x/>', name: 'x', single: true }],
     ],
     [
         '<x />',
-        [{ rawText: '<x />', name: 'x' }]
+        [{ rawText: '<x />', name: 'x', single: true }],
     ],
     [
         '< x />',
-        [{ rawText: '< x />', name: 'x' }]
+        [{ rawText: '< x />', name: 'x', single: true }],
     ],
     [
         '<   x />',
-        [{ rawText: '<   x />', name: 'x' }]
+        [{ rawText: '<   x />', name: 'x', single: true }],
     ],
     [
         '< x   />',
-        [{ rawText: '< x   />', name: 'x' }]
+        [{ rawText: '< x   />', name: 'x', single: true }],
     ],
     [
         'q <X/> a',
-        [{ rawText: 'q <X/> a' }]
+        [{ rawText: 'q <X/> a' }] // this is raw-text
     ],
     [
         '<X/>',
-        [{ rawText: '<X/>' }]
+        [{ rawText: '<X/>' }] // this is raw-text
     ],
     [
         '< X/>',
-        [{ rawText: '< X/>' }]
+        [{ rawText: '< X/>' }] // this is raw-text
     ],
     [
         '<X />',
-        [{ rawText: '<X />' }]
+        [{ rawText: '<X />' }] // this is raw-text
     ],
     [
         '< X />',
-        [{ rawText: '< X />' }]
+        [{ rawText: '< X />' }] // this is raw-text
     ],
-    [
-        'blah <tesTing>!',
-        [{ rawText: 'blah <tesTing>!' }]
-    ],
+    ['blah <tesTing>!', [{ rawText: 'blah <tesTing>!' }]],
     [
         'asd <tesTing/> zxc',
         [
             { rawText: 'asd ' },
             {
+                name: 'tesTing',
                 rawText: '<tesTing/>',
-                name: 'tesTing'
+                single: true,
             },
             { rawText: ' zxc' }
         ]
@@ -89,22 +72,53 @@ const TESTS = [
         [
             { rawText: '. ' },
             {
+                name: 'tag',
                 rawText: '< tag/>',
-                name: 'tag'
+                single: true,
             },
             { rawText: ' blah blah' }
         ]
     ],
-    // [
-    //     '.. < tag x=1 />',
-    //     [
-    //         { rawText: '.. ' },
-    //         {
-    //             rawText: '< tag x=1 />',
-    //             name: 'tag'
-    //         }
-    //     ]
-    // ]
+    [
+        '?<increment nr=99/>!',
+        [
+            { rawText: '?' },
+            {
+                name: 'increment',
+                param: 'nr=99',
+                rawText: '<increment nr=99/>',
+                single: true,
+            },
+            { rawText: '!' }
+        ]
+    ],
+    [
+        '< dayOrNight date="2019-07" />',
+        [
+            {
+                name: 'dayOrNight',
+                param: 'date="2019-07"',
+                rawText: '< dayOrNight date="2019-07" />',
+                single: true,
+            }
+        ]
+    ],
+    [
+        '<tag a/>',
+        [{ rawText: '<tag a/>' }] // this is raw-text
+    ],
+    [
+        '<tag a />',
+        [{ rawText: '<tag a />' }] // this is raw-text
+    ],
+    [
+        '<tag x=/>',
+        [{ rawText: '<tag x=/>' }] // this is raw-text
+    ],
+    [
+        '<tag x= />',
+        [{ rawText: '<tag x= />' }] // this is raw-text
+    ]
 ]
 
 test('test all tests', t => {
@@ -136,7 +150,8 @@ test('crash test', t => {
 })
 
 function chunkText(txt, len) {
-    let t = '', c = []
+    let t = ''
+    let c = []
     for (let x of txt) {
         t += x
         if (t.length === len) {
@@ -144,6 +159,8 @@ function chunkText(txt, len) {
             t = ''
         }
     }
-    if (t) { c.push(t) }
+    if (t) {
+        c.push(t)
+    }
     return c
 }

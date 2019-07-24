@@ -7,11 +7,13 @@ const STATE_CLOSE_TAG = 's_close_tag'
 const STATE_TAG_NAME = 's_state_tag_name'
 const STATE_INSIDE_TAG = 's_state_inside_tag'
 const STATE_PARAM = 's_state_param'
+const STATE_EQUAL = 's_state_equal'
 const STATE_VALUE = 's_state_value'
 const STATE_FINAL = 's_final'
 
 const LOWER_LETTERS = /[a-z]/
 const ALL_LETTERS = /[a-zA-Z]/
+const LETTERS_AND_NUMBERS = /[0-9a-zA-Z]/
 
 /*
  * States for text:
@@ -19,9 +21,9 @@ const ALL_LETTERS = /[a-zA-Z]/
  * .....| STATE_OPEN_TAG
  * ......| STATE_TAG_NAME
  * ...............| STATE_INSIDE_TAG
- * ................| STATE_PARAM_NAME
- * .....................| STATE_AFTER_PARAM_NAME
- * .......................| STATE_VALUE_NAME
+ * ................| STATE_PARAM
+ * .....................| STATE_EQUAL
+ * .......................| STATE_VALUE
  * ........................| STATE_CLOSE_TAG
 
  * This text:
@@ -29,7 +31,7 @@ const ALL_LETTERS = /[a-zA-Z]/
  * Should become:
  * [
  *   {rawText: 'blah '},
- *   {rawText: '<increment number=5>..</increment>', name: 'increment'},
+ *   {rawText: '<increment number=5>..</increment>', name: 'increment', param: 'number=5'},
  *   {rawText: ' blah'}
  * ]
  */
@@ -120,6 +122,7 @@ class Parser {
                 // Is this a tag stopper?
                 else if (char === config.lastStopper[0] && this.pendingState.name) {
                     this.pendingState.rawText += char
+                    this.pendingState.single = true
                     this._transition(STATE_CLOSE_TAG)
                 } else {
                     delete this.pendingState.name
@@ -131,14 +134,81 @@ class Parser {
             else if (this.state === STATE_INSIDE_TAG) {
                 // Is this a tag stopper?
                 if (char === config.lastStopper[0] && this.pendingState.name) {
+                    // At this point, this tag is self-closing
                     this.pendingState.rawText += char
+                    this.pendingState.single = true
                     this._transition(STATE_CLOSE_TAG)
                 }
-                // Is this a space before the tag stopper?
+                // Is this a space inside the tag?
                 else if (char === ' ' && this.pendingState.name.trim()) {
                     this.pendingState.rawText += char
+                }
+                // Is this the beggining of a param name?
+                else if (LOWER_LETTERS.test(char)) {
+                    this.pendingState.rawText += char
+                    this.pendingState.param = char
+                    this._transition(STATE_PARAM)
                 } else {
                     delete this.pendingState.name
+                    delete this.pendingState.param
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                }
+            }
+
+            else if (this.state === STATE_PARAM) {
+                // Is this the middle of a param name?
+                if (ALL_LETTERS.test(char) && this.pendingState.param && this.pendingState.name) {
+                    this.pendingState.rawText += char
+                    this.pendingState.param += char
+                }
+                // Is this the equal between key and value?
+                else if (char === '=' && this.pendingState.param && this.pendingState.name) {
+                    this.pendingState.rawText += char
+                    this.pendingState.param += char
+                    this._transition(STATE_EQUAL)
+                } else {
+                    delete this.pendingState.name
+                    delete this.pendingState.param
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                }
+            }
+
+            else if (this.state === STATE_EQUAL) {
+                // Is this the start of a value after equal?
+                if (char !== ' ' && char !== config.lastStopper[0] && this.pendingState.param) {
+                    this.pendingState.rawText += char
+                    this.pendingState.param += char
+                    this._transition(STATE_VALUE)
+                } else {
+                    delete this.pendingState.name
+                    delete this.pendingState.param
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                }
+            }
+
+            else if (this.state === STATE_VALUE) {
+                // Is this the middle of a value after equal?
+                if (char !== ' ' && char !== config.lastStopper[0] && this.pendingState.param) {
+                    this.pendingState.rawText += char
+                    this.pendingState.param += char
+                }
+                // Is this a space inside the tag?
+                else if (char === ' ' && this.pendingState.param) {
+                    this.pendingState.rawText += char
+                    this._transition(STATE_INSIDE_TAG)
+                }
+                // Is this a tag stopper?
+                else if (char === config.lastStopper[0] && this.pendingState.name) {
+                    // At this point, this tag is self-closing
+                    this.pendingState.rawText += char
+                    this.pendingState.single = true
+                    this._transition(STATE_CLOSE_TAG)
+                } else {
+                    delete this.pendingState.name
+                    delete this.pendingState.param
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -155,13 +225,13 @@ class Parser {
         return this._processed
     }
 
-    _commitAndTransition(newState, toProcessed) {
+    _commitAndTransition(newState, joinState) {
         // Commit old state in the processed list
         // and transition to a new state.
 
         // console.log('Commit STATE:', this.state, this.pendingState)
         if (this.pendingState.rawText) {
-            if (toProcessed && this.state !== STATE_RAW_TEXT && newState === STATE_RAW_TEXT) {
+            if (joinState && this.state !== STATE_RAW_TEXT && newState === STATE_RAW_TEXT) {
                 let lastProcessed = { rawText: '' }
                 if (this._processed.length) {
                     lastProcessed = this._processed.pop()
