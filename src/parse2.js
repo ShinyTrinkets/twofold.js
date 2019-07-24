@@ -74,14 +74,15 @@ class Parser {
                 // Just append the text to pendingState
                 this.pendingState.rawText += char
             }
+
             else if (this.state === STATE_OPEN_TAG) {
-                // Is this letter the beggining of the tag name?
+                // Is this the beggining of a tag name?
                 if (LOWER_LETTERS.test(char)) {
                     this.pendingState.rawText += char
                     this.pendingState.name = char
                     this._transition(STATE_TAG_NAME)
                 }
-                // Is this letter a space before the tag name?
+                // Is this a space before the tag name?
                 else if (char === ' ' && !this.pendingState.name) {
                     this.pendingState.rawText += char
                 } else {
@@ -89,23 +90,46 @@ class Parser {
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
+
             else if (this.state === STATE_TAG_NAME) {
-                // Is this letter the middle of a tag name?
-                if (ALL_LETTERS.test(char) && this.pendingState.name) {
+                // Is this the middle of a tag name?
+                if (ALL_LETTERS.test(char) && this.pendingState.name.trim()) {
                     this.pendingState.rawText += char
                     this.pendingState.name += char
+                }
+                // Is this a space after the tag name?
+                else if (char === ' ' && this.pendingState.name.trim()) {
+                    this.pendingState.rawText += char
+                }
+                // Is this a tag stopper?
+                else if (char === config.lastStopper[0] && this.pendingState.name) {
+                    this.pendingState.rawText += char
+                    this._transition(STATE_CLOSE_TAG)
+                } else {
+                    delete this.pendingState.name
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                }
+            }
+
+            else if (this.state === STATE_CLOSE_TAG) {
+                // Is this the end of a tag?
+                if (char === config.closeTag[0]) {
+                    this.pendingState.rawText += char
+                    this._commitAndTransition(STATE_RAW_TEXT)
                 } else {
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT)
                 }
             }
-            else if (this.state === STATE_INSIDE_TAG) {
-                // Is this the end of a tag?
-                if (char === config.closeTag[0]) {
-                    this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
-                }
-            }
+
+            // else if (this.state === STATE_INSIDE_TAG) {
+            //     // Is this the end of a tag?
+            //     if (char === config.closeTag[0]) {
+            //         this.pendingState.rawText += char
+            //         this._commitAndTransition(STATE_RAW_TEXT)
+            //     }
+            // }
         }
     }
 

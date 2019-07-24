@@ -19,37 +19,57 @@ const TESTS = [
     ],
     [
         '<x>',
-        [{ rawText: '<x>', name: 'x' }]
+        [{ rawText: '<x>' }]
     ],
     [
         '< x>',
-        [{ rawText: '< x>', name: 'x' }]
+        [{ rawText: '< x>' }]
     ],
     [
-        'q <X> a',
-        [{ rawText: 'q <X> a' }]
+        '<x/>',
+        [{ rawText: '<x/>', name: 'x' }]
     ],
     [
-        '<X>',
-        [{ rawText: '<X>' }]
+        '< x/>',
+        [{ rawText: '< x/>', name: 'x' }]
     ],
     [
-        'asd <tesTing> zxc',
+        '<x />',
+        [{ rawText: '<x />', name: 'x' }]
+    ],
+    [
+        '< x />',
+        [{ rawText: '< x />', name: 'x' }]
+    ],
+    [
+        'q <X/> a',
+        [{ rawText: 'q <X/> a' }]
+    ],
+    [
+        '<X/>',
+        [{ rawText: '<X/>' }]
+    ],
+    [
+        'blah <tesTing>!',
+        [{ rawText: 'blah <tesTing>!' }]
+    ],
+    [
+        'asd <tesTing/> zxc',
         [
             { rawText: 'asd ' },
             {
-                rawText: '<tesTing>',
+                rawText: '<tesTing/>',
                 name: 'tesTing'
             },
             { rawText: ' zxc' }
         ]
     ],
     [
-        '. < tag> blah blah',
+        '. < tag/> blah blah',
         [
             { rawText: '. ' },
             {
-                rawText: '< tag>',
+                rawText: '< tag/>',
                 name: 'tag'
             },
             { rawText: ' blah blah' }
@@ -64,7 +84,7 @@ test('test all tests', t => {
             p.push(chunk)
         }
         const parsed = p.finish()
-        console.log('--- PARSED ::', parsed)
+        // console.log('--- PARSED ::', parsed, '\n')
 
         let parsedTxt = ''
         for (const s of parsed) {
