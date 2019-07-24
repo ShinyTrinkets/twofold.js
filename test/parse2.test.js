@@ -22,6 +22,10 @@ const TESTS = [
         [{ rawText: '<x>', name: 'x' }]
     ],
     [
+        '< x>',
+        [{ rawText: '< x>', name: 'x' }]
+    ],
+    [
         'q <X> a',
         [{ rawText: 'q <X> a' }]
     ],
@@ -39,25 +43,46 @@ const TESTS = [
             },
             { rawText: ' zxc' }
         ]
+    ],
+    [
+        '. < tag> blah blah',
+        [
+            { rawText: '. ' },
+            {
+                rawText: '< tag>',
+                name: 'tag'
+            },
+            { rawText: ' blah blah' }
+        ]
     ]
 ]
 
-test('testTests', async t => {
+test('test all tests', t => {
     for (const [text, expected] of TESTS) {
         const p = new tf.Parser()
         for (const chunk of chunkText(text, 5)) {
             p.push(chunk)
         }
         const parsed = p.finish()
-        // console.log('--- PARSED ::', parsed)
+        console.log('--- PARSED ::', parsed)
 
         let parsedTxt = ''
         for (const s of parsed) {
             parsedTxt += s.rawText
         }
-        t.true(parsedTxt === text)
+        t.is(parsedTxt, text)
         t.deepEqual(expected, parsed)
     }
+})
+
+test('crash test', t => {
+    const p = new tf.Parser()
+    p.push('')
+    const parsed = p.finish()
+    t.deepEqual([], parsed)
+    t.throws(() => {
+        p.push('')
+    }, Error)
 })
 
 function chunkText(txt, len) {

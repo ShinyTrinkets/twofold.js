@@ -60,7 +60,7 @@ class Parser {
         if (this.state === STATE_FINAL) {
             throw new Error('The parsing is finished!')
         } else if (!text) {
-            throw new Error('No text to process!')
+            return
         }
 
         for (const char of text) {
@@ -76,10 +76,14 @@ class Parser {
             }
             else if (this.state === STATE_OPEN_TAG) {
                 // Is this letter the beggining of the tag name?
-                if (LOWER_LETTERS.test(char) && !this.pendingState.name) {
+                if (LOWER_LETTERS.test(char)) {
                     this.pendingState.rawText += char
                     this.pendingState.name = char
                     this._transition(STATE_TAG_NAME)
+                }
+                // Is this letter a space before the tag name?
+                else if (char === ' ' && !this.pendingState.name) {
+                    this.pendingState.rawText += char
                 } else {
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
