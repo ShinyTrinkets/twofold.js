@@ -213,6 +213,10 @@ const TESTS = [
         '< tag>0</ tag',
         [{ rawText: '< tag>0</ tag' }]
     ],
+    [
+        '< tag><<</ tag <<',
+        [{ rawText: '< tag><<</ tag <<' }]
+    ],
 ]
 
 test('test all tests', t => {
@@ -240,6 +244,9 @@ test('crash test', t => {
     t.deepEqual([], parsed)
     t.throws(() => {
         p.push('')
+    }, Error)
+    t.throws(() => {
+        p.finish()
     }, Error)
 })
 
