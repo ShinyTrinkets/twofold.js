@@ -14,9 +14,10 @@ const TESTS = [
     ['<x///', [{ rawText: '<x///' }]],
     ['<x 1 />', [{ rawText: '<x 1 />' }]],
     ['<A B />', [{ rawText: '<A B />' }]],
+    ['<1tag />', [{ rawText: '<1tag />' }]],
     [
-        '<x/>',
-        [{ rawText: '<x/>', name: 'x', single: true }],
+        '<xY1/>',
+        [{ rawText: '<xY1/>', name: 'xY1', single: true }],
     ],
     [
         '< x/>',
@@ -58,7 +59,10 @@ const TESTS = [
         '< X />',
         [{ rawText: '< X />' }] // this is raw-text
     ],
-    ['blah <tesTing>!', [{ rawText: 'blah <tesTing>!' }]],
+    [
+        'blah <tesTing>!', 
+        [{ rawText: 'blah <tesTing>!' }] // this is raw-text
+    ],
     [
         'asd <tesTing/> zxc',
         [
@@ -81,6 +85,21 @@ const TESTS = [
                 single: true,
             },
             { rawText: ' blah blah' }
+        ]
+    ],
+    [
+        '< temp_f />< temp_c />',
+        [
+            {
+                name: 'temp_f',
+                rawText: '< temp_f />',
+                single: true,
+            },
+            {
+                name: 'temp_c',
+                rawText: '< temp_c />',
+                single: true,
+            }
         ]
     ],
     [

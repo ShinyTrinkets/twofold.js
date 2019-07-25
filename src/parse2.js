@@ -13,7 +13,7 @@ const STATE_FINAL = 's_final'
 
 const LOWER_LETTERS = /[a-z]/
 const ALL_LETTERS = /[a-zA-Z]/
-const LETTERS_AND_NUMBERS = /[0-9a-zA-Z]/
+const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
 
 /*
  * States for text:
@@ -55,6 +55,7 @@ class Parser {
         // Current State Data
         // * rawText - the text that represents the current state
         // * name - the name of the tag
+        // * name2 - the second of the tag
         this.pendingState = { rawText: '' }
     }
 
@@ -110,7 +111,7 @@ class Parser {
 
             else if (this.state === STATE_TAG_NAME) {
                 // Is this the middle of a tag name?
-                if (ALL_LETTERS.test(char) && this.pendingState.name.trim()) {
+                if (ALLOWED_ALPHA.test(char) && this.pendingState.name.trim()) {
                     this.pendingState.rawText += char
                     this.pendingState.name += char
                 }
@@ -120,10 +121,17 @@ class Parser {
                     this._transition(STATE_INSIDE_TAG)
                 }
                 // Is this a tag stopper?
+                // In this case, it's a single tag
                 else if (char === config.lastStopper[0] && this.pendingState.name) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     this._transition(STATE_CLOSE_TAG)
+                // }
+                // // Is this the end of the First tag from a Double tag?
+                // else if (char === config.closeTag[0]) {
+                //     this.pendingState.rawText += char
+                //     this.pendingState.single = false
+                //     this._commitAndTransition(STATE_RAW_TEXT)
                 } else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
@@ -133,8 +141,8 @@ class Parser {
 
             else if (this.state === STATE_INSIDE_TAG) {
                 // Is this a tag stopper?
+                // In this case, it's a single tag
                 if (char === config.lastStopper[0] && this.pendingState.name) {
-                    // At this point, this tag is self-closing
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     this._transition(STATE_CLOSE_TAG)
@@ -201,8 +209,8 @@ class Parser {
                     this._transition(STATE_INSIDE_TAG)
                 }
                 // Is this a tag stopper?
+                // In this case, it's a single tag
                 else if (char === config.lastStopper[0] && this.pendingState.name) {
-                    // At this point, this tag is self-closing
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     this._transition(STATE_CLOSE_TAG)
