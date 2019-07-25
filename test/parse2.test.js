@@ -181,8 +181,37 @@ const TESTS = [
         ]
     ],
     [
-        '<temp_f>0</temp_x>',
-        [{ rawText: '<temp_f>0</temp_x>' }]
+        '<increment nr=1>></  increment  >',
+        [
+            {
+                name: 'increment',
+                name2: 'increment',
+                param: 'nr=1',
+                textInside: '>',
+                rawText: '<increment nr=1>></  increment  >',
+                single: false,
+            }
+        ]
+    ],
+    [
+        ' <temp_f>0</temp_x>',
+        [{ rawText: ' <temp_f>0</temp_x>' }]
+    ],
+    [
+        ' < tag>0</ tag#>',
+        [{ rawText: ' < tag>0</ tag#>' }]
+    ],
+    [
+        ' < tag#>0</ tag#>',
+        [{ rawText: ' < tag#>0</ tag#>' }]
+    ],
+    [
+        '< tag>0</ t!',
+        [{ rawText: '< tag>0</ t!' }]
+    ],
+    [
+        '< tag>0</ tag',
+        [{ rawText: '< tag>0</ tag' }]
     ],
 ]
 

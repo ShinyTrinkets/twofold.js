@@ -344,7 +344,7 @@ class Parser {
             }
         } else if (this.pendingState.rawText) {
             // console.log('Create FINAL:', this.pendingState)
-            if (this._hasValidDoubleTag() || this._hasValidSingleTag()) {
+            if (this.state === STATE_RAW_TEXT && (this._hasValidDoubleTag() || this._hasValidSingleTag())) {
                 this._processed.push(this.pendingState)
             } else {
                 this._processed.push({ rawText: this.pendingState.rawText })
