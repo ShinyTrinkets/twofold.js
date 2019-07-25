@@ -85,6 +85,7 @@ class Parser {
                 }
                 // Just append the text to pendingState
                 this.pendingState.rawText += char
+                continue
             }
 
             else if (this.state === STATE_OPEN_TAG) {
@@ -156,6 +157,7 @@ class Parser {
                 }
                 // Abandon current state, back to raw text
                 else {
+                    delete this.pendingState.name
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -181,13 +183,14 @@ class Parser {
                     this.pendingState.rawText += char
                     this._transition(STATE_INSIDE_TAG2)
                 }
-                // Is this the end of the First tag from a Double tag?
-                else if (char === config.closeTag[0]) {
+                // Is this the end of the Second tag from a Double tag?
+                else if (char === config.closeTag[0] && this._hasValidDoubleTag()) {
                     this.pendingState.rawText += char
-                    this._transition(STATE_TXT_INSIDE)
+                    this._commitAndTransition(STATE_RAW_TEXT)
                 }
                 // Abandon current state, back to raw text
                 else {
+                    delete this.pendingState.name
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -219,8 +222,6 @@ class Parser {
                     this._transition(STATE_PARAM)
                 } else {
                     delete this.pendingState.name
-                    delete this.pendingState.param
-                    delete this.pendingState.single
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -228,7 +229,7 @@ class Parser {
 
             else if (this.state === STATE_INSIDE_TAG2) {
                 // Successful parse of a double tag!!
-                if (char === config.closeTag[0]) {
+                if (char === config.closeTag[0] && this._hasValidDoubleTag()) {
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT)
                 }
@@ -238,8 +239,6 @@ class Parser {
                 // Abandon current state, back to raw text
                 else {
                     delete this.pendingState.name
-                    delete this.pendingState.name2
-                    delete this.pendingState.single
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -258,7 +257,6 @@ class Parser {
                     this._transition(STATE_EQUAL)
                 } else {
                     delete this.pendingState.name
-                    delete this.pendingState.param
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -272,7 +270,6 @@ class Parser {
                     this._transition(STATE_VALUE)
                 } else {
                     delete this.pendingState.name
-                    delete this.pendingState.param
                     this.pendingState.rawText += char
                     this._commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -365,7 +362,8 @@ class Parser {
 
     _hasValidDoubleTag() {
         const s = this.pendingState
-        return s.rawText && s.single === false && s.name && s.name2 && typeof (s.textInside) === 'string'
+        return s.rawText && s.single === false && s.name && s.name2
+            && s.name === s.name2 && typeof (s.textInside) === 'string'
     }
 
     _commitAndTransition(newState, joinState) {

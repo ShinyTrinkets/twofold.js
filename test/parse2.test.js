@@ -60,7 +60,7 @@ const TESTS = [
         [{ rawText: '< X />' }] // this is raw-text
     ],
     [
-        'blah <tesTing>!!', 
+        'blah <tesTing>!!',
         [{ rawText: 'blah <tesTing>!!' }] // this is raw-text
     ],
     [
@@ -179,6 +179,10 @@ const TESTS = [
                 single: false,
             }
         ]
+    ],
+    [
+        '<temp_f>0</temp_x>',
+        [{ rawText: '<temp_f>0</temp_x>' }]
     ],
 ]
 
