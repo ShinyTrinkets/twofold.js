@@ -60,8 +60,8 @@ const TESTS = [
         [{ rawText: '< X />' }] // this is raw-text
     ],
     [
-        'blah <tesTing>!', 
-        [{ rawText: 'blah <tesTing>!' }] // this is raw-text
+        'blah <tesTing>!!', 
+        [{ rawText: 'blah <tesTing>!!' }] // this is raw-text
     ],
     [
         'asd <tesTing/> zxc',
@@ -141,7 +141,45 @@ const TESTS = [
     [
         '<tag x= />',
         [{ rawText: '<tag x= />' }] // this is raw-text
-    ]
+    ],
+    [
+        '<temp_f>0</temp_f>',
+        [
+            {
+                name: 'temp_f',
+                name2: 'temp_f',
+                textInside: '0',
+                rawText: '<temp_f>0</temp_f>',
+                single: false,
+            }
+        ]
+    ],
+    [
+        '<dayOrNight date="2019-07">...</dayOrNight>',
+        [
+            {
+                name: 'dayOrNight',
+                name2: 'dayOrNight',
+                param: 'date="2019-07"',
+                textInside: '...',
+                rawText: '<dayOrNight date="2019-07">...</dayOrNight>',
+                single: false,
+            }
+        ]
+    ],
+    [
+        '< increment nr=5 ></ increment >',
+        [
+            {
+                name: 'increment',
+                name2: 'increment',
+                param: 'nr=5',
+                textInside: '',
+                rawText: '< increment nr=5 ></ increment >',
+                single: false,
+            }
+        ]
+    ],
 ]
 
 test('test all tests', t => {
