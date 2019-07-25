@@ -74,6 +74,35 @@ class Parser {
         } else if (!text) {
             return
         }
+        const self = this
+
+        function transition(newState) {
+            // console.log(`Transition FROM (${self.state}) TO (${newState})`)
+            self.priorState = self.state
+            self.state = newState
+        }
+
+        function commitAndTransition(newState, joinState) {
+            /*
+             * Commit old state in the processed list
+             * and transition to a new state.
+             */
+            // console.log('Commit STATE:', self.state, self.pendingState)
+            if (self.pendingState.rawText) {
+                if (joinState && self.state !== STATE_RAW_TEXT && newState === STATE_RAW_TEXT) {
+                    let lastProcessed = { rawText: '' }
+                    if (self._processed.length) {
+                        lastProcessed = self._processed.pop()
+                    }
+                    lastProcessed.rawText += self.pendingState.rawText
+                    self.pendingState = { rawText: lastProcessed.rawText }
+                } else {
+                    self._processed.push(self.pendingState)
+                    self.pendingState = { rawText: '' }
+                }
+            }
+            transition(newState)
+        }
 
         for (const char of text) {
             // console.log(`CHAR :: ${char} ;; STATE :: ${this.state}`)
@@ -81,7 +110,7 @@ class Parser {
             if (this.state === STATE_RAW_TEXT) {
                 // Is this the beginning of a new tag?
                 if (char === config.openTag[0]) {
-                    this._commitAndTransition(STATE_OPEN_TAG)
+                    commitAndTransition(STATE_OPEN_TAG)
                 }
                 // Just append the text to pendingState
                 this.pendingState.rawText += char
@@ -93,14 +122,14 @@ class Parser {
                 if (LOWER_LETTERS.test(char)) {
                     this.pendingState.rawText += char
                     this.pendingState.name = char
-                    this._transition(STATE_TAG_NAME)
+                    transition(STATE_TAG_NAME)
                 }
                 // Is this a space before the tag name?
                 else if (char === ' ' && !this.pendingState.name) {
                     this.pendingState.rawText += char
                 } else {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -109,10 +138,10 @@ class Parser {
                 // Is this the end of a tag?
                 if (char === config.closeTag[0]) {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
+                    commitAndTransition(STATE_RAW_TEXT)
                 } else {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -121,12 +150,12 @@ class Parser {
                 // Is this the beginning of the closing tag?
                 if (char === config.lastStopper[0]) {
                     this.pendingState.rawText += char
-                    this._transition(STATE_TAG_NAME2)
+                    transition(STATE_TAG_NAME2)
                 }
                 // DON'T ALLOW CHILD TAGS YET
                 else {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -139,27 +168,27 @@ class Parser {
                 // Is this a space after the tag name?
                 else if (char === ' ') {
                     this.pendingState.rawText += char
-                    this._transition(STATE_INSIDE_TAG)
+                    transition(STATE_INSIDE_TAG)
                 }
                 // Is this a tag stopper?
                 // In this case, it's a single tag
                 else if (char === config.lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
-                    this._transition(STATE_CLOSE_TAG)
+                    transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
                 else if (char === config.closeTag[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = false
                     this.pendingState.textInside = ''
-                    this._transition(STATE_TXT_INSIDE)
+                    transition(STATE_TXT_INSIDE)
                 }
                 // Abandon current state, back to raw text
                 else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -181,18 +210,18 @@ class Parser {
                 // Is this a space after the tag name?
                 else if (char === ' ' && this.pendingState.name2) {
                     this.pendingState.rawText += char
-                    this._transition(STATE_INSIDE_TAG2)
+                    transition(STATE_INSIDE_TAG2)
                 }
                 // Is this the end of the Second tag from a Double tag?
                 else if (char === config.closeTag[0] && this._hasValidDoubleTag()) {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
+                    commitAndTransition(STATE_RAW_TEXT)
                 }
                 // Abandon current state, back to raw text
                 else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -202,7 +231,7 @@ class Parser {
                 if (char === config.lastStopper[0] && this.pendingState.name) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
-                    this._transition(STATE_CLOSE_TAG)
+                    transition(STATE_CLOSE_TAG)
                 }
                 // Is this a space inside the tag?
                 else if (char === ' ' && this.pendingState.name.trim()) {
@@ -213,17 +242,17 @@ class Parser {
                     this.pendingState.rawText += char
                     this.pendingState.single = false
                     this.pendingState.textInside = ''
-                    this._transition(STATE_TXT_INSIDE)
+                    transition(STATE_TXT_INSIDE)
                 }
                 // Is this the beginning of a param name?
                 else if (LOWER_LETTERS.test(char)) {
                     this.pendingState.rawText += char
                     this.pendingState.param = char
-                    this._transition(STATE_PARAM)
+                    transition(STATE_PARAM)
                 } else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -231,7 +260,7 @@ class Parser {
                 // Successful parse of a double tag!!
                 if (char === config.closeTag[0] && this._hasValidDoubleTag()) {
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT)
+                    commitAndTransition(STATE_RAW_TEXT)
                 }
                 else if (char === ' ') {
                     this.pendingState.rawText += char
@@ -240,7 +269,7 @@ class Parser {
                 else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -254,11 +283,11 @@ class Parser {
                 else if (char === '=' && this.pendingState.param && this.pendingState.name) {
                     this.pendingState.rawText += char
                     this.pendingState.param += char
-                    this._transition(STATE_EQUAL)
+                    transition(STATE_EQUAL)
                 } else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -267,11 +296,11 @@ class Parser {
                 if (char !== ' ' && char !== config.lastStopper[0] && this.pendingState.param) {
                     this.pendingState.rawText += char
                     this.pendingState.param += char
-                    this._transition(STATE_VALUE)
+                    transition(STATE_VALUE)
                 } else {
                     delete this.pendingState.name
                     this.pendingState.rawText += char
-                    this._commitAndTransition(STATE_RAW_TEXT, true)
+                    commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
@@ -282,19 +311,19 @@ class Parser {
                 if (char === config.lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
-                    this._transition(STATE_CLOSE_TAG)
+                    transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
                 else if (char === config.closeTag[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = false
                     this.pendingState.textInside = ''
-                    this._transition(STATE_TXT_INSIDE)
+                    transition(STATE_TXT_INSIDE)
                 }
                 // Is this a space inside the tag?
                 else if (char === ' ') {
                     this.pendingState.rawText += char
-                    this._transition(STATE_INSIDE_TAG)
+                    transition(STATE_INSIDE_TAG)
                 }
                 // Is this the middle of a value after equal?
                 else {
@@ -309,7 +338,7 @@ class Parser {
                 // Or the beginning of a child tag?
                 if (char === config.openTag[0]) {
                     this.pendingState.rawText += char
-                    this._transition(STATE_CLOSE_TAG2)
+                    transition(STATE_CLOSE_TAG2)
                 } else {
                     this.pendingState.rawText += char
                     this.pendingState.textInside += char
@@ -320,7 +349,7 @@ class Parser {
             else {
                 console.error('Parser ERROR! This is probably a BUG!')
                 console.error(`Char: ${char}; State: ${this.state}; PriorState: ${this.priorState}`)
-                this._commitAndTransition(STATE_RAW_TEXT, true)
+                commitAndTransition(STATE_RAW_TEXT, true)
             }
         }
     }
@@ -352,7 +381,7 @@ class Parser {
         }
 
         this.pendingState = { rawText: '' }
-        this._transition(STATE_FINAL)
+        this.state = STATE_FINAL
         return this._processed
     }
 
@@ -364,35 +393,6 @@ class Parser {
         const s = this.pendingState
         return s.rawText && s.single === false && s.name && s.name2
             && s.name === s.name2 && typeof (s.textInside) === 'string'
-    }
-
-    _commitAndTransition(newState, joinState) {
-        /*
-         * Commit old state in the processed list
-         * and transition to a new state.
-         */
-        // console.log('Commit STATE:', this.state, this.pendingState)
-
-        if (this.pendingState.rawText) {
-            if (joinState && this.state !== STATE_RAW_TEXT && newState === STATE_RAW_TEXT) {
-                let lastProcessed = { rawText: '' }
-                if (this._processed.length) {
-                    lastProcessed = this._processed.pop()
-                }
-                lastProcessed.rawText += this.pendingState.rawText
-                this.pendingState = { rawText: lastProcessed.rawText }
-            } else {
-                this._processed.push(this.pendingState)
-                this.pendingState = { rawText: '' }
-            }
-        }
-        this._transition(newState)
-    }
-
-    _transition(newState) {
-        // console.log(`Transition FROM (${this.state}) TO (${newState})`)
-        this.priorState = this.state
-        this.state = newState
     }
 }
 
