@@ -291,12 +291,4 @@ class Lexer {
     }
 }
 
-class Parser {
-
-}
-
-class Machine {
-
-}
-
-module.exports = { Lexer, Parser, Machine }
+module.exports = { Lexer }

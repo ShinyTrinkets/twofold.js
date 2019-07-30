@@ -265,7 +265,7 @@ const TESTS = [
     ],
 ]
 
-test('test all tests', t => {
+test('all lex tests', t => {
     for (const [text, expected] of TESTS) {
         const o = new tf.Lexer()
         for (const chunk of chunkText(text, 5)) {
@@ -283,7 +283,7 @@ test('test all tests', t => {
     }
 })
 
-test('crash test', t => {
+test('lexer crash', t => {
     const p = new tf.Lexer()
     p.push('')
     const lex = p.finish()
