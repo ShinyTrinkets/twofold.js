@@ -8,7 +8,10 @@ const TESTS = [
     ['?asd 123 qwerty!', [{ rawText: '?asd 123 qwerty!' }]],
     ['asd >>', [{ rawText: 'asd >>' }]],
     ['asd <<', [{ rawText: 'asd <<' }]],
-    ['<x///', [{ rawText: '<x///' }]],
+    ['asd />', [{ rawText: 'asd />' }]],
+    ['<x/', [{ rawText: '<x/' }]],
+    ['<x /', [{ rawText: '<x /' }]],
+    ['<x//', [{ rawText: '<x//' }]],
     ['<x 1 />', [{ rawText: '<x 1 />' }]],
     ['<A B />', [{ rawText: '<A B />' }]],
     ['<x/ >', [{ rawText: '<x/ >' }]],
@@ -25,6 +28,75 @@ const TESTS = [
     ],
     ['<  xY  >',
         [{ rawText: '<  xY  >', name: 'xY', double: true }],
+    ],
+    [
+        '<xY1/>',
+        [{ rawText: '<xY1/>', name: 'xY1', single: true }],
+    ],
+    [
+        '< x/>',
+        [{ rawText: '< x/>', name: 'x', single: true }],
+    ],
+    [
+        '<x />',
+        [{ rawText: '<x />', name: 'x', single: true }],
+    ],
+    [
+        '<x  />',
+        [{ rawText: '<x  />', name: 'x', single: true }],
+    ],
+    [
+        'blah <tesTing>!!',
+        [
+            { rawText: 'blah ' },
+            { rawText: '<tesTing>', name: 'tesTing', double: true },
+            { rawText: '!!' },
+        ]
+    ],
+    [
+        'asd <tesTing/> zxc',
+        [
+            { rawText: 'asd ' },
+            {
+                name: 'tesTing',
+                rawText: '<tesTing/>',
+                single: true,
+            },
+            { rawText: ' zxc' }
+        ]
+    ],
+    [
+        '. < tag/> blah blah',
+        [
+            { rawText: '. ' },
+            {
+                name: 'tag',
+                rawText: '< tag/>',
+                single: true,
+            },
+            { rawText: ' blah blah' }
+        ]
+    ],
+
+    [
+        'q <X/> a',
+        [{ rawText: 'q <X/> a' }] // this is raw-text
+    ],
+    [
+        '<X/>',
+        [{ rawText: '<X/>' }] // this is raw-text
+    ],
+    [
+        '< X/>',
+        [{ rawText: '< X/>' }] // this is raw-text
+    ],
+    [
+        '<X />',
+        [{ rawText: '<X />' }] // this is raw-text
+    ],
+    [
+        '< X />',
+        [{ rawText: '< X />' }] // this is raw-text
     ],
 ]
 
@@ -50,7 +122,7 @@ test('crash test', t => {
     const p = new tf.Lexer()
     p.push('')
     const lex = p.finish()
-    t.deepEqual([], lex)
+    t.deepEqual([{ rawText: '' }], lex)
     t.throws(() => {
         p.push('')
     }, Error)

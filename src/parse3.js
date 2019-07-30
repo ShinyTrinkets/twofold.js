@@ -264,30 +264,24 @@ class Lexer {
             throw new Error('The lexing is finished!')
         }
 
-        if (this.pendingState.rawText && this._processed.length) {
-            // console.log('Commit FINAL:', this.pendingState)
+        if (!this._processed.length) {
+            this._processed.push({ rawText: '' })
+        }
+
+        if (this.pendingState.rawText) {
             const lastProcessed = this._processed[this._processed.length - 1]
-            if (lastProcessed.single === undefined) {
+            // If the last processed state was a Tag, create a new raw-text
+            if (lastProcessed.name) {
+                this._processed.push({ rawText: this.pendingState.rawText })
+            } else {
+                // If the last processed state was raw-text, concatenate
                 lastProcessed.rawText += this.pendingState.rawText
-            } else {
-                this._processed.push({ rawText: this.pendingState.rawText })
-            }
-        } else if (this.pendingState.rawText) {
-            // console.log('Create FINAL:', this.pendingState)
-            if (this.state === STATE_RAW_TEXT && this._hasValidTag()) {
-                this._processed.push(this.pendingState)
-            } else {
-                this._processed.push({ rawText: this.pendingState.rawText })
             }
         }
 
         this.pendingState = { rawText: '' }
         this.state = STATE_FINAL
         return this._processed
-    }
-
-    _hasValidTag() {
-        return this.pendingState.rawText && this.pendingState.name
     }
 }
 
