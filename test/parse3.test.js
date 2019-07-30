@@ -89,6 +89,26 @@ const TESTS = [
         '<tag/ >',
         [{ rawText: '<tag/ >' }] // this is raw-text
     ],
+    [
+        ' < tag#>',
+        [{ rawText: ' < tag#>' }] // this is raw-text
+    ],
+    [
+        ' </ tag#>',
+        [{ rawText: ' </ tag#>' }] // this is raw-text
+    ],
+    [
+        '0</ t!',
+        [{ rawText: '0</ t!' }] // this is raw-text
+    ],
+    [
+        '0</ tag',
+        [{ rawText: '0</ tag' }] // this is raw-text
+    ],
+    [
+        '<</ tag <<',
+        [{ rawText: '<</ tag <<' }] // this is raw-text
+    ],
 
     [
         'blah <tesTing>!!',
@@ -173,6 +193,72 @@ const TESTS = [
             {
                 name: 'temp_f',
                 rawText: '</temp_f>',
+                double: true,
+            }
+        ]
+    ],
+    [
+        '<a_b></b_c> ', // non matching tags are lexed OK
+        [
+            {
+                name: 'a_b',
+                rawText: '<a_b>',
+                double: true,
+            },
+            {
+                name: 'b_c',
+                rawText: '</b_c>',
+                double: true,
+            },
+            { rawText: ' ' },
+        ]
+    ],
+    [
+        '<dayOrNight date="2019-07">...</dayOrNight>',
+        [
+            {
+                name: 'dayOrNight',
+                param: 'date="2019-07"',
+                rawText: '<dayOrNight date="2019-07">',
+                double: true,
+            },
+            { rawText: '...' },
+            {
+                name: 'dayOrNight',
+                rawText: '</dayOrNight>',
+                double: true,
+            },
+        ]
+    ],
+    [
+        '< increment nr=5 ></ increment  >',
+        [
+            {
+                name: 'increment',
+                param: 'nr=5',
+                rawText: '< increment nr=5 >',
+                double: true,
+            },
+            {
+                name: 'increment',
+                rawText: '</ increment  >',
+                double: true,
+            }
+        ]
+    ],
+    [
+        '<increment nr=1>></  increment  >',
+        [
+            {
+                name: 'increment',
+                param: 'nr=1',
+                rawText: '<increment nr=1>',
+                double: true,
+            },
+            { rawText: '>' },
+            {
+                name: 'increment',
+                rawText: '</  increment  >',
                 double: true,
             }
         ]
