@@ -1,7 +1,7 @@
 import test from 'ava'
-import tf from '../src/parse3'
+import tf from '../src/lexer'
 //
-// Parse version 3
+// TwoFold Lexer testing
 //
 // Tests: raw text and expected result after lexing
 const TESTS = [
