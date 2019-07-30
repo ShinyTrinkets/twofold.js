@@ -98,6 +98,12 @@ class Lexer {
                     this.pendingState.name = char
                     transition(STATE_TAG_NAME)
                 }
+                // Is this the end of the Second tag from a Double tag?
+                else if (char === config.lastStopper[0] &&
+                    !this.pendingState.name && this.pendingState.rawText === config.openTag[0]) {
+                    this.pendingState.rawText += char
+                    this.pendingState.double = true
+                }
                 // Is this a space before the tag name?
                 else if (char === ' ' && !this.pendingState.name) {
                     this.pendingState.rawText += char

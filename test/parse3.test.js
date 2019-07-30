@@ -46,6 +46,51 @@ const TESTS = [
         [{ rawText: '<x  />', name: 'x', single: true }],
     ],
     [
+        'q <X/> a',
+        [{ rawText: 'q <X/> a' }] // this is raw-text
+    ],
+    [
+        '<X/>',
+        [{ rawText: '<X/>' }] // this is raw-text
+    ],
+    [
+        '< X/>',
+        [{ rawText: '< X/>' }] // this is raw-text
+    ],
+    [
+        '<X />',
+        [{ rawText: '<X />' }] // this is raw-text
+    ],
+    [
+        '< X />',
+        [{ rawText: '< X />' }] // this is raw-text
+    ],
+    [
+        '<tag a/>',
+        [{ rawText: '<tag a/>' }] // this is raw-text
+    ],
+    [
+        '<tag a />',
+        [{ rawText: '<tag a />' }] // this is raw-text
+    ],
+    [
+        '<tag x=/>',
+        [{ rawText: '<tag x=/>' }] // this is raw-text
+    ],
+    [
+        '<tag x= />',
+        [{ rawText: '<tag x= />' }] // this is raw-text
+    ],
+    [
+        '< /tag >',
+        [{ rawText: '< /tag >' }] // this is raw-text
+    ],
+    [
+        '<tag/ >',
+        [{ rawText: '<tag/ >' }] // this is raw-text
+    ],
+
+    [
         'blah <tesTing>!!',
         [
             { rawText: 'blah ' },
@@ -77,26 +122,60 @@ const TESTS = [
             { rawText: ' blah blah' }
         ]
     ],
-
     [
-        'q <X/> a',
-        [{ rawText: 'q <X/> a' }] // this is raw-text
+        '< temp_f />< temp_c />',
+        [
+            {
+                name: 'temp_f',
+                rawText: '< temp_f />',
+                single: true,
+            },
+            {
+                name: 'temp_c',
+                rawText: '< temp_c />',
+                single: true,
+            }
+        ]
     ],
     [
-        '<X/>',
-        [{ rawText: '<X/>' }] // this is raw-text
+        '?<increment nr=99/>!',
+        [
+            { rawText: '?' },
+            {
+                name: 'increment',
+                param: 'nr=99',
+                rawText: '<increment nr=99/>',
+                single: true,
+            },
+            { rawText: '!' }
+        ]
     ],
     [
-        '< X/>',
-        [{ rawText: '< X/>' }] // this is raw-text
+        '< dayOrNight date="2019-07" />',
+        [
+            {
+                name: 'dayOrNight',
+                param: 'date="2019-07"',
+                rawText: '< dayOrNight date="2019-07" />',
+                single: true,
+            }
+        ]
     ],
     [
-        '<X />',
-        [{ rawText: '<X />' }] // this is raw-text
-    ],
-    [
-        '< X />',
-        [{ rawText: '< X />' }] // this is raw-text
+        '<temp_f>0</temp_f>',
+        [
+            {
+                name: 'temp_f',
+                rawText: '<temp_f>',
+                double: true,
+            },
+            { rawText: '0' },
+            {
+                name: 'temp_f',
+                rawText: '</temp_f>',
+                double: true,
+            }
+        ]
     ],
 ]
 
