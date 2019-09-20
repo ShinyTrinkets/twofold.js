@@ -3,9 +3,13 @@ const config = require('./config')
 const RE_FIRST_START = new RegExp(`^${config.openTag[0]}[ ]*[a-z]`)
 const RE_SECOND_START = new RegExp(`^${config.openTag[0]}${config.lastStopper[0]}[ ]*[a-z]`)
 
+/**
+ * Transform an unstructured stream of tokens (coming from the lexer)
+ * into a tree-like structure.
+ * If the tag is double, it will have children of type raw text,
+ * or other single or double tags.
+ */
 function parse(tokens) {
-    // Transform an unstructured stream of tokens (coming from the lexer)
-    // into a tree-like structure.
     const ast = []
     const stack = []
     const topStack = () => stack[stack.length - 1]

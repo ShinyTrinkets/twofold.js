@@ -14,16 +14,15 @@ const LOWER_LETTERS = /[a-z]/
 const ALL_LETTERS = /[a-zA-Z]/
 const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
 
-
+/**
+ * A lexer is a state machine.
+ * The machine moves only when receiving text, or on finish.
+ * Push text into the machine to make it process the text.
+ * Press "finish" to finish processing all the remaining text
+ * and return the processed tags.
+ * The lexer should never crash, even if the text is "bad".
+ */
 class Lexer {
-    /*
-    * A lexer is a state machine.
-    * The machine moves only when receiving text, or on finish.
-    * Push text into the machine to make it process the text.
-    * Press "finish" to finish processing all the remaining text
-    * and return the processed tags.
-    * The lexer should never crash, even if the text is "bad".
-    */
     constructor() {
         this.state = STATE_RAW_TEXT
         this.priorState = STATE_RAW_TEXT
@@ -50,13 +49,13 @@ class Lexer {
         }
         const self = this
 
-        const transition = function (newState) {
+        const transition = function(newState) {
             // console.log(`Transition FROM (${self.state}) TO (${newState})`)
             self.priorState = self.state
             self.state = newState
         }
 
-        const commitAndTransition = function (newState, joinState) {
+        const commitAndTransition = function(newState, joinState) {
             /*
              * Commit old state in the processed list
              * and transition to a new state.
@@ -91,6 +90,7 @@ class Lexer {
                 continue
             }
 
+            // --
             else if (this.state === STATE_OPEN_TAG) {
                 // Is this the beginning of a tag name?
                 if (LOWER_LETTERS.test(char)) {
@@ -99,8 +99,11 @@ class Lexer {
                     transition(STATE_TAG_NAME)
                 }
                 // Is this the end of the Second tag from a Double tag?
-                else if (char === config.lastStopper[0] &&
-                    !this.pendingState.name && this.pendingState.rawText === config.openTag[0]) {
+                else if (
+                    char === config.lastStopper[0] &&
+                    !this.pendingState.name &&
+                    this.pendingState.rawText === config.openTag[0]
+                ) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
                 }
@@ -115,6 +118,7 @@ class Lexer {
                 }
             }
 
+            // --
             else if (this.state === STATE_CLOSE_TAG) {
                 // Is this the end of a tag?
                 if (char === config.closeTag[0]) {
@@ -129,6 +133,7 @@ class Lexer {
                 }
             }
 
+            // --
             else if (this.state === STATE_TAG_NAME && this.pendingState.name) {
                 // Is this the middle of a tag name?
                 if (ALLOWED_ALPHA.test(char)) {
@@ -161,6 +166,7 @@ class Lexer {
                 }
             }
 
+            // --
             else if (this.state === STATE_INSIDE_TAG) {
                 // Is this a tag stopper?
                 // In this case, it's a single tag
@@ -193,6 +199,7 @@ class Lexer {
                 }
             }
 
+            // --
             else if (this.state === STATE_PARAM && this.pendingState.param) {
                 // Is this the middle of a param name?
                 if (ALL_LETTERS.test(char)) {
@@ -211,6 +218,7 @@ class Lexer {
                 }
             }
 
+            // --
             else if (this.state === STATE_EQUAL && this.pendingState.param) {
                 // Is this the start of a value after equal?
                 if (char !== ' ' && char !== config.lastStopper[0]) {
