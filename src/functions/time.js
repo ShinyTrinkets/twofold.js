@@ -1,7 +1,7 @@
-function dayOrNight (whatever, { date = null, splitHour = 6 } = {}) {
-  /**
-   * Helper that returns day or night.
-   */
+/**
+  * Helper that returns day or night.
+  */
+function dayOrNight(whatever, { date = null, splitHour = 6 } = {}) {
   if (!date || typeof date !== 'object') {
     date = new Date()
   }
@@ -13,11 +13,11 @@ function dayOrNight (whatever, { date = null, splitHour = 6 } = {}) {
   }
 }
 
-function emojiSunMoon (whatever, { date = null, splitHour = 6 } = {}) {
-  /**
-   * Returns an emoji representing day or night.
-   * Day=☀️ ; Night=🌙 ;
-   */
+/**
+  * Returns an emoji representing day or night.
+  * Day=☀️ ; Night=🌙 ;
+  */
+function emojiSunMoon(whatever, { date = null, splitHour = 6 } = {}) {
   const dn = dayOrNight(whatever, { date, splitHour })
   if (dn === 'day') {
     return '☀️'
@@ -26,11 +26,11 @@ function emojiSunMoon (whatever, { date = null, splitHour = 6 } = {}) {
   }
 }
 
-function emojiDayNight (whatever, { date = null, splitHour = 6 } = {}) {
-  /**
-   * Returns an emoji representing day or night.
-   * Day=🏙 ; Night=🌃 ;
-   */
+/**
+  * Returns an emoji representing day or night.
+  * Day=🏙 ; Night=🌃 ;
+  */
+function emojiDayNight(whatever, { date = null, splitHour = 6 } = {}) {
   const dn = dayOrNight(whatever, { date, splitHour })
   if (dn === 'day') {
     return '🏙'
@@ -72,10 +72,10 @@ const halfHours = {
   12: '🕧'
 }
 
-function emojiClock (whatever, { date = null, showHalf = true } = {}) {
-  /**
-   * Returns the current time as emoji cliock.
-   */
+/**
+  * Returns the current time as emoji cliock.
+  */
+function emojiClock(whatever, { date = null, showHalf = true } = {}) {
   if (!date || typeof date !== 'object') {
     date = new Date()
   }
@@ -99,7 +99,7 @@ function emojiClock (whatever, { date = null, showHalf = true } = {}) {
   return result
 }
 
-function zodiacSign (whatever, { date = null } = {}) {
+function zodiacSign(whatever, { date = null } = {}) {
   const zodSigns = [
     'Capricorn',
     'Aquarius',
