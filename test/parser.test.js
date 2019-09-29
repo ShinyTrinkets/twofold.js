@@ -20,11 +20,22 @@ const TESTS = [
         [
             {
                 double: true,
+                firstTagText: '<temp type=f>',
+                secondTagText: '</temp>',
                 name: 'temp',
                 param: 'type=f',
-                rawText: '<temp type=f>',
-                textInside: '0',
+                children: [
+                    { rawText: '0' }
+                ]
             }
+        ]
+    ],
+
+    [
+        '<temp type=f>0</',
+        [
+            { rawText: '<temp type=f>' },
+            { rawText: '0</' },
         ]
     ],
 ]

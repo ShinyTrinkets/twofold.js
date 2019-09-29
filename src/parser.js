@@ -3,6 +3,15 @@ const config = require('./config')
 const RE_FIRST_START = new RegExp(`^${config.openTag[0]}[ ]*[a-z]`)
 const RE_SECOND_START = new RegExp(`^${config.openTag[0]}${config.lastStopper[0]}[ ]*[a-z]`)
 
+const isRawText = t => t.name === undefined && t.single === undefined && t.double === undefined
+
+function addChild (t, c) {
+    if (!t.children) {
+        t.children = []
+    }
+    t.children.push(c)
+}
+
 /**
  * Transform an unstructured stream of tokens (coming from the lexer)
  * into a tree-like structure.
@@ -13,7 +22,6 @@ function parse(tokens) {
     const ast = []
     const stack = []
     const topStack = () => stack[stack.length - 1]
-    const isRawText = t => t.name === undefined && t.single === undefined && t.double === undefined
 
     for (const token of tokens) {
         if (!token.rawText) {
@@ -24,35 +32,46 @@ function parse(tokens) {
         if (token.name && token.double) {
             // Is this the start of a double tag?
             if (RE_FIRST_START.test(token.rawText)) {
-                token.textInside = ''
+                // console.log('START DOUBLE TAG ::', token)
+                token.firstTagText = token.rawText
                 stack.push(token)
                 continue
             }
             // Is this the end of a double tag?
             else if (RE_SECOND_START.test(token.rawText)) {
-                if (topStack().name === token.name) {
-                    const firstTag = stack.pop()
-                    ast.push(firstTag)
+                // console.log('END DOUBLE TAG ::', token)
+                const topTag = topStack()
+                if (topTag.name === token.name) {
+                    topTag.secondTagText = token.rawText
+                    delete topTag.rawText
+                    ast.push(stack.pop())
                     continue
                 }
             }
         }
+
         // Is this raw text?
         else if (isRawText(token)) {
-            const firstTag = topStack()
-            if (firstTag) {
-                // console.log('ADD TEXT INSIDE ::', firstTag)
-                firstTag.textInside += token.rawText
+            // console.log('ADD RAW TEXT ::', token)
+            const topTag = topStack()
+            if (topTag && topTag.name && topTag.double) {
+                addChild(topTag, token)
                 continue
             }
         }
 
+        // console.log('ADD TAG AS IS ::', token)
         ast.push(token)
     }
 
     // Empty the stack
     for (const token of stack) {
         ast.push({ rawText: token.rawText })
+        if (token.children) {
+            for (const child of token.children) {
+                ast.push({ rawText: child.rawText })
+            }
+        }
     }
 
     return ast
