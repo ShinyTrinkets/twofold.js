@@ -33,9 +33,20 @@ const TESTS = [
 
     [
         '<temp type=f>0</',
+        [{ rawText: '<temp type=f>0</' }]
+    ],
+    [
+        'blah <tesTing>!!',
         [
-            { rawText: '<temp type=f>' },
-            { rawText: '0</' },
+            { rawText: 'blah ' },
+            { rawText: '<tesTing>!!' }, // separated raw texts are a problem
+        ]
+    ],
+    [
+        '<a_b></b_c> ', // non matching tags are raw text
+        [
+            { rawText: '<a_b></b_c>' },
+            { rawText: ' ' }, // separated raw texts are a problem
         ]
     ],
 ]

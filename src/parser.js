@@ -5,7 +5,7 @@ const RE_SECOND_START = new RegExp(`^${config.openTag[0]}${config.lastStopper[0]
 
 const isRawText = t => t.name === undefined && t.single === undefined && t.double === undefined
 
-function addChild (t, c) {
+function addChild(t, c) {
     if (!t.children) {
         t.children = []
     }
@@ -46,6 +46,12 @@ function parse(tokens) {
                     delete topTag.rawText
                     ast.push(stack.pop())
                     continue
+                } else {
+                    // Non matching double tag
+                    topTag.rawText += token.rawText
+                    ast.push({ rawText: topTag.rawText })
+                    stack.pop()
+                    continue
                 }
             }
         }
@@ -56,6 +62,9 @@ function parse(tokens) {
             const topTag = topStack()
             if (topTag && topTag.name && topTag.double) {
                 addChild(topTag, token)
+                continue
+            } else if (topTag && isRawText(topTag)) {
+                topTag.rawText += token.rawText
                 continue
             }
         }
@@ -69,7 +78,12 @@ function parse(tokens) {
         ast.push({ rawText: token.rawText })
         if (token.children) {
             for (const child of token.children) {
-                ast.push({ rawText: child.rawText })
+                const topAst = ast[ast.length - 1]
+                if (isRawText(topAst)) {
+                    topAst.rawText += child.rawText
+                } else {
+                    ast.push({ rawText: child.rawText })
+                }
             }
         }
     }
