@@ -80,6 +80,41 @@ const TESTS = [
             }
         ]
     ],
+    [
+        '<t1><t2><t3><xXx/>?</t3></t2></t1>',
+        [
+            {
+                double: true,
+                firstTagText: '<t1>',
+                secondTagText: '</t1>',
+                name: 't1',
+                children: [
+                    {
+                        double: true,
+                        firstTagText: '<t2>',
+                        secondTagText: '</t2>',
+                        name: 't2',
+                        children: [
+                            {
+                                double: true,
+                                firstTagText: '<t3>',
+                                secondTagText: '</t3>',
+                                name: 't3',
+                                children: [
+                                    {
+                                        name: 'xXx',
+                                        rawText: '<xXx/>',
+                                        single: true,
+                                    },
+                                    { rawText: '?' },
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    ],
 
     [
         '<temp type=f>0</',

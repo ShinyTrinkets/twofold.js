@@ -32,21 +32,33 @@ function parse(tokens) {
 
         const topTag = topStack()
 
-        if (token.name && token.double) {
+        if (isRawText(token) && isRawText(topTag)) {
+            // console.log('Raw text + Raw text ::', token)
+            topTag.rawText += token.rawText
+            continue
+        }
+
+        if (isDoubleTag(token)) {
             // Is this the start of a double tag?
             if (RE_FIRST_START.test(token.rawText)) {
-                // console.log('START DOUBLE TAG ::', token)
+                // console.log('Start double Tag ::', token)
                 token.firstTagText = token.rawText
                 stack.push(token)
                 continue
             }
             // Is this the end of a double tag?
             else if (RE_SECOND_START.test(token.rawText)) {
-                // console.log('END DOUBLE TAG ::', token)
                 if (topTag.name === token.name) {
+                    // console.log(`End double Tag ${topTag.name} ::`, token)
                     topTag.secondTagText = token.rawText
                     delete topTag.rawText
-                    ast.push(stack.pop())
+                    const currentTag = stack.pop()
+                    const deepTag = topStack()
+                    if (isDoubleTag(deepTag)) {
+                        addChild(deepTag, currentTag)
+                    } else {
+                        ast.push(currentTag)
+                    }
                     continue
                 } else {
                     // Non matching double tag
@@ -58,18 +70,13 @@ function parse(tokens) {
             }
         }
 
-        if (isRawText(token) && isRawText(topTag)) {
-            // console.log('Raw text + Raw text ::', token)
-            topTag.rawText += token.rawText
-            continue
-        } else if (isDoubleTag(topTag)) {
-            // console.log('Add child to double tag ::', token)
+        if (isDoubleTag(topTag)) {
+            // console.log(`Add child to double tag ${topTag.name} ::`, token)
             addChild(topTag, token)
-            continue
+        } else {
+            // console.log('Add tag as is ::', token)
+            ast.push(token)
         }
-
-        // console.log('Add tag as is ::', token)
-        ast.push(token)
     }
 
     // Empty the stack
