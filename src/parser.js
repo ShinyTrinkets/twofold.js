@@ -22,7 +22,8 @@ function addChild(t, c) {
 function parse(tokens) {
     const ast = []
     const stack = []
-    const topStack = () => stack[stack.length - 1]
+    const getTopAst = () => ast[ast.length - 1]
+    const getTopStack = () => stack[stack.length - 1]
 
     for (const token of tokens) {
         if (!token.rawText) {
@@ -30,7 +31,8 @@ function parse(tokens) {
         }
         // console.log('TOKEN ::', token)
 
-        const topTag = topStack()
+        const topAst = getTopAst()
+        const topTag = getTopStack()
 
         if (isRawText(token) && isRawText(topTag)) {
             // console.log('Raw text + Raw text ::', token)
@@ -41,32 +43,32 @@ function parse(tokens) {
         if (isDoubleTag(token)) {
             // Is this the start of a double tag?
             if (RE_FIRST_START.test(token.rawText)) {
-                // console.log('Start double Tag ::', token)
+                // console.log(`Start double Tag ${token.name} !`)
                 token.firstTagText = token.rawText
                 stack.push(token)
                 continue
             }
             // Is this the end of a double tag?
             else if (RE_SECOND_START.test(token.rawText)) {
+                let currentTag
                 if (topTag.name === token.name) {
-                    // console.log(`End double Tag ${topTag.name} ::`, token)
+                    // console.log(`End double Tag ${token.name} !`)
                     topTag.secondTagText = token.rawText
                     delete topTag.rawText
-                    const currentTag = stack.pop()
-                    const deepTag = topStack()
-                    if (isDoubleTag(deepTag)) {
-                        addChild(deepTag, currentTag)
-                    } else {
-                        ast.push(currentTag)
-                    }
-                    continue
+                    currentTag = stack.pop()
                 } else {
-                    // Non matching double tag
+                    // console.log(`Non matching double Tag ${topTag.name} != ${token.name}`)
                     topTag.rawText += token.rawText
-                    ast.push({ rawText: topTag.rawText })
+                    currentTag = { rawText: topTag.rawText }
                     stack.pop()
-                    continue
                 }
+                const deepTag = getTopStack()
+                if (isDoubleTag(deepTag)) {
+                    addChild(deepTag, currentTag)
+                } else {
+                    ast.push(currentTag)
+                }
+                continue
             }
         }
 
@@ -74,23 +76,27 @@ function parse(tokens) {
             // console.log(`Add child to double tag ${topTag.name} ::`, token)
             addChild(topTag, token)
         } else {
-            // console.log('Add tag as is ::', token)
-            ast.push(token)
+            if (isRawText(token) && isRawText(topAst)) {
+                topAst.rawText += token.rawText
+            } else {
+                ast.push(token)
+            }
         }
     }
 
     // Empty the stack
     for (const token of stack) {
-        ast.push({ rawText: token.rawText })
-        if (token.children) {
+        // console.log('STACK ::', token)
+        if (isDoubleTag(token) && token.children) {
             for (const child of token.children) {
-                const topAst = ast[ast.length - 1]
-                if (isRawText(topAst)) {
-                    topAst.rawText += child.rawText
-                } else {
-                    ast.push({ rawText: child.rawText })
-                }
+                token.rawText += child.rawText
             }
+        }
+        const topAst = getTopAst()
+        if (isRawText(topAst)) {
+            topAst.rawText += token.rawText
+        } else {
+            ast.push({ rawText: token.rawText })
         }
     }
 

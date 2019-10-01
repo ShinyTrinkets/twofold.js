@@ -14,6 +14,18 @@ const TESTS = [
     ['<x1>',
         [{ rawText: '<x1>' }] // this is raw-text
     ],
+    [
+        '<temp type=f>0</',
+        [{ rawText: '<temp type=f>0</' }] // this is raw-text
+    ],
+    [
+        'blah <tesTing>!!',
+        [{ rawText: 'blah <tesTing>!!' }] // this is raw-text
+    ],
+    [
+        '<a_b></b_c> ',
+        [{ rawText: '<a_b></b_c> ' }] // this is raw-text
+    ],
 
     [
         'asd <tesTing/> zxc',
@@ -115,23 +127,18 @@ const TESTS = [
             }
         ]
     ],
-
     [
-        '<temp type=f>0</',
-        [{ rawText: '<temp type=f>0</' }]
-    ],
-    [
-        'blah <tesTing>!!',
+        '<t1><t2></t3></t1>',
         [
-            { rawText: 'blah ' },
-            { rawText: '<tesTing>!!' }, // separated raw texts are a problem
-        ]
-    ],
-    [
-        '<a_b></b_c> ', // non matching tags are raw text
-        [
-            { rawText: '<a_b></b_c>' },
-            { rawText: ' ' }, // separated raw texts are a problem
+            {
+                double: true,
+                firstTagText: '<t1>',
+                secondTagText: '</t1>',
+                name: 't1',
+                children: [
+                    { rawText: '<t2></t3>' },
+                ]
+            }
         ]
     ],
 ]
