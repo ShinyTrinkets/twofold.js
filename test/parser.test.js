@@ -16,6 +16,18 @@ const TESTS = [
     ],
 
     [
+        'asd <tesTing/> zxc',
+        [
+            { rawText: 'asd ' },
+            {
+                name: 'tesTing',
+                rawText: '<tesTing/>',
+                single: true,
+            },
+            { rawText: ' zxc' }
+        ]
+    ],
+    [
         '<temp type=f>0</temp>',
         [
             {
@@ -26,6 +38,44 @@ const TESTS = [
                 param: 'type=f',
                 children: [
                     { rawText: '0' }
+                ]
+            }
+        ]
+    ],
+    [
+        '<stuff><other /></stuff>',
+        [
+            {
+                double: true,
+                firstTagText: '<stuff>',
+                secondTagText: '</stuff>',
+                name: 'stuff',
+                children: [
+                    {
+                        name: 'other',
+                        rawText: '<other />',
+                        single: true,
+                    }
+                ]
+            }
+        ]
+    ],
+    [
+        '<aA> <bB /> </aA>',
+        [
+            {
+                double: true,
+                firstTagText: '<aA>',
+                secondTagText: '</aA>',
+                name: 'aA',
+                children: [
+                    { rawText: ' ' },
+                    {
+                        name: 'bB',
+                        rawText: '<bB />',
+                        single: true,
+                    },
+                    { rawText: ' ' },
                 ]
             }
         ]

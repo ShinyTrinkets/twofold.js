@@ -3,7 +3,8 @@ const config = require('./config')
 const RE_FIRST_START = new RegExp(`^${config.openTag[0]}[ ]*[a-z]`)
 const RE_SECOND_START = new RegExp(`^${config.openTag[0]}${config.lastStopper[0]}[ ]*[a-z]`)
 
-const isRawText = t => t.name === undefined && t.single === undefined && t.double === undefined
+const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
+const isDoubleTag = t => t && t.name && t.double
 
 function addChild(t, c) {
     if (!t.children) {
@@ -29,6 +30,8 @@ function parse(tokens) {
         }
         // console.log('TOKEN ::', token)
 
+        const topTag = topStack()
+
         if (token.name && token.double) {
             // Is this the start of a double tag?
             if (RE_FIRST_START.test(token.rawText)) {
@@ -40,7 +43,6 @@ function parse(tokens) {
             // Is this the end of a double tag?
             else if (RE_SECOND_START.test(token.rawText)) {
                 // console.log('END DOUBLE TAG ::', token)
-                const topTag = topStack()
                 if (topTag.name === token.name) {
                     topTag.secondTagText = token.rawText
                     delete topTag.rawText
@@ -56,20 +58,17 @@ function parse(tokens) {
             }
         }
 
-        // Is this raw text?
-        else if (isRawText(token)) {
-            // console.log('ADD RAW TEXT ::', token)
-            const topTag = topStack()
-            if (topTag && topTag.name && topTag.double) {
-                addChild(topTag, token)
-                continue
-            } else if (topTag && isRawText(topTag)) {
-                topTag.rawText += token.rawText
-                continue
-            }
+        if (isRawText(token) && isRawText(topTag)) {
+            // console.log('Raw text + Raw text ::', token)
+            topTag.rawText += token.rawText
+            continue
+        } else if (isDoubleTag(topTag)) {
+            // console.log('Add child to double tag ::', token)
+            addChild(topTag, token)
+            continue
         }
 
-        // console.log('ADD TAG AS IS ::', token)
+        // console.log('Add tag as is ::', token)
         ast.push(token)
     }
 
