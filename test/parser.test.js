@@ -40,6 +40,18 @@ const TESTS = [
         ]
     ],
     [
+        '<asd> <tesTing/> </zxc>',
+        [
+            { rawText: '<asd> ' },
+            {
+                name: 'tesTing',
+                rawText: '<tesTing/>',
+                single: true,
+            },
+            { rawText: ' </zxc>' }
+        ]
+    ],
+    [
         '<temp type=f>0</temp>',
         [
             {
@@ -141,6 +153,22 @@ const TESTS = [
             }
         ]
     ],
+    [
+        '<t1><t2> </t2></tx>',
+        [
+            { rawText: '<t1>' },
+            {
+                double: true,
+                firstTagText: '<t2>',
+                secondTagText: '</t2>',
+                name: 't2',
+                children: [
+                    { rawText: ' ' },
+                ]
+            },
+            { rawText: '</tx>' },
+        ]
+    ],
 ]
 
 test('all parse tests', t => {
@@ -148,9 +176,9 @@ test('all parse tests', t => {
         const o = new lexer.Lexer()
         o.push(text)
         const lex = o.finish()
-        // console.log('-T- LEXED ::', lex, '\n')
+        // console.log('-T- LEXED ::', JSON.stringify(lex, null, ' '), '\n')
         const ast = parser.parse(lex)
-        // console.log('-T- PARSED ::', ast, '\n')
+        // console.log('-T- PARSED ::', JSON.stringify(ast, null, ' '), '\n')
         t.deepEqual(expected, ast)
     }
 })

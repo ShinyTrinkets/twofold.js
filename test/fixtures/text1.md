@@ -34,9 +34,9 @@ commentaque **et** armos nate. Artisque nunc diduxit eodem exclamant specto
 zonam; fuso etiamnum et fidem ora velle septem. Greges taurum, effundit tenentem
 [omnes](http://fas.io/cervix-tyranni) timido vides locorum novis Heliadum.
 
-<replace-sort>
+<replaceSort>
 - Quoniam cortice sonitusque excussit mihi nec Rhodopen
 - De caper inposuit perfectaque signisque cogente blanditiis
 - Duce miremur sui
 - Qui delicta loris fornacibus si nobis et
-</replace-sort>
+</replaceSort>
