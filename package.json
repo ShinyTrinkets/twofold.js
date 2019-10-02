@@ -46,7 +46,9 @@
   "prettier": {
     "printWidth": 120,
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "es5"
   },
   "repository": {
     "type": "git",
@@ -54,8 +56,8 @@
   },
   "scripts": {
     "coverage": "npx nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
-    "fmt": "npx prettier --write ./src/{*,*/}*.js && npx standard --fix ./src/{*,*/}*.js",
+    "fmt": "npx prettier --write ./src/{*,*/}*.js",
     "test": "npx nyc ava test/*.test.js"
   },
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

@@ -30,7 +30,7 @@ function parse(tokens) {
     const getTopAst = () => ast[ast.length - 1]
     const getTopStack = () => stack[stack.length - 1]
 
-    const commitToken = function (token) {
+    const commitToken = function(token) {
         const topAst = getTopAst()
         const topStack = getTopStack()
         const parent = topStack || topAst
