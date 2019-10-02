@@ -1,10 +1,5 @@
 const config = require('./config')
-
-const RE_FIRST_START = new RegExp(`^${config.openTag[0]}[ ]*[a-z]`)
-const RE_SECOND_START = new RegExp(`^${config.openTag[0]}${config.lastStopper[0]}[ ]*[a-z]`)
-
-const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
-const isDoubleTag = t => t && t.name && t.double
+const { isRawText, isDoubleTag } = require('./util')
 
 function addChild(parent, c) {
     if (!parent.children) {
@@ -24,7 +19,11 @@ function addChild(parent, c) {
  * If the tag is double, it will have children of type raw text,
  * or other single or double tags.
  */
-function parse(tokens) {
+function parse(tokens, customConfig={}) {
+    const { openTag, lastStopper } = Object.assign({}, config, customConfig)
+    const RE_FIRST_START = new RegExp(`^${openTag[0]}[ ]*[a-z]`)
+    const RE_SECOND_START = new RegExp(`^${openTag[0]}[${lastStopper[0]}][ ]*[a-z]`)
+
     const ast = []
     const stack = []
     const getTopAst = () => ast[ast.length - 1]
@@ -65,7 +64,7 @@ function parse(tokens) {
             }
             // Is this the end of a double tag?
             else if (RE_SECOND_START.test(token.rawText)) {
-                if (topTag.name === token.name) {
+                if (topTag && topTag.name === token.name) {
                     // console.log(`End double Tag "${token.name}"`)
                     topTag.secondTagText = token.rawText
                     delete topTag.rawText

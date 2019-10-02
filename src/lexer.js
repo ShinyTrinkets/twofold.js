@@ -23,9 +23,10 @@ const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
  * The lexer should never crash, even if the text is "bad".
  */
 class Lexer {
-    constructor() {
+    constructor(customConfig={}) {
         this.state = STATE_RAW_TEXT
         this.priorState = STATE_RAW_TEXT
+        this.customConfig = customConfig
 
         // Already processed tags
         this._processed = []
@@ -35,6 +36,12 @@ class Lexer {
         // * name  - the name of the tag
         // * param - parameters as key=value
         this.pendingState = { rawText: '' }
+    }
+
+    lex(text) {
+        // Shortcut function for push + finish
+        this.push(text)
+        return this.finish()
     }
 
     push(text) {
@@ -48,6 +55,8 @@ class Lexer {
             return
         }
         const self = this
+
+        const { openTag, closeTag, lastStopper } = Object.assign({}, config, this.customConfig)
 
         const transition = function(newState) {
             // console.log(`Transition FROM (${self.state}) TO (${newState})`)
@@ -82,7 +91,7 @@ class Lexer {
 
             if (this.state === STATE_RAW_TEXT) {
                 // Is this the beginning of a new tag?
-                if (char === config.openTag[0]) {
+                if (char === openTag[0]) {
                     commitAndTransition(STATE_OPEN_TAG)
                 }
                 // Just append the text to pendingState
@@ -100,9 +109,9 @@ class Lexer {
                 }
                 // Is this the end of the Second tag from a Double tag?
                 else if (
-                    char === config.lastStopper[0] &&
+                    char === lastStopper[0] &&
                     !this.pendingState.name &&
-                    this.pendingState.rawText === config.openTag[0]
+                    this.pendingState.rawText === openTag[0]
                 ) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
@@ -121,7 +130,7 @@ class Lexer {
             // --
             else if (this.state === STATE_CLOSE_TAG) {
                 // Is this the end of a tag?
-                if (char === config.closeTag[0]) {
+                if (char === closeTag[0]) {
                     this.pendingState.rawText += char
                     commitAndTransition(STATE_RAW_TEXT)
                 }
@@ -147,13 +156,13 @@ class Lexer {
                 }
                 // Is this a tag stopper?
                 // In this case, it's a single tag
-                else if (char === config.lastStopper[0]) {
+                else if (char === lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
-                else if (char === config.closeTag[0]) {
+                else if (char === closeTag[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
                     commitAndTransition(STATE_RAW_TEXT)
@@ -170,7 +179,7 @@ class Lexer {
             else if (this.state === STATE_INSIDE_TAG) {
                 // Is this a tag stopper?
                 // In this case, it's a single tag
-                if (char === config.lastStopper[0] && this.pendingState.name) {
+                if (char === lastStopper[0] && this.pendingState.name) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     transition(STATE_CLOSE_TAG)
@@ -180,7 +189,7 @@ class Lexer {
                     this.pendingState.rawText += char
                 }
                 // Is this the end of the First tag from a Double tag?
-                else if (char === config.closeTag[0]) {
+                else if (char === closeTag[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
                     commitAndTransition(STATE_RAW_TEXT)
@@ -221,7 +230,7 @@ class Lexer {
             // --
             else if (this.state === STATE_EQUAL && this.pendingState.param) {
                 // Is this the start of a value after equal?
-                if (char !== ' ' && char !== config.lastStopper[0]) {
+                if (char !== ' ' && char !== lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.param += char
                     transition(STATE_VALUE)
@@ -237,13 +246,13 @@ class Lexer {
             else if (this.state === STATE_VALUE && this.pendingState.param) {
                 // Is this a tag stopper?
                 // In this case, it's a single tag
-                if (char === config.lastStopper[0]) {
+                if (char === lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
-                else if (char === config.closeTag[0]) {
+                else if (char === closeTag[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
                     commitAndTransition(STATE_RAW_TEXT)

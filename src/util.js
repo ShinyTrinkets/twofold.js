@@ -18,6 +18,13 @@ function toCamelCase(str) {
     )
 }
 
+const isDoubleTag = t => t && t.name && t.double
+const isSingleTag = t => t && t.name && t.single
+const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
+
 module.exports = {
     toCamelCase,
+    isDoubleTag,
+    isSingleTag,
+    isRawText,
 }

@@ -1,102 +1,59 @@
 const util = require('./util')
-const config = require('./config')
 const functions = require('./functions')
+const { Lexer } = require('./lexer')
+const { parse } = require('./parser')
 
-function lineMatchResult (m, text) {
-  return {
-    index: m.index,
-    name: m[1], // the block name
-    textInside: '', // text inside the block
-    tagBefore: m[0],
-    tagAfter: '',
-    textBefore: text.substring(0, m.index), // text before the block
-    textAfter: text.substring(m.index + m[0].length) // text after the block
-  }
-}
+function renderText(text, data={}, customFunctions={}, customConfig={}) {
+    /**
+     * TwoFold render text string.
+     */
+    const allHelpers = Object.assign({}, functions, customFunctions)
+    const ast = parse(new Lexer(customConfig).lex(text), customConfig)
+    // console.log('-R- PARSED ::', JSON.stringify(ast, null, ' '), '\n')
 
-function blockMatchResult (m, text) {
-  return {
-    index: m.index,
-    name: m[2], // the block name
-    textInside: m[3], // text inside the block
-    tagBefore: m[1],
-    tagAfter: m[4],
-    textBefore: text.substring(0, m.index), // text before the block
-    textAfter: text.substring(m.index + m[0].length) // text after the block
-  }
-}
-
-function extractBlock (text, customConfig) {
-  /**
-   * Extract the first template block.
-   */
-  const { identifier, openTag, closeTag, lastStopper, firstStopper } = Object.assign({}, config, customConfig)
-  const lineRegex = new RegExp(
-    `${openTag}` + // Open the tag
-    `[ ]*` + // Zero or more spaces
-    `((?:\\w+-)*\\w+)` + // The name of the template function
-    `[ ]+` + // One or more spaces
-    `${lastStopper}` + // The stopper char
-    `[ ]*` + // Zero or more spaces
-    `${closeTag}`, // Close the tag
-    'g'
-  )
-  const blockRegex = new RegExp(
-    `(${openTag}${identifier}-((?:\\w+-)*\\w+)${firstStopper}${closeTag})` +
-      `([\\w\\W]*?)` + // Text inside the tmpl
-      `(${openTag}${lastStopper}${identifier}-\\2${closeTag})`,
-    'g'
-  )
-  // Match single tag
-  const lm = lineRegex.exec(text)
-  // Match double tag
-  const bm = blockRegex.exec(text)
-  // If nothing matches, the result is null
-  if (!lm && !bm) {
-    return null
-  }
-  // If only one matches, return that one
-  if (lm && !bm) {
-    return lineMatchResult(lm, text)
-  } else if (bm && !lm) {
-    return blockMatchResult(bm, text)
-  }
-  // If both match, return the smaller index
-  if (lm.index < bm.index) {
-    return lineMatchResult(lm, text)
-  } else {
-    return blockMatchResult(bm, text)
-  }
-}
-
-function renderText (text, data, customFunctions, customConfig) {
-  /**
-   * TwoFold render text string.
-   */
-  const allHelpers = Object.assign({}, functions, customFunctions)
-  const b = extractBlock(text, customConfig)
-  if (!b || !b.name) {
-    return text
-  }
-  const func = allHelpers[util.toCamelCase(b.name)]
-  const endText = renderText(b.textAfter, data, customFunctions, customConfig)
-  let result
-  try {
-    result = func(b, data)
-  } catch (err) {
-    if (!b.tagAfter) {
-      // Single tag
-      return b.textBefore + b.tagBefore + endText
-    } else {
-      return b.textBefore + b.tagBefore + b.textInside + b.tagAfter + endText
+    for (const t of ast) {
+        if (util.isDoubleTag(t)) {
+            const func = allHelpers[util.toCamelCase(t.name)]
+            let textInside = ''
+            if (!t.children) {
+                t.children = []
+            }
+            for (const c of t.children) {
+                textInside += c.rawText
+            }
+            let result = textInside
+            try {
+                result = func({ textInside }, data)
+            } catch (err) {
+                console.warn(`Error executing double ${t.name}:`, err)
+            }
+            t.children = [{ rawText: result.toString() }]
+        } else if (util.isSingleTag(t)) {
+            const func = allHelpers[util.toCamelCase(t.name)]
+            let result = t.rawText
+            try {
+                result = func({ textInside: t.rawText }, data)
+                t.rawText = result.toString()
+            } catch (err) {
+                console.warn(`Error executing single ${t.name}:`, err)
+            }
+        }
     }
-  }
-  if (!b.tagAfter) {
-    // Single tag
-    return b.textBefore + result + endText
-  } else {
-    return b.textBefore + b.tagBefore + result + b.tagAfter + endText
-  }
+    // console.log('-R- PROCESSED ::', JSON.stringify(ast, null, ' '), '\n')
+
+    let final = ''
+    for (const t of ast) {
+        if (util.isDoubleTag(t)) {
+            final += t.firstTagText
+            for (const c of t.children) {
+                final += c.rawText
+            }
+            final += t.secondTagText
+        } else {
+            final += t.rawText
+        }
+    }
+    return final
 }
 
-module.exports = { extractBlock, renderText }
+module.exports = { renderText }

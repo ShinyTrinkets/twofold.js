@@ -6,36 +6,39 @@ import helpers from '../src/functions'
 //
 test('simple increment render', async t => {
   const nr = 999
-  const txt = `qwerty <replace-increment>${nr}</replace-increment> ...`
+  const txt = `qwerty <increment>${nr}</increment> ...`
   let tmp = xfold.renderText(txt)
   t.not(tmp, txt)
-  t.is(tmp, `qwerty <replace-increment>${nr + 1}</replace-increment> ...`)
+  t.is(tmp, `qwerty <increment>${nr + 1}</increment> ...`)
 })
 
 test('simple random integer', async t => {
-  // Also check camelCase-ing template names
-  const txt1 = `random <replace-randomInt></replace-randomInt> ...`
-  const txt2 = `random <replace-random-int></replace-random-int> ...`
+  const txt1 = `random <randomInt/> ...`
+  const txt2 = `random <randomInt/> ...`
   const tmp1 = xfold.renderText(txt1)
   const tmp2 = xfold.renderText(txt2)
   t.not(tmp1, txt1)
   t.not(tmp2, txt2)
-  t.true(tmp1.length > txt1.length)
-  t.true(tmp2.length > txt2.length)
+  t.is(tmp1.indexOf('random'), 0)
+  t.is(tmp2.indexOf('random'), 0)
+  t.true(tmp1.length < txt1.length)
+  t.true(tmp2.length < txt2.length)
 })
 
 test('simple sort render', async t => {
   const li = ['z', 'x', 'a', 'm']
-  const txt = `qwerty <replace-sort-lines>\n${li.join('\n')}</replace-sort-lines> ...`
+  const txt = `qwerty <sortLines>\n${li.join('\n')}</sortLines> ...`
   const tmp = xfold.renderText(txt)
   t.not(tmp, txt)
   li.sort()
-  t.is(tmp, `qwerty <replace-sort-lines>\n${li.join('\n')}</replace-sort-lines> ...`)
+  t.is(tmp, `qwerty <sortLines>\n${li.join('\n')}</sortLines> ...`)
 })
 
 test('emoji clock render', async t => {
-  const txt = `clock <replace-emojiClock></replace-emojiClock> ...`
+  const txt = `clock <emojiClock /> ...`
   let tmp = xfold.renderText(txt, { date: new Date(2012, 11, 21, 11, 11) })
+  t.is(tmp.indexOf('clock'), 0)
+
   t.not(tmp, txt)
   t.true(tmp.indexOf('🕚') > 0)
 
@@ -51,22 +54,25 @@ test('separated sort render', async t => {
   const li2 = ['4', '2']
   const li3 = ['x2', 'x1']
   let blob = li1.join('\n') + '\n\n' + li2.join('\n') + '\n\n' + li3.join('\n')
-  let txt = `qwerty <replace-sort>\n${blob}</replace-sort> ...`
+  let txt = `... <sort>\n${blob}</sort> ...`
   let tmp = xfold.renderText(txt, {}, { sort: helpers.sortLines })
   t.not(tmp, txt)
   t.is(tmp.length, txt.length)
+  t.is(tmp.indexOf('...'), 0)
 
   blob += '\n\n'
-  txt = `qwerty <replace-sort>\n${blob}</replace-sort> ...`
+  txt = `??? <sort>\n${blob}</sort> ???`
   tmp = xfold.renderText(txt, {}, { sort: helpers.sortLines })
   t.not(tmp, txt)
   t.is(tmp.length, txt.length)
+  t.is(tmp.indexOf('???'), 0)
 
-  blob = '\n\n' + blob
-  txt = `qwerty <replace-sort>\n${blob}</replace-sort> ...`
+  blob = '\r\n' + blob
+  txt = `!!! <sort>\n${blob}</sort> !!!`
   tmp = xfold.renderText(txt, {}, { sort: helpers.sortLines })
   t.not(tmp, txt)
   t.is(tmp.length, txt.length)
+  t.is(tmp.indexOf('!!!'), 0)
 })
 
 test('mixed tags', async t => {
@@ -74,9 +80,9 @@ test('mixed tags', async t => {
   // Wrong tags, wrong helper names
   const txt =
     `qaz <mumu /> ...\n` +
-    `rand slice <random-slice />\n` +
+    `rand slice <randomSlice />\n` +
     `xyz <xyz />\n` +
-    `rand int <replace-random-int>\n</replace-random-int>\n` +
+    `rand int <randomInt>\n</randomInt>\n` +
     `wrong <wrong />`
   const tmp = xfold.renderText(txt)
   t.not(txt, tmp)
@@ -102,45 +108,41 @@ test('custom single tag', async t => {
   tmp = xfold.renderText('{mumu /}', {}, { mumu }, { openTag: '{', closeTag: '}' })
   t.is(tmp, 'ok')
   // Test last stopper for single
-  // Because it's a regex, it needs to be escaped
-  tmp = xfold.renderText('<mumu />', {}, { mumu }, { lastStopper: '[?]' })
+  tmp = xfold.renderText('<mumu />', {}, { mumu }, { lastStopper: '?' })
   t.is(tmp, '<mumu />')
-  tmp = xfold.renderText('<mumu ?>', {}, { mumu }, { lastStopper: '[?]' })
-  t.is(tmp, 'ok')
-  tmp = xfold.renderText('< mumu ? >', {}, { mumu }, { lastStopper: '[?]' })
+  tmp = xfold.renderText('<mumu ?>', {}, { mumu }, { lastStopper: '?' })
   t.is(tmp, 'ok')
   // Full test
-  const cfg = { openTag: '{%', closeTag: '%}', lastStopper: '[?]' }
+  const cfg = { openTag: '{', closeTag: '}', lastStopper: '?' }
   tmp = xfold.renderText('<mumu />', {}, { mumu }, cfg)
   t.is(tmp, '<mumu />')
-  tmp = xfold.renderText('{% mumu ? %}', {}, { mumu }, cfg)
+  tmp = xfold.renderText('{mumu ?}', {}, { mumu }, cfg)
   t.is(tmp, 'ok')
 })
 
 test('custom double tag', async t => {
   let tmp, cfg
   const mumu = () => 'ok'
-  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu })
-  t.is(tmp, '<replace-mumu>ok</replace-mumu>')
+  tmp = xfold.renderText('<mumu></mumu>', {}, { mumu })
+  t.is(tmp, '<mumu>ok</mumu>')
   // Test open and close tag
   cfg = { openTag: '{', closeTag: '}' }
-  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu }, cfg)
-  t.is(tmp, '<replace-mumu></replace-mumu>')
-  tmp = xfold.renderText('{replace-mumu}{/replace-mumu}', {}, { mumu }, cfg)
-  t.is(tmp, '{replace-mumu}ok{/replace-mumu}')
+  tmp = xfold.renderText('<mumu></mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<mumu></mumu>')
+  tmp = xfold.renderText('{mumu}{/mumu}', {}, { mumu }, cfg)
+  t.is(tmp, '{mumu}ok{/mumu}')
   // Test last stopper for double
-  // Because it's a regex, it needs to be escaped
-  cfg = { lastStopper: '[?]' }
-  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu }, cfg)
-  t.is(tmp, '<replace-mumu></replace-mumu>')
-  tmp = xfold.renderText('<replace-mumu><?replace-mumu>', {}, { mumu }, cfg)
-  t.is(tmp, '<replace-mumu>ok<?replace-mumu>')
+  cfg = { lastStopper: '?' }
+  tmp = xfold.renderText('<mumu></mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<mumu></mumu>')
+  tmp = xfold.renderText('<mumu><?mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<mumu>ok<?mumu>')
   // Full test
-  cfg = { openTag: '{', closeTag: '}', firstStopper: '[>]', lastStopper: '[<]' }
-  tmp = xfold.renderText('<replace-mumu></replace-mumu>', {}, { mumu }, cfg)
-  t.is(tmp, '<replace-mumu></replace-mumu>')
-  tmp = xfold.renderText('{replace-mumu>} {<replace-mumu}', {}, { mumu }, cfg)
-  t.is(tmp, '{replace-mumu>}ok{<replace-mumu}')
+  cfg = { openTag: '{', closeTag: '}', lastStopper: '<' }
+  tmp = xfold.renderText('<mumu></mumu>', {}, { mumu }, cfg)
+  t.is(tmp, '<mumu></mumu>')
+  tmp = xfold.renderText('{mumu} {<mumu}', {}, { mumu }, cfg)
+  t.is(tmp, '{mumu}ok{<mumu}')
 })
 
 test('single tag not found', async t => {
@@ -149,20 +151,8 @@ test('single tag not found', async t => {
   t.is(txt, tmp)
 })
 
-test('function not found single tag', async t => {
-  const txt = `qwerty <replace-xyz /> ...`
-  const tmp = xfold.renderText(txt)
-  t.is(txt, tmp)
-})
-
 test('double tag not found', async t => {
   const txt = `qwerty <mumu> </mumu> ...`
-  const tmp = xfold.renderText(txt)
-  t.is(txt, tmp)
-})
-
-test('function not found double tag', async t => {
-  const txt = `qwerty <replace-xyz> </replace-xyz> ...`
   const tmp = xfold.renderText(txt)
   t.is(txt, tmp)
 })
