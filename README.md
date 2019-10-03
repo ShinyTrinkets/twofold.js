@@ -53,7 +53,7 @@ Create a file called for example `something.md` and write inside it:
 
 ```md
 ## Hello world!
-It's a nice <emoji-sun-moon /> outside and the time is <emoji-clock /> .
+It's a nice <emojiSunMoon /> outside and the time is <emojiClock /> .
 Should I play with TwoFold some more ? <replace-yes-or-no></replace-yes-or-no> ugh...
 ```
 
@@ -61,11 +61,11 @@ Now, from command line, call TwoFold to convert your file:
 
 > $ 2fold something.md
 
-Open the file again and look at the changes :D You should see something like:
+Open the file again and look at the changes :grin: You should see something like:
 
 ```md
 ## Hello world!
-It's a nice ☀️ outside and the time is 🕜 .
+It's a nice 🌙 outside and the time is 🕥 .
 Should I play with TwoFold some more ? <replace-yes-or-no>Yes</replace-yes-or-no> ugh...
 ```
 
@@ -73,12 +73,14 @@ If you're editing your file with Atom editor, or Sublime text, you'll see the ch
 
 To quickly test some built-in templates, without writing a text file:
 
-> $ echo "yes or no ? &lt;yes-or-no />" | 2fold<br />
-> $ echo "< left < or > right > ? &lt;left-or-right />" | 2fold<br />
-> $ echo "random number: &lt;random-int />" | 2fold<br />
-> $ echo "gimme a random game card ! &lt;random-card />" | 2fold<br />
-> $ echo "sun / moon ? &lt;emoji-sun-moon />" | 2fold<br />
-> $ echo "emoji time hehe &lt;emoji-clock />" | 2fold
+> $ echo 'yes or no ? \<yes_or_no />' | 2fold<br />
+> $ echo '< left < or > right > ? \<left_or_right />' | 2fold<br />
+> $ echo 'random number: \<random_int />' | 2fold<br />
+> $ echo 'gimme a random game card ! \<random_card />' | 2fold<br />
+> $ echo 'sun / moon ? \<emoji_sun_moon />' | 2fold<br />
+> $ echo 'emoji time hehe \<emoji_clock />' | 2fold
+
+All tags can be specified as camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
 
 ### Notes
 
