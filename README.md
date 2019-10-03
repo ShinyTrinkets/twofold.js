@@ -54,7 +54,7 @@ Create a file called for example `something.md` and write inside it:
 ```md
 ## Hello world!
 It's a nice <emojiSunMoon /> outside and the time is <emojiClock /> .
-Should I play with TwoFold some more ? <replace-yes-or-no></replace-yes-or-no> ugh...
+Should I play with TwoFold some more ? <yesOrNo></yesOrNo> ugh...
 ```
 
 Now, from command line, call TwoFold to convert your file:
@@ -66,10 +66,10 @@ Open the file again and look at the changes :grin: You should see something like
 ```md
 ## Hello world!
 It's a nice 🌙 outside and the time is 🕥 .
-Should I play with TwoFold some more ? <replace-yes-or-no>Yes</replace-yes-or-no> ugh...
+Should I play with TwoFold some more ? <yesOrNo>Yes</yesOrNo> ugh...
 ```
 
-If you're editing your file with Atom editor, or Sublime text, you'll see the changes instantly, because they automatically refresh the editor when the file changes.
+If you're editing your file with Visual Studio Code, Atom editor, or Sublime text, you'll see the changes instantly, because they automatically refresh the editor when the file changes.
 
 To quickly test some built-in templates, without writing a text file:
 
