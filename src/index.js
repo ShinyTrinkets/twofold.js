@@ -3,17 +3,6 @@ const functions = require('./functions')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 
-function getText(node) {
-    let textInside = ''
-    if (!node.children) {
-        return ''
-    }
-    for (const c of node.children) {
-        textInside += c.rawText
-    }
-    return textInside
-}
-
 function renderText(text, data={}, customFunctions={}, customConfig={}) {
     /**
      * TwoFold render text string.
@@ -25,7 +14,7 @@ function renderText(text, data={}, customFunctions={}, customConfig={}) {
     for (const t of ast) {
         if (util.isDoubleTag(t)) {
             const func = allHelpers[util.toCamelCase(t.name)]
-            let textInside = getText(t)
+            let textInside = util.getText(t)
             let result = textInside
             try {
                 result = func({ textInside }, data)
@@ -61,7 +50,7 @@ function renderText(text, data={}, customFunctions={}, customConfig={}) {
     for (const t of ast) {
         if (util.isDoubleTag(t)) {
             final += t.firstTagText
-            final += getText(t)
+            final += util.getText(t)
             final += t.secondTagText
         } else {
             final += t.rawText

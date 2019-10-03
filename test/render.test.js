@@ -6,10 +6,14 @@ import helpers from '../src/functions'
 //
 test('simple increment render', async t => {
   const nr = 999
-  const txt = `qwerty <increment>${nr}</increment> ...`
+  let txt = `qwerty <increment>${nr}</increment> ...`
   let tmp = xfold.renderText(txt)
   t.not(tmp, txt)
   t.is(tmp, `qwerty <increment>${nr + 1}</increment> ...`)
+  txt = `qwerty <increment replace=true>${nr}</increment> ...`
+  tmp = xfold.renderText(txt)
+  t.not(tmp, txt)
+  t.is(tmp, `qwerty ${nr + 1} ...`)
 })
 
 test('simple random integer', async t => {
@@ -144,6 +148,15 @@ test('custom double tag', async t => {
   tmp = xfold.renderText('{mumu} {<mumu}', {}, { mumu }, cfg)
   t.is(tmp, '{mumu}ok{<mumu}')
 })
+
+// test('deep increment render', async t => {
+//   const nr = 997
+//   let txt = 'qwerty <increment replace=true><increment replace=true><increment replace=true>'
+//   txt += `${nr}</increment></increment></increment>`
+//   let tmp = xfold.renderText(txt)
+//   t.not(tmp, txt)
+//   t.is(tmp, `qwerty ${nr + 3}`)
+// })
 
 test('single tag not found', async t => {
   const txt = `qwerty <mumu /> ...`

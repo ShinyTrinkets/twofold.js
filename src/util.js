@@ -24,10 +24,26 @@ const isRawText = t => t && t.name === undefined && t.single === undefined && t.
 
 const shouldConsume = t => t.param && t.param.indexOf('replace=true') !== -1
 
+function getText(node) {
+    let textInside = ''
+    if (!node.children) {
+        return ''
+    }
+    for (const c of node.children) {
+        if (isDoubleTag(c)) {
+            textInside += getText(c)
+        } else {
+            textInside += c.rawText
+        }
+    }
+    return textInside
+}
+
 module.exports = {
     toCamelCase,
     isDoubleTag,
     isSingleTag,
     isRawText,
     shouldConsume,
+    getText,
 }
