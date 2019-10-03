@@ -32,12 +32,23 @@ function renderText(text, data={}, customFunctions={}, customConfig={}) {
             } catch (err) {
                 console.warn(`Error executing double ${t.name}:`, err)
             }
-            t.children = [{ rawText: result.toString() }]
-        } else if (util.isSingleTag(t)) {
+            if (util.shouldConsume(t)) {
+                delete t.name
+                delete t.param
+                delete t.double
+                t.rawText = result.toString()
+            } else {
+                t.children = [{ rawText: result.toString() }]
+            }
+        }
+        // -
+        else if (util.isSingleTag(t)) {
             const func = allHelpers[util.toCamelCase(t.name)]
             let result = t.rawText
             try {
                 result = func({ textInside: t.rawText }, data)
+                delete t.name
+                delete t.single
                 t.rawText = result.toString()
             } catch (err) {
                 console.warn(`Error executing single ${t.name}:`, err)
