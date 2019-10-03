@@ -219,3 +219,19 @@ test('all parse tests', t => {
         t.deepEqual(expected, ast)
     }
 })
+
+test('weird parse tests', t => {
+    let lex, ast
+
+    lex = new lexer.Lexer().lex('')
+    ast = parser.parse(lex)
+    t.deepEqual([], ast)
+
+    lex = [{}]
+    ast = parser.parse(lex)
+    t.deepEqual([], ast)
+
+    lex = [{ rawText: '1' }, { rawText: '2' }]
+    ast = parser.parse(lex)
+    t.deepEqual([{ rawText: '12' }], ast)
+})
