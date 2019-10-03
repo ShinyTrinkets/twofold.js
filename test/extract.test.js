@@ -2,13 +2,10 @@ import fs from 'fs'
 import test from 'ava'
 import lexer from '../src/lexer'
 import parser from '../src/parser'
+import { isRawText, isSingleTag, isDoubleTag } from '../src/util'
 //
 // Testing the extraction of the blocks
 // A more serious testing is done in render tests
-//
-const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
-const isDoubleTag = t => t && t.name && t.double
-const isSingleTag = t => t && t.name && t.single
 //
 test('no blocks found', async t => {
   const o = new lexer.Lexer()

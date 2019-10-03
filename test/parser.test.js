@@ -14,6 +14,9 @@ const TESTS = [
     ['<x1>',
         [{ rawText: '<x1>' }] // this is raw-text
     ],
+    ['<wrong>, very wrong',
+        [{ rawText: '<wrong>, very wrong' }] // this is raw-text
+    ],
     [
         '<temp type=f>0</',
         [{ rawText: '<temp type=f>0</' }] // this is raw-text
@@ -23,8 +26,8 @@ const TESTS = [
         [{ rawText: 'blah <tesTing>!!' }] // this is raw-text
     ],
     [
-        '<a_b></b_c> ',
-        [{ rawText: '<a_b></b_c> ' }] // this is raw-text
+        ' <a_b></b_c>',
+        [{ rawText: ' <a_b></b_c>' }] // this is raw-text
     ],
 
     [
@@ -105,6 +108,7 @@ const TESTS = [
         ]
     ],
     [
+        // correct deeply nested tags
         '<t1><t2><t3><xXx/>?</t3></t2></t1>',
         [
             {
@@ -140,6 +144,38 @@ const TESTS = [
         ]
     ],
     [
+        // wrong deeply nested tags
+        '<t1><tx><t3><xXx/>?</t3></ty></t1>',
+        [
+            {
+                double: true,
+                firstTagText: '<t1>',
+                secondTagText: '</t1>',
+                name: 't1',
+                children: [
+                    { rawText: '<tx>' },
+
+                    {
+                        double: true,
+                        firstTagText: '<t3>',
+                        secondTagText: '</t3>',
+                        name: 't3',
+                        children: [
+                            {
+                                name: 'xXx',
+                                rawText: '<xXx/>',
+                                single: true,
+                            },
+                            { rawText: '?' },
+                        ]
+                    },
+                    { rawText: '</ty>' },
+                ]
+            }
+        ]
+    ],
+    [
+        // wrong nested tags, 1 level deep
         '<t1><t2></t3></t1>',
         [
             {
@@ -154,6 +190,7 @@ const TESTS = [
         ]
     ],
     [
+        // wrong nested tags, 1 level deep
         '<t1><t2> </t2></tx>',
         [
             { rawText: '<t1>' },
