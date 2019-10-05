@@ -36,7 +36,6 @@ function parse(tokens, customConfig={}) {
         if (isDoubleTag(topStack)) {
             addChild(topStack, token)
         } else if (isRawText(parent) && isRawText(token)) {
-            // console.log('Raw text', token, '+ Stack Raw text', parent)
             parent.rawText += token.rawText
         } else {
             ast.push(token)
@@ -84,12 +83,6 @@ function parse(tokens, customConfig={}) {
                 }
                 continue
             }
-        }
-
-        if (isRawText(token) && isRawText(topTag)) {
-            // console.log('Raw text', token, '+ Stack Raw text', topTag)
-            topTag.rawText += token.rawText
-            continue
         }
 
         // Commit

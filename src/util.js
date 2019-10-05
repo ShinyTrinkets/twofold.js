@@ -27,7 +27,11 @@ const shouldConsume = t => t.param && t.param.indexOf('replace=true') !== -1
 function getText(node) {
     let textInside = ''
     if (!node.children) {
-        return node.rawText
+        if (isRawText(node)) {
+            return node.rawText
+        } else {
+            return ''
+        }
     }
     for (const c of node.children) {
         if (isDoubleTag(c)) {

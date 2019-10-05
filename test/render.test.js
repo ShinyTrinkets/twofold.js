@@ -190,13 +190,21 @@ test('deep custom function render', async t => {
 })
 
 test('deep unknown function render', async t => {
-  let tmp = ''
-  tmp = xfold.renderText('<mumu><mumu><mumu><increment replace=true>0</increment></mumu></mumu></mumu>')
-  t.is(tmp, '<mumu><mumu><mumu>1</mumu></mumu></mumu>')
+  const tmp = xfold.renderText('<mumu><mumu><mumu>\n<increment replace=true>0</increment></mumu></mumu></mumu>')
+  t.is(tmp, '<mumu><mumu><mumu>\n1</mumu></mumu></mumu>')
+})
+
+test('deep mix render', async t => {
+  let txt = ''
+  txt += '<div><span class="title">Hello</span> <br />\n'
+  txt += '<span class="text">Workd</span> <leftOrRight /></div>'
+  const tmp = xfold.renderText(txt)
+  t.not(tmp, txt)
+  t.is(tmp.indexOf('<div><span class="title">Hello</span> <br />'), 0)
 })
 
 test('single tag not found', async t => {
-  const txt = `qwerty <mumu /> ...`
+  const txt = `qwerty\n<mumu /> ...`
   const tmp = xfold.renderText(txt)
   t.is(txt, tmp)
 })
