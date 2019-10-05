@@ -149,14 +149,51 @@ test('custom double tag', async t => {
   t.is(tmp, '{mumu}ok{<mumu}')
 })
 
-// test('deep increment render', async t => {
-//   const nr = 997
-//   let txt = 'qwerty <increment replace=true><increment replace=true><increment replace=true>'
-//   txt += `${nr}</increment></increment></increment>`
-//   let tmp = xfold.renderText(txt)
-//   t.not(tmp, txt)
-//   t.is(tmp, `qwerty ${nr + 3}`)
-// })
+test('deep increment consume render', async t => {
+  const nr = 997
+  let txt = 'qwerty <increment replace=true><increment replace=true><increment replace=true>'
+  txt += `${nr}</increment></increment></increment>`
+  let tmp = xfold.renderText(txt)
+  t.not(tmp, txt)
+  t.is(tmp, `qwerty ${nr + 3}`)
+})
+
+test('deep increment render', async t => {
+  const nr = 997
+  let txt = 'qwerty <increment><increment replace=true><increment replace=true>'
+  txt += `${nr}</increment></increment></increment>`
+  let tmp = xfold.renderText(txt)
+  t.not(tmp, txt)
+  t.is(tmp, `qwerty <increment>${nr + 3}</increment>`)
+})
+
+test('deep custom function render', async t => {
+  let tmp = ''
+  let calls = 0
+  const mumu = function () {
+    calls += 1
+    return 'ok'
+  }
+  tmp = xfold.renderText('<mumu><mumu></mumu></mumu>', {}, { mumu })
+  t.is(tmp, '<mumu>ok</mumu>')
+  t.is(calls, 2) // evaluate calls
+
+  calls = 0
+  tmp = xfold.renderText('<mumu><mumu><mumu></mumu></mumu></mumu>', {}, { mumu })
+  t.is(tmp, '<mumu>ok</mumu>')
+  t.is(calls, 3) // evaluate calls
+
+  calls = 0
+  tmp = xfold.renderText('<mumu><mumu /></mumu>', {}, { mumu })
+  t.is(tmp, '<mumu>ok</mumu>')
+  t.is(calls, 2) // evaluate calls
+})
+
+test('deep unknown function render', async t => {
+  let tmp = ''
+  tmp = xfold.renderText('<mumu><mumu><mumu><increment replace=true>0</increment></mumu></mumu></mumu>')
+  t.is(tmp, '<mumu><mumu><mumu>1</mumu></mumu></mumu>')
+})
 
 test('single tag not found', async t => {
   const txt = `qwerty <mumu /> ...`

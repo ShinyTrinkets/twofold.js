@@ -10,7 +10,7 @@ function toCamelCase(str) {
             .trim()
             // Uppercase the first character in each group immediately following a space
             // (delimited by spaces)
-            .replace(/ (.)/g, function($1) {
+            .replace(/ (.)/g, function ($1) {
                 return $1.toUpperCase()
             })
             // Remove all spaces
@@ -27,7 +27,7 @@ const shouldConsume = t => t.param && t.param.indexOf('replace=true') !== -1
 function getText(node) {
     let textInside = ''
     if (!node.children) {
-        return ''
+        return node.rawText
     }
     for (const c of node.children) {
         if (isDoubleTag(c)) {
@@ -39,6 +39,31 @@ function getText(node) {
     return textInside
 }
 
+function unParse(node) {
+    let text = ''
+    if (node.children) {
+        text = node.firstTagText
+        for (const c of node.children) {
+            if (isDoubleTag(c)) {
+                text += unParse(c)
+            } else {
+                text += c.rawText
+            }
+        }
+        text += node.secondTagText
+    }
+    // Empty double tag, single tag, or raw text
+    else {
+        if (isDoubleTag(node)) {
+            text = node.firstTagText
+            text += node.secondTagText
+        } else {
+            text = node.rawText
+        }
+    }
+    return text
+}
+
 module.exports = {
     toCamelCase,
     isDoubleTag,
@@ -46,4 +71,5 @@ module.exports = {
     isRawText,
     shouldConsume,
     getText,
+    unParse,
 }
