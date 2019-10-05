@@ -1,3 +1,4 @@
+const fs = require('fs')
 const util = require('./util')
 const functions = require('./functions')
 const { Lexer } = require('./lexer')
@@ -51,11 +52,13 @@ function flattenDoubleTag(tag, data, allFunctions) {
     }
 }
 
-function renderText(text, data={}, customFunctions={}, customConfig={}) {
+function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
     /**
      * TwoFold render text string.
      */
     const allFunctions = Object.assign({}, functions, customFunctions)
+    // const label = 'tf-' + (Math.random() * 100 * Math.random()).toFixed(6)
+    // console.time(label)
     const ast = parse(new Lexer(customConfig).lex(text), customConfig)
 
     let final = ''
@@ -68,7 +71,40 @@ function renderText(text, data={}, customFunctions={}, customConfig={}) {
         }
         final += util.unParse(t)
     }
+    // console.timeEnd(label)
     return final
 }
 
-module.exports = { renderText }
+async function renderFile(fname, data = {}, customFunctions = {}, customConfig = {}) {
+    const allFunctions = Object.assign({}, functions, customFunctions)
+
+    return new Promise(resolve => {
+        // const label = 'tf-' + (Math.random() * 100 * Math.random()).toFixed(6)
+        // console.time(label)
+        const p = new Lexer(customConfig)
+        const stream = fs.createReadStream(fname, { encoding: 'utf8' })
+
+        stream.on('data', data => {
+            p.push(data)
+        })
+        stream.on('close', () => {
+            const ast = parse(p.finish(), customConfig)
+            let final = ''
+
+            // Convert single tags into raw text and deep flatten double tags
+            for (const t of ast) {
+                if (util.isDoubleTag(t)) {
+                    flattenDoubleTag(t, data, allFunctions)
+                } else if (util.isSingleTag(t)) {
+                    flattenSingleTag(t, data, allFunctions)
+                }
+                final += util.unParse(t)
+            }
+
+            // console.timeEnd(label)
+            resolve(final)
+        })
+    })
+}
+
+module.exports = { renderText, renderFile }

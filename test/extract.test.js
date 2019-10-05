@@ -1,5 +1,6 @@
 import fs from 'fs'
 import test from 'ava'
+import tf from '../src'
 import lexer from '../src/lexer'
 import parser from '../src/parser'
 import { isRawText, isSingleTag, isDoubleTag } from '../src/util'
@@ -34,4 +35,18 @@ test('some blocks found', async t => {
   t.true(isSingleTag(ast[3]))
   t.true(isRawText(ast[4]))
   t.true(isDoubleTag(ast[5]))
+})
+
+test('render file no tags', async t => {
+  const fname = __dirname + '/fixtures/text0.md'
+  const txt = fs.readFileSync(fname, { encoding: 'utf8' })
+  const final = await tf.renderFile(fname)
+  t.is(txt, final)
+})
+
+test('render file some tags', async t => {
+  const fname = __dirname + '/fixtures/text1.md'
+  const txt = fs.readFileSync(fname, { encoding: 'utf8' })
+  const final = await tf.renderFile(fname)
+  t.is(txt, final)
 })

@@ -3,7 +3,7 @@
 [![Project name][project-img]][project-url]
 [![Build status][build-img]][build-url]
 [![Coverage][coverage-img]][coverage-url]
-[![Standard Style Guide][style-img]][style-url]
+[![Prettier Style][style-img]][style-url]
 
 > Glorified curly bubbly templates,<br />
 > Templates with a twist,<br />
@@ -120,5 +120,5 @@ https://github.com/croqaz/awesome-markup
 [build-url]: https://travis-ci.org/ShinyTrinkets/twofold.js
 [coverage-img]: https://codecov.io/gh/ShinyTrinkets/twofold.js/branch/master/graph/badge.svg
 [coverage-url]: https://codecov.io/gh/ShinyTrinkets/twofold.js
-[style-img]: https://badgen.net/badge/Code%20style/standard/f2a
-[style-url]: https://standardjs.com
+[style-img]: https://badgen.net/badge/Code%20style/prettier/f2a
+[style-url]: https://prettier.io

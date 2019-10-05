@@ -19,7 +19,7 @@ function addChild(parent, c) {
  * If the tag is double, it will have children of type raw text,
  * or other single or double tags.
  */
-function parse(tokens, customConfig={}) {
+function parse(tokens, customConfig = {}) {
     const { openTag, lastStopper } = Object.assign({}, config, customConfig)
     const RE_FIRST_START = new RegExp(`^${openTag[0]}[ ]*[a-z]`)
     const RE_SECOND_START = new RegExp(`^${openTag[0]}[${lastStopper[0]}][ ]*[a-z]`)

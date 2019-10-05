@@ -10,7 +10,7 @@ function toCamelCase(str) {
             .trim()
             // Uppercase the first character in each group immediately following a space
             // (delimited by spaces)
-            .replace(/ (.)/g, function ($1) {
+            .replace(/ (.)/g, function($1) {
                 return $1.toUpperCase()
             })
             // Remove all spaces
