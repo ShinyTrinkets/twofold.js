@@ -8,12 +8,14 @@ function flattenSingleTag(tag, data, allFunctions) {
     // Convert a single tag into raw text,
     // by evaluating the tag function
     const func = allFunctions[util.toCamelCase(tag.name)]
-    let text = tag.rawText
+    const params = Object.assign({}, data, tag.params)
+    const text = params.text ? params.text : ''
+    let result = tag.rawText
     try {
-        text = func({ textInside: tag.rawText }, data)
+        result = func({ text }, params)
         delete tag.name
         delete tag.single
-        tag.rawText = text.toString()
+        tag.rawText = result.toString()
     } catch (err) {
         console.warn(`Cannot evaluate single ${tag.name}:`, err)
     }
@@ -32,10 +34,11 @@ function flattenDoubleTag(tag, data, allFunctions) {
     }
     // At this point all children are flat
     const func = allFunctions[util.toCamelCase(tag.name)]
-    let textInside = util.getText(tag)
-    let text = textInside
+    const params = Object.assign({}, data, tag.params)
+    const text = util.getText(tag)
+    let result = text
     try {
-        text = func({ textInside }, data)
+        result = func({ text }, params)
         if (util.shouldConsume(tag)) {
             delete tag.name
             delete tag.double
@@ -43,9 +46,9 @@ function flattenDoubleTag(tag, data, allFunctions) {
             delete tag.children
             delete tag.firstTagText
             delete tag.secondTagText
-            tag.rawText = text.toString()
+            tag.rawText = result.toString()
         } else {
-            tag.children = [{ rawText: text.toString() }]
+            tag.children = [{ rawText: result.toString() }]
         }
     } catch (err) {
         console.warn(`Cannot evaluate double ${tag.name}:`, err)

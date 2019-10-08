@@ -25,7 +25,7 @@ const isRawText = t => t && t.name === undefined && t.single === undefined && t.
 const shouldConsume = t => t.params && t.params['consume'] === 'true'
 
 function getText(node) {
-    let textInside = ''
+    let text = ''
     if (!node.children) {
         if (isRawText(node)) {
             return node.rawText
@@ -35,12 +35,12 @@ function getText(node) {
     }
     for (const c of node.children) {
         if (isDoubleTag(c)) {
-            textInside += getText(c)
+            text += getText(c)
         } else {
-            textInside += c.rawText
+            text += c.rawText
         }
     }
-    return textInside
+    return text
 }
 
 function unParse(node) {

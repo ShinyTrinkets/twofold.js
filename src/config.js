@@ -16,6 +16,7 @@ const closeTag = '>'
 // In double tags, the stopper only affects the start of the last tag
 const lastStopper = '/'
 
+// DEPRECATED !!
 // In <replace-random-int></replace-random-int>
 // If you change first stopper to "?", it will become: <replace-random-int?></replace-random-int>
 // In <replace-random-int> </replace-random-int>
@@ -24,4 +25,4 @@ const lastStopper = '/'
 // First stopper only affects double tags, at the end of the first tag
 const firstStopper = ''
 
-module.exports = { identifier, openTag, closeTag, lastStopper, firstStopper }
+module.exports = { identifier, openTag, closeTag, lastStopper }
