@@ -1,10 +1,17 @@
+function getDate(text) {
+    if (text && typeof text === 'string') {
+        return new Date(text)
+    } else if (!text || typeof text !== 'object') {
+        return new Date()
+    }
+    return text
+}
+
 /**
  * Helper that returns day or night.
  */
-function dayOrNight(whatever, { date = null, splitHour = 6 } = {}) {
-    if (!date || typeof date !== 'object') {
-        date = new Date()
-    }
+function dayOrNight(_, { date = null, splitHour = 6 } = {}) {
+    date = getDate(date)
     const h = date.getHours()
     if (h > splitHour && h <= splitHour + 12) {
         return 'day'
@@ -75,10 +82,8 @@ const halfHours = {
 /**
  * Returns the current time as emoji cliock.
  */
-function emojiClock(whatever, { date = null, showHalf = true } = {}) {
-    if (!date || typeof date !== 'object') {
-        date = new Date()
-    }
+function emojiClock(_, { date = null, showHalf = true } = {}) {
+    date = getDate(date)
     let h = date.getHours()
     if (h > 12) {
         h -= 12
@@ -99,7 +104,7 @@ function emojiClock(whatever, { date = null, showHalf = true } = {}) {
     return result
 }
 
-function zodiacSign(whatever, { date = null } = {}) {
+function zodiacSign(_, { date = null } = {}) {
     const zodSigns = [
         'Capricorn',
         'Aquarius',
@@ -114,9 +119,7 @@ function zodiacSign(whatever, { date = null } = {}) {
         'Scorpio',
         'Sagittarius',
     ]
-    if (!date || typeof date !== 'object') {
-        date = new Date()
-    }
+    date = getDate(date)
     const day = date.getDate()
     const month = date.getMonth()
     let sign = ''
