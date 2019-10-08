@@ -16,6 +16,7 @@ const TESTS = [
     ['<A B />', [{ rawText: '<A B />' }]],
     ['<x/ >', [{ rawText: '<x/ >' }]],
     ['<1tag />', [{ rawText: '<1tag />' }]],
+    ['<tag X=0 />', [{ rawText: '<tag X=0 />' }]],
     ['<tag 1=2 />', [{ rawText: '<tag 1=2 />' }]],
 
     ['<x1>',
@@ -172,12 +173,12 @@ const TESTS = [
         ]
     ],
     [
-        '< dayOrNight date="2019-07" />',
+        '< dayOrNight date="2019-07"\t/>',
         [
             {
                 name: 'dayOrNight',
                 params: { date: '"2019-07"' },
-                rawText: '< dayOrNight date="2019-07" />',
+                rawText: '< dayOrNight date="2019-07"\t/>',
                 single: true,
             }
         ]
@@ -232,12 +233,12 @@ const TESTS = [
         ]
     ],
     [
-        '< increment nr=5 ></ increment  >',
+        '< increment nr=5\n></ increment  >',
         [
             {
                 name: 'increment',
                 params: { nr: '5' },
-                rawText: '< increment nr=5 >',
+                rawText: '< increment nr=5\n>',
                 double: true,
             },
             {

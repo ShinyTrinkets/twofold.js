@@ -10,6 +10,7 @@ const STATE_EQUAL = 's__equal'
 const STATE_VALUE = 's__value'
 const STATE_FINAL = 's__final'
 
+const SPACE_LETTERS = /[ \t\n]/
 const LOWER_LETTERS = /[a-z]/
 const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
 
@@ -193,8 +194,8 @@ class Lexer {
                     this.pendingState.single = true
                     transition(STATE_CLOSE_TAG)
                 }
-                // Is this a space inside the tag?
-                else if (char === ' ' && this.pendingState.name.trim()) {
+                // Is this a space char inside the tag?
+                else if (SPACE_LETTERS.test(char) && this.pendingState.name.trim()) {
                     this.pendingState.rawText += char
                 }
                 // Is this the end of the First tag from a Double tag?
@@ -240,7 +241,7 @@ class Lexer {
             // --
             else if (this.state === STATE_EQUAL && this.pendingState.param_key) {
                 // Is this the start of a value after equal?
-                if (char !== ' ' && char !== lastStopper[0]) {
+                if (!SPACE_LETTERS.test(char) && char !== lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.param_value = char
                     transition(STATE_VALUE)
@@ -270,8 +271,8 @@ class Lexer {
                     commitTag()
                     commitAndTransition(STATE_RAW_TEXT)
                 }
-                // Is this a space inside the tag?
-                else if (char === ' ') {
+                // Is this a space char inside the tag?
+                else if (SPACE_LETTERS.test(char)) {
                     this.pendingState.rawText += char
                     commitTag()
                     transition(STATE_INSIDE_TAG)
