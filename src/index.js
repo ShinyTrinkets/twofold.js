@@ -38,8 +38,8 @@ function flattenDoubleTag(tag, data, allFunctions) {
         text = func({ textInside }, data)
         if (util.shouldConsume(tag)) {
             delete tag.name
-            delete tag.param
             delete tag.double
+            delete tag.params
             delete tag.children
             delete tag.firstTagText
             delete tag.secondTagText

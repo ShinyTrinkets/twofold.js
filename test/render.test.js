@@ -10,7 +10,7 @@ test('simple increment render', async t => {
   let tmp = xfold.renderText(txt)
   t.not(tmp, txt)
   t.is(tmp, `qwerty <increment>${nr + 1}</increment> ...`)
-  txt = `qwerty <increment replace=true>${nr}</increment> ...`
+  txt = `qwerty <increment consume=true>${nr}</increment> ...`
   tmp = xfold.renderText(txt)
   t.not(tmp, txt)
   t.is(tmp, `qwerty ${nr + 1} ...`)
@@ -151,7 +151,7 @@ test('custom double tag', async t => {
 
 test('deep increment consume render', async t => {
   const nr = 997
-  let txt = 'qwerty <increment replace=true><increment replace=true><increment replace=true>'
+  let txt = 'qwerty <increment consume=true><increment consume=true><increment consume=true>'
   txt += `${nr}</increment></increment></increment>`
   let tmp = xfold.renderText(txt)
   t.not(tmp, txt)
@@ -160,7 +160,7 @@ test('deep increment consume render', async t => {
 
 test('deep increment render', async t => {
   const nr = 997
-  let txt = 'qwerty <increment><increment replace=true><increment replace=true>'
+  let txt = 'qwerty <increment><increment consume=true><increment consume=true>'
   txt += `${nr}</increment></increment></increment>`
   let tmp = xfold.renderText(txt)
   t.not(tmp, txt)
@@ -190,7 +190,7 @@ test('deep custom function render', async t => {
 })
 
 test('deep unknown function render', async t => {
-  const tmp = xfold.renderText('<mumu><mumu><mumu>\n<increment replace=true>0</increment></mumu></mumu></mumu>')
+  const tmp = xfold.renderText('<mumu><mumu><mumu>\n<increment consume=true>0</increment></mumu></mumu></mumu>')
   t.is(tmp, '<mumu><mumu><mumu>\n1</mumu></mumu></mumu>')
 })
 

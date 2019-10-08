@@ -11,7 +11,6 @@ const STATE_VALUE = 's__value'
 const STATE_FINAL = 's__final'
 
 const LOWER_LETTERS = /[a-z]/
-const ALL_LETTERS = /[a-zA-Z]/
 const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
 
 /**
@@ -84,6 +83,16 @@ class Lexer {
                 }
             }
             transition(newState)
+        }
+
+        const commitTag = function() {
+            /*
+             * Commit pending tag key + value as a dict
+             * and delete the temporary variables.
+             */
+            self.pendingState.params[self.pendingState.param_key] = self.pendingState.param_value
+            delete self.pendingState.param_key
+            delete self.pendingState.param_value
         }
 
         for (const char of text) {
@@ -197,7 +206,8 @@ class Lexer {
                 // Is this the beginning of a param name?
                 else if (LOWER_LETTERS.test(char)) {
                     this.pendingState.rawText += char
-                    this.pendingState.param = char
+                    this.pendingState.params = {}
+                    this.pendingState.param_key = char
                     transition(STATE_PARAM)
                 }
                 // Abandon current state, back to raw text
@@ -209,33 +219,34 @@ class Lexer {
             }
 
             // --
-            else if (this.state === STATE_PARAM && this.pendingState.param) {
+            else if (this.state === STATE_PARAM && this.pendingState.param_key) {
                 // Is this the middle of a param name?
-                if (ALL_LETTERS.test(char)) {
+                if (ALLOWED_ALPHA.test(char)) {
                     this.pendingState.rawText += char
-                    this.pendingState.param += char
+                    this.pendingState.param_key += char
                 }
                 // Is this the equal between key and value?
                 else if (char === '=') {
                     this.pendingState.rawText += char
-                    this.pendingState.param += char
                     transition(STATE_EQUAL)
                 } else {
-                    delete this.pendingState.param
+                    delete this.pendingState.params
+                    delete this.pendingState.param_key
                     this.pendingState.rawText += char
                     commitAndTransition(STATE_RAW_TEXT, true)
                 }
             }
 
             // --
-            else if (this.state === STATE_EQUAL && this.pendingState.param) {
+            else if (this.state === STATE_EQUAL && this.pendingState.param_key) {
                 // Is this the start of a value after equal?
                 if (char !== ' ' && char !== lastStopper[0]) {
                     this.pendingState.rawText += char
-                    this.pendingState.param += char
+                    this.pendingState.param_value = char
                     transition(STATE_VALUE)
                 } else {
-                    delete this.pendingState.param
+                    delete this.pendingState.params
+                    delete this.pendingState.param_key
                     this.pendingState.rawText += char
                     commitAndTransition(STATE_RAW_TEXT, true)
                 }
@@ -243,29 +254,32 @@ class Lexer {
 
             // Anything is valid as a VALUE
             // TODO: support spaces inside values
-            else if (this.state === STATE_VALUE && this.pendingState.param) {
+            else if (this.state === STATE_VALUE && this.pendingState.param_key) {
                 // Is this a tag stopper?
                 // In this case, it's a single tag
                 if (char === lastStopper[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
+                    commitTag()
                     transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
                 else if (char === closeTag[0]) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
+                    commitTag()
                     commitAndTransition(STATE_RAW_TEXT)
                 }
                 // Is this a space inside the tag?
                 else if (char === ' ') {
                     this.pendingState.rawText += char
+                    commitTag()
                     transition(STATE_INSIDE_TAG)
                 }
                 // Is this the middle of a value after equal?
                 else {
                     this.pendingState.rawText += char
-                    this.pendingState.param += char
+                    this.pendingState.param_value += char
                 }
             }
 

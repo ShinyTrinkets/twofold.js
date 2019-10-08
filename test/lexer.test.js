@@ -16,6 +16,7 @@ const TESTS = [
     ['<A B />', [{ rawText: '<A B />' }]],
     ['<x/ >', [{ rawText: '<x/ >' }]],
     ['<1tag />', [{ rawText: '<1tag />' }]],
+    ['<tag 1=2 />', [{ rawText: '<tag 1=2 />' }]],
 
     ['<x1>',
         [{ rawText: '<x1>', name: 'x1', double: true }],
@@ -158,13 +159,13 @@ const TESTS = [
         ]
     ],
     [
-        '?<increment nr=99/>!',
+        '?<increment nr1=99/>!',
         [
             { rawText: '?' },
             {
                 name: 'increment',
-                param: 'nr=99',
-                rawText: '<increment nr=99/>',
+                params: { nr1: '99' },
+                rawText: '<increment nr1=99/>',
                 single: true,
             },
             { rawText: '!' }
@@ -175,7 +176,7 @@ const TESTS = [
         [
             {
                 name: 'dayOrNight',
-                param: 'date="2019-07"',
+                params: { date: '"2019-07"' },
                 rawText: '< dayOrNight date="2019-07" />',
                 single: true,
             }
@@ -218,7 +219,7 @@ const TESTS = [
         [
             {
                 name: 'dayOrNight',
-                param: 'date="2019-07"',
+                params: { date: '"2019-07"' },
                 rawText: '<dayOrNight date="2019-07">',
                 double: true,
             },
@@ -235,7 +236,7 @@ const TESTS = [
         [
             {
                 name: 'increment',
-                param: 'nr=5',
+                params: { nr: '5' },
                 rawText: '< increment nr=5 >',
                 double: true,
             },
@@ -251,7 +252,7 @@ const TESTS = [
         [
             {
                 name: 'increment',
-                param: 'nr=1',
+                params: { nr: '1' },
                 rawText: '<increment nr=1>',
                 double: true,
             },

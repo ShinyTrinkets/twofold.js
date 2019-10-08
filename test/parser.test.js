@@ -62,7 +62,7 @@ const TESTS = [
                 firstTagText: '<temp type=f>',
                 secondTagText: '</temp>',
                 name: 'temp',
-                param: 'type=f',
+                params: { type: 'f' },
                 children: [
                     { rawText: '0' }
                 ]

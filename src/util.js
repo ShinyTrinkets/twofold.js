@@ -22,7 +22,7 @@ const isDoubleTag = t => t && t.name && t.double
 const isSingleTag = t => t && t.name && t.single
 const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
 
-const shouldConsume = t => t.param && t.param.indexOf('replace=true') !== -1
+const shouldConsume = t => t.params && t.params['consume'] === 'true'
 
 function getText(node) {
     let textInside = ''
