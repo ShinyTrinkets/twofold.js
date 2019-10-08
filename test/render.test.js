@@ -29,6 +29,25 @@ test('simple random integer', async t => {
   t.true(tmp2.length < txt2.length)
 })
 
+test('render once', async t => {
+  // Test without once
+  let text = `random <randomInt></randomInt> ...`
+  let tmp1 = xfold.renderText(text)
+  t.not(text, tmp1)
+  let tmp2 = xfold.renderText(tmp1)
+  t.not(tmp1, tmp2)
+
+  // Test with once=true
+  text = `random <randomInt once=true></randomInt> ...`
+  console.log('???', text)
+  tmp1 = xfold.renderText(text)
+  console.log('???', tmp1)
+  t.not(text, tmp1)
+  tmp2 = xfold.renderText(tmp1)
+  console.log('???', tmp2)
+  t.is(tmp1, tmp2)
+})
+
 test('simple sort render', async t => {
   const li = ['z', 'x', 'a', 'm']
   const txt = `qwerty <sortLines>\n${li.join('\n')}</sortLines> ...`

@@ -22,7 +22,13 @@ function flattenSingleTag(tag, data, allFunctions) {
 }
 
 function flattenDoubleTag(tag, data, allFunctions) {
-    // Deep evaluate all tags, by calling the tag function
+    /*
+     * Deep evaluate all tags, by calling the tag function.
+     * If the double tag has param consume=true, it will be destroyed
+     * after render, just like a single tag.
+     * If the double tag has param once=true, it will not be evaluated,
+     * if it contains any text inside.
+     */
     if (tag.children) {
         for (const c of tag.children) {
             if (util.isDoubleTag(c)) {
@@ -36,6 +42,9 @@ function flattenDoubleTag(tag, data, allFunctions) {
     const func = allFunctions[util.toCamelCase(tag.name)]
     const params = Object.assign({}, data, tag.params)
     const text = util.getText(tag)
+    if (text && tag.params && tag.params.once === 'true') {
+        return
+    }
     let result = text
     try {
         result = func({ text }, params)
