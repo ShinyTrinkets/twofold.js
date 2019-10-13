@@ -39,12 +39,9 @@ test('render once', async t => {
 
   // Test with once=true
   text = `random <randomInt once=true></randomInt> ...`
-  console.log('???', text)
   tmp1 = xfold.renderText(text)
-  console.log('???', tmp1)
   t.not(text, tmp1)
   tmp2 = xfold.renderText(tmp1)
-  console.log('???', tmp2)
   t.is(tmp1, tmp2)
 })
 

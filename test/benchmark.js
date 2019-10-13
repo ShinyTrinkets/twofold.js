@@ -4,7 +4,16 @@ const fs = require('fs')
 // so I'm comparing TwoFold with similar libraries,
 // by feeding them the same file.
 //
-const FILE = process.env.HOME + '/Dev/ShinyTrinkets/twofold.js/random1.txt'
+const FILE = 'random1.txt'
+
+function benchTwofold() {
+    const twofold = require('../src')
+    const label = 'bench-twofold'
+    console.time(label)
+    const txt = fs.readFileSync(FILE, { encoding: 'utf8' })
+    twofold.renderText(txt)
+    console.timeEnd(label)
+}
 
 function benchNunjucks() {
     const nunjucks = require('nunjucks')
@@ -36,4 +45,4 @@ function benchLiquid() {
         })
 }
 
-module.exports = { benchNunjucks, benchMustache, benchLiquid }
+module.exports = { benchTwofold, benchNunjucks, benchMustache, benchLiquid }
