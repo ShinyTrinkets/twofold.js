@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const xfold = require('./')
+const scan = require('./scan')
 const p = require('../package')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
@@ -36,9 +37,9 @@ the screen:
 
 If you want to test some tags, or chain multiple
 CLI apps together, just use the stdin.
-`
+`;
 
-function main() {
+(async function main() {
     const args = minimist(process.argv.slice(2), options)
 
     if (args.version) {
@@ -51,38 +52,37 @@ function main() {
         return
     }
 
+    if (args.scan) {
+        const fname = args.scan
+        console.log('(2✂︎f) Scan:', fname)
+        await scan.scanFile(fname)
+        return
+    }
+
     if (args._ && args._.length) {
         for (const fname of args._) {
             if (!fname) {
                 continue
             }
             console.log('(2✂︎f)', fname)
-            const text = fs.readFileSync(fname, { encoding: 'utf8' })
-            if (!text) {
-                continue
-            }
-            const result = xfold.renderText(text)
+            const result = await xfold.renderFile(fname)
             fs.writeFileSync(fname, result, { encoding: 'utf8' })
         }
     } else {
         const stdin = process.stdin
         stdin.setEncoding('utf8')
+        let result = ''
 
-        let textChunks = ''
-        stdin.on('data', function(chunk) {
-            textChunks += chunk
-        })
-        stdin.on('end', function() {
-            const result = xfold.renderText(textChunks)
-            console.log(result)
-        })
-        setTimeout(function() {
-            if (!textChunks && !textChunks.trim()) {
-                console.log('(2✂︎f) Nothing to to')
+        // This is probably not a good idea, hmm
+        setTimeout(function () {
+            if (!result && !result.trim()) {
+                console.error('(2✂︎f) Nothing to to')
                 process.exit()
             }
-        }, 25)
-    }
-}
+        }, 50)
 
-main()
+        result = await xfold.renderStream(stdin)
+        console.log(result)
+    }
+
+})()

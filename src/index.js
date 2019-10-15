@@ -87,14 +87,13 @@ function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
     return final
 }
 
-async function renderFile(fname, data = {}, customFunctions = {}, customConfig = {}) {
+async function renderStream(stream, data = {}, customFunctions = {}, customConfig = {}) {
     const allFunctions = Object.assign({}, functions, customFunctions)
 
     return new Promise(resolve => {
         // const label = 'tf-' + (Math.random() * 100 * Math.random()).toFixed(6)
         // console.time(label)
         const p = new Lexer(customConfig)
-        const stream = fs.createReadStream(fname, { encoding: 'utf8' })
 
         stream.on('data', data => {
             p.push(data)
@@ -119,4 +118,9 @@ async function renderFile(fname, data = {}, customFunctions = {}, customConfig =
     })
 }
 
-module.exports = { renderText, renderFile }
+async function renderFile(fname, data = {}, customFunctions = {}, customConfig = {}) {
+    const stream = fs.createReadStream(fname, { encoding: 'utf8' })
+    return renderStream(stream, data, customFunctions, customConfig)
+}
+
+module.exports = { renderText, renderStream, renderFile }

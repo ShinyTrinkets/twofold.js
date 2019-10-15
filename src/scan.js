@@ -7,7 +7,7 @@ const { parse } = require('./parser')
 
 async function scanFile(fname) {
     return new Promise(resolve => {
-        const label = 'tf-' + fname
+        const label = 'scan-' + fname
         console.time(label)
 
         let len = 0
@@ -20,7 +20,8 @@ async function scanFile(fname) {
         })
         stream.on('close', () => {
             const ast = parse(p.finish())
-            console.log('Text Length ::', len, ' AST Length ::', ast.length)
+            console.log('Text length ::', len)
+            console.log('AST length ::', ast.length)
             console.timeEnd(label)
             resolve()
         })
@@ -28,7 +29,7 @@ async function scanFile(fname) {
 }
 
 async function scanFolder(dir) {
-    const label = 'scan-folder'
+    const label = 'scan-' + dir
     console.time(label)
     for (const fname of fs.readdirSync(dir)) {
         await scanFile(dir + '/' + fname)
