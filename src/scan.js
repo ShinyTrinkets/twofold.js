@@ -2,10 +2,33 @@
  * Scan files and return info about them.
  */
 const fs = require('fs')
+const util = require('./util')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 
 async function scanFile(fname) {
+    let nodes = 0
+    const walk = tag => {
+        // Deep walk into tag and list all tags
+        if (util.isDoubleTag(tag)) {
+            nodes += 1
+            console.log('Double tag:', tag.firstTagText, tag.secondTagText)
+        } else if (util.isSingleTag(tag)) {
+            nodes += 1
+            console.log('Single tag:', tag.rawText)
+        }
+        if (tag.children) {
+            for (const c of tag.children) {
+                if (util.isDoubleTag(c)) {
+                    walk(c)
+                } else if (util.isSingleTag(c)) {
+                    nodes += 1
+                    console.log('Single tag:', c.rawText)
+                }
+            }
+        }
+    }
+
     return new Promise(resolve => {
         const label = 'scan-' + fname
         console.time(label)
@@ -21,7 +44,10 @@ async function scanFile(fname) {
         stream.on('close', () => {
             const ast = parse(p.finish())
             console.log('Text length ::', len)
-            console.log('AST length ::', ast.length)
+            for (const tag of ast) {
+                walk(tag)
+            }
+            console.log('Nr of tags ::', nodes)
             console.timeEnd(label)
             resolve()
         })

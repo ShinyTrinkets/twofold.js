@@ -37,9 +37,9 @@ the screen:
 
 If you want to test some tags, or chain multiple
 CLI apps together, just use the stdin.
-`;
+`
 
-(async function main() {
+;(async function main() {
     const args = minimist(process.argv.slice(2), options)
 
     if (args.version) {
@@ -74,7 +74,7 @@ CLI apps together, just use the stdin.
         let result = ''
 
         // This is probably not a good idea, hmm
-        setTimeout(function () {
+        setTimeout(function() {
             if (!result && !result.trim()) {
                 console.error('(2✂︎f) Nothing to to')
                 process.exit()
@@ -84,5 +84,4 @@ CLI apps together, just use the stdin.
         result = await xfold.renderStream(stdin)
         console.log(result)
     }
-
 })()
