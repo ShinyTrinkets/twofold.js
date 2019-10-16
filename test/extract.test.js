@@ -31,10 +31,9 @@ test('some blocks found', async t => {
   t.is(ast.length, 6)
 
   t.true(isRawText(ast[0]))
-  t.true(isDoubleTag(ast[1]))
-  t.true(isSingleTag(ast[3]))
-  t.true(isRawText(ast[4]))
-  t.true(isDoubleTag(ast[5]))
+  t.true(isDoubleTag(ast[1]) && ast[1].name === 'open1')
+  t.true(isSingleTag(ast[3]) && ast[3].name === 'replaceWeather')
+  t.true(isDoubleTag(ast[5]) && ast[5].name === 'replaceSort')
 })
 
 test('render file no tags', async t => {

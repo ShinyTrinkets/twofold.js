@@ -26,8 +26,24 @@ const TESTS = [
         [{ rawText: 'blah <tesTing>!!' }] // this is raw-text
     ],
     [
+        'less < and >',
+        [{ rawText: 'less < and >' }]
+    ],
+    [
         ' <a_b></b_c>',
         [{ rawText: ' <a_b></b_c>' }] // this is raw-text
+    ],
+    [
+        'less < and > but <yesOrNo></yesOrNo>',
+        [
+            { rawText: 'less < and > but ' },
+            {
+                double: true,
+                firstTagText: '<yesOrNo>',
+                secondTagText: '</yesOrNo>',
+                name: 'yesOrNo',
+            }
+        ]
     ],
 
     [

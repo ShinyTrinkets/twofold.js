@@ -1,5 +1,7 @@
 const config = require('./config')
-const { isRawText, isDoubleTag } = require('./util')
+const { isRawText, isSingleTag, isDoubleTag } = require('./util')
+
+const isFullDoubleTag = t => isDoubleTag(t) && t.firstTagText && t.secondTagText
 
 function addChild(parent, c) {
     if (!parent.children) {
@@ -53,7 +55,7 @@ function parse(tokens, customConfig = {}) {
         if (isDoubleTag(token)) {
             // Is this the start of a double tag?
             if (RE_FIRST_START.test(token.rawText)) {
-                // console.log(`Start double Tag ${token.name} !`)
+                // console.log(`Start double Tag "${token.name}" !`)
                 token.firstTagText = token.rawText
                 // Pushing this tag on the stack means that
                 // all the following tags become children of this tag,
@@ -89,18 +91,31 @@ function parse(tokens, customConfig = {}) {
         commitToken(token)
     }
 
-    // Empty the stack
-    for (const token of stack) {
-        if (isDoubleTag(token) && token.children) {
-            for (const child of token.children) {
-                token.rawText += child.rawText
-            }
-        }
+    const finalCommit = function(token) {
         const topAst = getTopAst()
-        if (isRawText(topAst)) {
+        if (isRawText(topAst) && isRawText(token)) {
+            topAst.rawText += token.rawText
+        } else if (isSingleTag(token) || isFullDoubleTag(token)) {
+            ast.push(token)
+        } else if (isRawText(topAst)) {
             topAst.rawText += token.rawText
         } else {
+            // Unknown type of tag
             ast.push({ rawText: token.rawText })
+        }
+    }
+
+    // Empty the stack
+    for (const token of stack) {
+        // If there's an incomplete double tag on the stack
+        if (isDoubleTag(token) && token.children) {
+            finalCommit(token)
+            for (const child of token.children) {
+                finalCommit(child)
+            }
+            continue
+        } else {
+            finalCommit(token)
         }
     }
 
