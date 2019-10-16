@@ -47,7 +47,7 @@ Simply install with npm:
 
 > $ npm install twofold --global
 
-The NPM package is called `twofold` and the CLI is called `2fold`.
+The NPM package is called `twofold` and the CLI app is called `2fold`.
 
 Create a file called for example `something.md` and write inside it:
 
