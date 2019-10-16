@@ -7,23 +7,25 @@ const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 
 async function scanFile(fname) {
-    let nodes = 0
+    if (!fs.existsSync(fname)) {
+        console.error(`\nInvalid file: "${fname}" !`)
+        return
+    }
+
+    const nodes = []
     const walk = tag => {
         // Deep walk into tag and list all tags
         if (util.isDoubleTag(tag)) {
-            nodes += 1
-            console.log('Double tag:', tag.firstTagText, tag.secondTagText)
+            nodes.push({ double: true, name: tag.firstTagText + tag.secondTagText })
         } else if (util.isSingleTag(tag)) {
-            nodes += 1
-            console.log('Single tag:', tag.rawText)
+            nodes.push({ single: true, name: tag.rawText })
         }
         if (tag.children) {
             for (const c of tag.children) {
                 if (util.isDoubleTag(c)) {
                     walk(c)
                 } else if (util.isSingleTag(c)) {
-                    nodes += 1
-                    console.log('Single tag:', c.rawText)
+                    nodes.push({ single: true, name: tag.rawText })
                 }
             }
         }
@@ -47,14 +49,21 @@ async function scanFile(fname) {
             for (const tag of ast) {
                 walk(tag)
             }
-            console.log('Nr of tags ::', nodes)
             console.timeEnd(label)
+            console.log('Number of tags ::', nodes.length)
+            for (const tag of nodes) {
+                console.log('TAG ::', tag)
+            }
             resolve()
         })
     })
 }
 
 async function scanFolder(dir) {
+    if (!fs.existsSync(dir)) {
+        console.error(`\nInvalid folder: "${fname}" !`)
+        return
+    }
     const label = 'scan-' + dir
     console.time(label)
     for (const fname of fs.readdirSync(dir)) {

@@ -8,6 +8,10 @@ const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
 
 const options = cmdOptions({
+    scan: {
+        alias: 's',
+        type: 'string',
+    },
     help: {
         alias: 'h',
         type: 'boolean',
@@ -28,6 +32,10 @@ Process a file that contains TwoFold template tags
 and overwrite the original file:
 
   $ 2fold <file>
+
+Scan a file to see what tags might be processed:
+
+  $ 2fold --scan <file>
 
 You can also pipe a stream and see the result on
 the screen:
