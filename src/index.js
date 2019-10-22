@@ -4,7 +4,7 @@ const functions = require('./functions')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 
-function flattenSingleTag(tag, data, allFunctions) {
+async function flattenSingleTag(tag, data, allFunctions) {
     // Convert a single tag into raw text,
     // by evaluating the tag function
     const func = allFunctions[util.toCamelCase(tag.name)]
@@ -12,16 +12,16 @@ function flattenSingleTag(tag, data, allFunctions) {
     const text = params.text ? params.text : ''
     let result = tag.rawText
     try {
-        result = func({ text }, params)
+        result = await func({ text }, params)
         delete tag.name
         delete tag.single
         tag.rawText = result.toString()
     } catch (err) {
-        console.warn(`Cannot evaluate single ${tag.name}:`, err)
+        console.warn(`Cannot eval single tag "${tag.name}":`, err.message)
     }
 }
 
-function flattenDoubleTag(tag, data, allFunctions) {
+async function flattenDoubleTag(tag, data, allFunctions) {
     /*
      * Deep evaluate all tags, by calling the tag function.
      * If the double tag has param consume=true, it will be destroyed
@@ -32,9 +32,9 @@ function flattenDoubleTag(tag, data, allFunctions) {
     if (tag.children) {
         for (const c of tag.children) {
             if (util.isDoubleTag(c)) {
-                flattenDoubleTag(c, data, allFunctions)
+                await flattenDoubleTag(c, data, allFunctions)
             } else if (util.isSingleTag(c)) {
-                flattenSingleTag(c, data, allFunctions)
+                await flattenSingleTag(c, data, allFunctions)
             }
         }
     }
@@ -47,7 +47,7 @@ function flattenDoubleTag(tag, data, allFunctions) {
     }
     let result = text
     try {
-        result = func({ text }, params)
+        result = await func({ text }, params)
         if (util.shouldConsume(tag)) {
             delete tag.name
             delete tag.double
@@ -60,11 +60,11 @@ function flattenDoubleTag(tag, data, allFunctions) {
             tag.children = [{ rawText: result.toString() }]
         }
     } catch (err) {
-        console.warn(`Cannot evaluate double ${tag.name}:`, err)
+        console.warn(`Cannot eval double tag "${tag.name}":`, err.message)
     }
 }
 
-function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
+async function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
     /**
      * TwoFold render text string.
      */
@@ -77,9 +77,9 @@ function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
     // Convert single tags into raw text and deep flatten double tags
     for (const t of ast) {
         if (util.isDoubleTag(t)) {
-            flattenDoubleTag(t, data, allFunctions)
+            await flattenDoubleTag(t, data, allFunctions)
         } else if (util.isSingleTag(t)) {
-            flattenSingleTag(t, data, allFunctions)
+            await flattenSingleTag(t, data, allFunctions)
         }
         final += util.unParse(t)
     }
@@ -98,16 +98,16 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
         stream.on('data', data => {
             p.push(data)
         })
-        stream.on('close', () => {
+        stream.on('close', async () => {
             const ast = parse(p.finish(), customConfig)
             let final = ''
 
             // Convert single tags into raw text and deep flatten double tags
             for (const t of ast) {
                 if (util.isDoubleTag(t)) {
-                    flattenDoubleTag(t, data, allFunctions)
+                    await flattenDoubleTag(t, data, allFunctions)
                 } else if (util.isSingleTag(t)) {
-                    flattenSingleTag(t, data, allFunctions)
+                    await flattenSingleTag(t, data, allFunctions)
                 }
                 final += util.unParse(t)
             }
