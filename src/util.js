@@ -1,3 +1,6 @@
+const fs = require('fs')
+const path = require('path')
+
 // Credit: https://stackoverflow.com/a/32604073/498361
 function toCamelCase(str) {
     return (
@@ -68,6 +71,18 @@ function unParse(node) {
     return text
 }
 
+function requireFolder(dir) {
+    let functions = {}
+    const normalizedPath = path.join(process.cwd(), dir)
+    // console.log('Require:', normalizedPath)
+    fs.readdirSync(normalizedPath).forEach(function (fname) {
+        const f = require(path.join(normalizedPath, fname))
+        // side-effect: overwrite any duplicate functions
+        functions = Object.assign(functions, f)
+    })
+    return functions
+}
+
 module.exports = {
     toCamelCase,
     isDoubleTag,
@@ -76,4 +91,5 @@ module.exports = {
     shouldConsume,
     getText,
     unParse,
+    requireFolder,
 }

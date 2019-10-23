@@ -3,6 +3,7 @@
 const fs = require('fs')
 const xfold = require('./')
 const scan = require('./scan')
+const util = require('./util')
 const p = require('../package')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
@@ -10,6 +11,10 @@ const cmdOptions = require('minimist-options')
 const options = cmdOptions({
     scan: {
         alias: 's',
+        type: 'string',
+    },
+    funcs: {
+        alias: 'f',
         type: 'string',
     },
     help: {
@@ -67,13 +72,19 @@ CLI apps together, just use the stdin.
         return
     }
 
+    // Load all functions from specified folder
+    let funcs = {}
+    if (args.funcs) {
+        funcs = util.requireFolder(args.funcs)
+    }
+
     if (args._ && args._.length) {
         for (const fname of args._) {
             if (!fname) {
                 continue
             }
             console.log('(2✂︎f)', fname)
-            const result = await xfold.renderFile(fname)
+            const result = await xfold.renderFile(fname, {}, funcs)
             fs.writeFileSync(fname, result, { encoding: 'utf8' })
         }
     } else {
@@ -89,7 +100,7 @@ CLI apps together, just use the stdin.
             }
         }, 50)
 
-        result = await xfold.renderStream(stdin)
+        result = await xfold.renderStream(stdin, {}, funcs)
         console.log(result)
     }
 })()
