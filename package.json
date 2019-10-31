@@ -14,13 +14,14 @@
   },
   "contributors": [],
   "dependencies": {
-    "minimist": "^1.2.0",
+    "cosmiconfig": "5.2.x",
+    "minimist": "1.2.x",
     "minimist-options": "^4.0.1"
-  },
+  },  
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
     "ava": "2.x",
-    "codecov": "3.x",
+    "codecov": "3.6.x",
     "nyc": "14.x",
     "prettier": "1.18.2"
   },

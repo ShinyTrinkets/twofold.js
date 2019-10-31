@@ -1,5 +1,5 @@
 import test from 'ava'
-import tf from '../src/lexer'
+import twofold from '../src/lexer'
 //
 // TwoFold Lexer testing
 //
@@ -269,7 +269,7 @@ const TESTS = [
 
 test('all lex tests', t => {
     for (const [text, expected] of TESTS) {
-        const o = new tf.Lexer()
+        const o = new twofold.Lexer()
         for (const chunk of chunkText(text, 5)) {
             o.push(chunk)
         }
@@ -286,7 +286,7 @@ test('all lex tests', t => {
 })
 
 test('lexer crash', t => {
-    const p = new tf.Lexer()
+    const p = new twofold.Lexer()
     p.push('')
     const lex = p.finish()
     t.deepEqual([{ rawText: '' }], lex)

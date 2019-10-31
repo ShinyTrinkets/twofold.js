@@ -1,6 +1,6 @@
 import fs from 'fs'
 import test from 'ava'
-import tf from '../src'
+import twofold from '../src'
 import lexer from '../src/lexer'
 import parser from '../src/parser'
 import { isRawText, isSingleTag, isDoubleTag } from '../src/util'
@@ -39,13 +39,13 @@ test('some blocks found', async t => {
 test('render file no tags', async t => {
   const fname = __dirname + '/fixtures/text0.md'
   const txt = fs.readFileSync(fname, { encoding: 'utf8' })
-  const final = await tf.renderFile(fname)
+  const final = await twofold.renderFile(fname)
   t.is(txt, final)
 })
 
 test('render file some tags', async t => {
   const fname = __dirname + '/fixtures/text1.md'
   const txt = fs.readFileSync(fname, { encoding: 'utf8' })
-  const final = await tf.renderFile(fname)
+  const final = await twofold.renderFile(fname)
   t.is(txt, final)
 })

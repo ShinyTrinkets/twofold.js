@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-const xfold = require('./')
+const twofold = require('./')
 const scan = require('./scan')
 const util = require('./util')
 const p = require('../package')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
+const cosmiConfig = require('cosmiconfig')
 
 const options = cmdOptions({
     scan: {
@@ -65,17 +66,25 @@ CLI apps together, just use the stdin.
         return
     }
 
-    if (args.scan) {
-        const fname = args.scan
-        console.log('(2✂︎f) Scan:', fname)
-        await scan.scanFile(fname)
-        return
-    }
-
     // Load all functions from specified folder
     let funcs = {}
     if (args.funcs) {
+        console.debug('(2✂︎f) Funcs:', args.funcs)
         funcs = util.requireFolder(args.funcs)
+    }
+    // Explore all possible config locations
+    const explorer = cosmiConfig('twofold')
+    let config = explorer.searchSync()
+    if (config) {
+        config = config.config
+        console.debug('(2✂︎f) Config:', config)
+    }
+
+    if (args.scan) {
+        const fname = args.scan
+        console.log('(2✂︎f) Scan:', fname)
+        await scan.scanFile(fname, funcs, config)
+        return
     }
 
     if (args._ && args._.length) {
@@ -84,7 +93,7 @@ CLI apps together, just use the stdin.
                 continue
             }
             console.log('(2✂︎f)', fname)
-            const result = await xfold.renderFile(fname, {}, funcs)
+            const result = await twofold.renderFile(fname, {}, funcs, config)
             fs.writeFileSync(fname, result, { encoding: 'utf8' })
         }
     } else {
@@ -100,7 +109,7 @@ CLI apps together, just use the stdin.
             }
         }, 50)
 
-        result = await xfold.renderStream(stdin, {}, funcs)
+        result = await twofold.renderStream(stdin, {}, funcs, config)
         console.log(result)
     }
 })()
