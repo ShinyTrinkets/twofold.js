@@ -5,27 +5,30 @@ const fs = require('fs')
 const util = require('./util')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
+const functions = require('./functions')
 
-async function scanFile(fname) {
+async function scanFile(fname, customFunctions = {}, customConfig = {}) {
     if (!fs.existsSync(fname)) {
         console.error(`\nInvalid file: "${fname}" !`)
         return
     }
 
+    const allFunctions = Object.assign({}, functions, customFunctions)
     const nodes = []
+
     const walk = tag => {
         // Deep walk into tag and list all tags
         if (util.isDoubleTag(tag)) {
-            nodes.push({ double: true, name: tag.firstTagText + tag.secondTagText })
+            nodes.push({ double: true, name: tag.name, tag: tag.firstTagText + tag.secondTagText })
         } else if (util.isSingleTag(tag)) {
-            nodes.push({ single: true, name: tag.rawText })
+            nodes.push({ single: true, name: tag.name, tag: tag.rawText })
         }
         if (tag.children) {
             for (const c of tag.children) {
                 if (util.isDoubleTag(c)) {
                     walk(c)
                 } else if (util.isSingleTag(c)) {
-                    nodes.push({ single: true, name: tag.rawText })
+                    nodes.push({ single: true, name: tag.name, tag: tag.rawText })
                 }
             }
         }
@@ -36,7 +39,7 @@ async function scanFile(fname) {
         console.time(label)
 
         let len = 0
-        const p = new Lexer()
+        const p = new Lexer(customConfig)
         const stream = fs.createReadStream(fname, { encoding: 'utf8' })
 
         stream.on('data', data => {
@@ -44,7 +47,7 @@ async function scanFile(fname) {
             p.push(data)
         })
         stream.on('close', () => {
-            const ast = parse(p.finish())
+            const ast = parse(p.finish(), customConfig)
             console.log('Text length ::', len)
             for (const tag of ast) {
                 walk(tag)
@@ -52,7 +55,7 @@ async function scanFile(fname) {
             console.timeEnd(label)
             console.log('Number of tags ::', nodes.length)
             for (const tag of nodes) {
-                console.log('TAG ::', tag)
+                console.log(allFunctions[tag.name] ? '✓' : '✗', tag)
             }
             resolve()
         })
