@@ -3,15 +3,16 @@
  */
 const fs = require('fs')
 const util = require('./util')
+const files = require('./files')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 const functions = require('./functions')
 
 async function scanFile(fname, customFunctions = {}, customConfig = {}) {
-    if (!fs.existsSync(fname)) {
-        console.error(`\nInvalid file: "${fname}" !`)
-        return
-    }
+    // if (!fs.existsSync(fname)) {
+    //     console.error(`\nInvalid file: "${fname}" !`)
+    //     return
+    // }
 
     const allFunctions = Object.assign({}, functions, customFunctions)
     const nodes = []
@@ -58,19 +59,26 @@ async function scanFile(fname, customFunctions = {}, customConfig = {}) {
                 console.log(allFunctions[tag.name] ? '✓' : '✗', tag)
             }
             resolve()
+            console.log('-------')
         })
     })
 }
 
-async function scanFolder(dir) {
-    if (!fs.existsSync(dir)) {
-        console.error(`\nInvalid folder: "${fname}" !`)
-        return
-    }
+async function scanFolder(dir, customFunctions = {}, customConfig = {}) {
+    // if (!fs.existsSync(dir)) {
+    //     console.error(`\nInvalid folder: "${fname}" !`)
+    //     return
+    // }
     const label = 'scan-' + dir
     console.time(label)
-    for (const fname of fs.readdirSync(dir)) {
-        await scanFile(dir + '/' + fname)
+
+    const allFiles = await files.listFiles(dir)
+    for (const fname of allFiles) {
+        try {
+            await scanFile(`${dir}/${fname}`, customFunctions, customConfig)
+        } catch (err) {
+            console.error(err)
+        }
     }
     console.timeEnd(label)
 }

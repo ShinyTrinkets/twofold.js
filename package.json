@@ -15,9 +15,10 @@
   "contributors": [],
   "dependencies": {
     "cosmiconfig": "5.2.x",
+    "micromatch": "4.x",
     "minimist": "1.2.x",
     "minimist-options": "^4.0.1"
-  },  
+  },
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
     "ava": "2.x",

@@ -82,8 +82,21 @@ CLI apps together, just use the stdin.
 
     if (args.scan) {
         const fname = args.scan
+        let fstat
+        try {
+            fstat = fs.statSync(fname)
+        } catch (err) {
+            console.error(err)
+            return
+        }
         console.log('(2✂︎f) Scan:', fname)
-        await scan.scanFile(fname, funcs, config)
+        if (fstat.isFile()) {
+            await scan.scanFile(fname, funcs, config)
+        } else if (fstat.isDirectory()) {
+            await scan.scanFolder(fname, funcs, config)
+        } else {
+            console.error('Unknown path type:', fstat)
+        }
         return
     }
 
