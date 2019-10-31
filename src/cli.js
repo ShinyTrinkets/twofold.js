@@ -4,6 +4,7 @@ const fs = require('fs')
 const twofold = require('./')
 const scan = require('./scan')
 const util = require('./util')
+const files = require('./files')
 const p = require('../package')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
@@ -105,9 +106,29 @@ CLI apps together, just use the stdin.
             if (!fname) {
                 continue
             }
-            console.log('(2✂︎f)', fname)
-            const result = await twofold.renderFile(fname, {}, funcs, config)
-            fs.writeFileSync(fname, result, { encoding: 'utf8' })
+            let fstat
+            try {
+                fstat = fs.statSync(fname)
+            } catch (err) {
+                console.error(err)
+                continue
+            }
+            if (fstat.isFile()) {
+                console.log('(2✂︎f)', fname)
+                const result = await twofold.renderFile(fname, {}, funcs, config)
+                fs.writeFileSync(fname, result, { encoding: 'utf8' })
+            } else if (fstat.isDirectory()) {
+                const allFiles = await files.listFiles(fname)
+                for (let f of allFiles) {
+                    f = `${fname}/${f}`
+                    console.log('(2✂︎f)', f)
+                    const result = await twofold.renderFile(f, {}, funcs, config)
+                    fs.writeFileSync(f, result, { encoding: 'utf8' })
+                }
+            } else {
+                console.error('Unknown path type:', fstat)
+                continue
+            }
         }
     } else {
         const stdin = process.stdin
