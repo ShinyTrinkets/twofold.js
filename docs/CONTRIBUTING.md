@@ -11,9 +11,9 @@ The following is a set of guidelines for contributing to TwoFold.js and its pack
   the bug you found or any other ideas you have. This will help us to get
   you started on the right foot.
 
-- If it makes sense, add the platform and software information (e.g. operating
-  system, Node.js version etc.), screenshots (so we can see what you are
-  seeing).
+- It makes sense to add the platform and software information (e.g. operating
+  system, Node.js version etc.), text examples, what were you trying to do,
+  so we can reproduce it.
 
 - It is recommended to wait for feedback before continuing to next steps.
   However, if the issue is clear (e.g. a typo) and the fix is simple, you can
@@ -50,14 +50,14 @@ in your branch and the pull request will be updated automatically.
 ## Code style
 
 Instead of wasting time debating what's the best style, we are using automated
-formatting tools. The coding standard is "prettier" + "standard":
+formatting tools. The coding standard is "prettier":
 
-- two spaces for indentation-level
+- four spaces for indentation-level
 - single quotes for strings
 - no semicolons at the end of statements
 - etc.
 
-Just run `npm run fmt` before running the tests, to have all that fixed automatically.
+Just run `npm run fmt` before commiting, to have all code fixed automatically.
 
 ## Everyone is happy!
 
