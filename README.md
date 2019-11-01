@@ -21,7 +21,7 @@ This can done by writing React-like `<whatever />` tags in your text files and c
 
 TwoFold CLI can be run manually to render a file or folder, or from a CRON job every X interval, or as a Git hook maybe to auto-update some documents, or can be run as a service to watch a list of folders and render the files matching some patterns everytime they change.
 
-It will work with any file like: *.txt, Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.
+It will work with any file like: "*.txt", Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.
 It could also work with Python/ Javascript/ Go-lang/ whatever programming language you use; probably it makes sense to write the tags as comments inside the code.
 
 If you're editing your file with [Visual Studio Code](https://github.com/microsoft/vscode), [Atom editor](https://github.com/atom/atom), [Sublime text](https://sublimetext.com), [Micro terminal text editor](https://github.com/zyedidia/micro) (and others), you'll see the changes instantly, because they automatically refresh the text when the file changes.
@@ -29,9 +29,9 @@ If you're editing your file with [Visual Studio Code](https://github.com/microso
 The React-like `<whatever />` tags are customizable and ideally should be invisible in the type of text file you're using (eg: React-like tags are invisible when viewing the Markdown format).
 
 The *single tags* are one use only, the are consumed after they render the response.
-The *double tags* are refreshed every time the file is rendered.
-They have different use-cases.<br/>
-Example: \<random_int /> might be converted into "3" and the tag disappears, but \<random_int>\</random_int> might generate \<random_int>3\</random_int> the first time, and a new random number EVERY time the file is rendered by TwoFold.
+The *double tags* are refreshed every time the file is rendered.<br/>
+They have different use-cases, different pros and cons.<br/>
+Example: `<random_int />` might be converted into `3` and the tag disappears, but `<random_int></random_int>` might generate `<random_int>3</random_int>` the first time, and a new random number EVERY time the file is rendered by TwoFold.
 
 Note that currently the majority of tags mentioned as examples are NOT yet implemented!
 This repository provides the core framework and some of the tools for rendering the files.
@@ -81,6 +81,8 @@ To quickly test some built-in templates, without writing a text file:
 > $ echo 'emoji time hehe \<emoji_clock />' | 2fold
 
 For the full list of tags, check the [src/functions](src/functions) folder.
+
+For a list of IDEAS for tags, check [issue #1](https://github.com/ShinyTrinkets/twofold.js/issues/1). Feel free to add your comments!!
 
 All tags can be specified as camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
 
