@@ -92,6 +92,7 @@ All tags can be specified as camelCase (eg: emojiClock), or separated by underli
 * it is tested on Linux and MacOS and "Should just work ™" on Windows, but I haven't tested it.
 * it is a free & open-source software that comes **without warranty of any kind** that it works "as expected". The maintainers are trying really hard to write quality code and tests, but there will be bugs and there are risks to lose your valuable data. **Always make copies and backups, to make sure your data is safe**.
 
+
 ## Similar libraries
 
 My original inspiration: https://nedbatchelder.com/code/cog
@@ -109,7 +110,11 @@ Kind of similar:
 https://github.com/albinotonnina/mmarkdown
 > Interpret mmd fenced code blocks in a Markdown file and generate a cooler version of it
 
-My awesome list of markdown-like goodies, I'm collecting them for months:
+Kind of similar:
+https://github.com/verbose/verb
+> Documentation generator for GitHub projects. Generate everything from API docs to readmes.
+
+My awesome list of markdown-like goodies, I'm collecting them for months:<br/>
 https://github.com/croqaz/awesome-markup
 
 -----
