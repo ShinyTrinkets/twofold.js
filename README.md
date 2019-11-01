@@ -14,26 +14,27 @@
 
 ## What is this
 
-TwoFold is a small application that takes as input a text file containing one, or more "template tags" in the form of: `<replace-me-with-something-useful />`, it processes the tags and overwrites the file with the result.
+TwoFold is a small Node.js library and command line app that allows plain text files to behave like dynamic files.
+**Use-cases** include: auto updating documentation, text based dashboards, text virtual assistants, text spreadsheets, turn based games, etc.
 
-This idea is not new at all, it's been used since forever, but there are a few essential differences in TwoFold:
+This can done by writing React-like `<whatever />` tags in your text files and calling TwoFold CLI to convert all known tags into useful responses. TwoFold can watch your files for changes and colaborate with you in the same file and the same place in the file, for example to validate some information, or calculate some min/ max or statistics, similar to a Spreadsheet application, or check for spelling, or grammar errors, similar to a Document editor, etc.
 
-If you have a file containing: `Hello <replace-whatever>world</replace-whatever>!`, then:
+TwoFold CLI can be run manually to render a file or folder, or from a CRON job every X interval, or as a Git hook maybe to auto-update some documents, or can be run as a service to watch a list of folders and render the files matching some patterns everytime they change.
 
-1. the file containing this template is both input and output (it's over-written on every render)
-1. "whatever" can only be a function, never a fixed value
-1. "world" is passed as input to the "whatever" function, thus affecting the next result and allowing a possible chain effect in the succeeding renders
-1. all of the text is also passed as input to the "whatever" function, for context, thus allowing the function to behave differently depending on the text close to it
-1. if the `<whatever />` tag is single, it is volatile (will be destroyed after the first render)
-1. there are different types of tags like: replace, insert, or append, to allow different behaviour inside the tags
+It will work with any file like: *.txt, Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.
+It could also work with Python/ Javascript/ Go-lang/ whatever programming language you use; probably it makes sense to write the tags as comments inside the code.
 
-The React-like `<whatever />` tags are totally customizable and ideally should be invisible in the type of text file you're using (eg: React-like tags are invisible when viewing the Markdown format).
+If you're editing your file with [Visual Studio Code](https://github.com/microsoft/vscode), [Atom editor](https://github.com/atom/atom), [Sublime text](https://sublimetext.com), [Micro terminal text editor](https://github.com/zyedidia/micro) (and others), you'll see the changes instantly, because they automatically refresh the text when the file changes.
 
-### Why is this useful
+The React-like `<whatever />` tags are customizable and ideally should be invisible in the type of text file you're using (eg: React-like tags are invisible when viewing the Markdown format).
 
-All the templates today work by reading one or more input files containing the template and write one output file containing the result. This is useful in a lot of the situations, but there are cases where it would be more useful to see both the input and output in the same file, to create auto-updating notes, or the much-sought-after auto-updating documentation.
+The *single tags* are one use only, the are consumed after they render the response.
+The *double tags* are refreshed every time the file is rendered.
+They have different use-cases.<br/>
+Example: \<random_int /> might be converted into "3" and the tag disappears, but \<random_int>\</random_int> might generate \<random_int>3\</random_int> the first time, and a new random number EVERY time the file is rendered by TwoFold.
 
-This repository provides the core framework and some of the tools for doing that.
+Note that currently the majority of tags mentioned as examples are NOT yet implemented!
+This repository provides the core framework and some of the tools for rendering the files.
 
 ### Notable features
 
@@ -41,9 +42,10 @@ This repository provides the core framework and some of the tools for doing that
 * well tested
 * fun fun fun
 
+
 ### Install and use
 
-Simply install with npm:
+Simply install with NPM:
 
 > $ npm install twofold --global
 
@@ -69,8 +71,6 @@ It's a nice 🌙 outside and the time is 🕥 .
 Should I play with TwoFold some more ? <yesOrNo>Yes</yesOrNo> ugh...
 ```
 
-If you're editing your file with Visual Studio Code, Atom editor, or Sublime text, you'll see the changes instantly, because they automatically refresh the editor when the file changes.
-
 To quickly test some built-in templates, without writing a text file:
 
 > $ echo 'yes or no ? \<yes_or_no />' | 2fold<br />
@@ -80,13 +80,15 @@ To quickly test some built-in templates, without writing a text file:
 > $ echo 'sun / moon ? \<emoji_sun_moon />' | 2fold<br />
 > $ echo 'emoji time hehe \<emoji_clock />' | 2fold
 
+For the full list of tags, check the [src/functions](src/functions) folder.
+
 All tags can be specified as camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
+
 
 ### Notes
 
-* TwoFold is designed for Node.js. It will work on browsers with small changes, but I think it wouldn't make much sense if you're not working with files.
-* As for the Operating System, this is tested on Linux and MacOS and "Should just work ™" on Windows, but I haven't tested it.
-* TwoFold is a free & open-source software that comes **without warranty of any kind** that it works "as expected". The maintainers are trying really hard to write quality code and tests, but there will be bugs and there are risks to lose your valuable data. Always make copies and backups, to make sure your data is safe.
+* it is tested on Linux and MacOS and "Should just work ™" on Windows, but I haven't tested it.
+* it is a free & open-source software that comes **without warranty of any kind** that it works "as expected". The maintainers are trying really hard to write quality code and tests, but there will be bugs and there are risks to lose your valuable data. **Always make copies and backups, to make sure your data is safe**.
 
 ## Similar libraries
 
