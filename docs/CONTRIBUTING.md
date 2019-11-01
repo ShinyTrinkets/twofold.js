@@ -50,7 +50,7 @@ in your branch and the pull request will be updated automatically.
 ## Code style
 
 Instead of wasting time debating what's the best style, we are using automated
-formatting tools. The coding standard is "prettier":
+formatting tools. The coding standard is "[Prettier](https://prettier.io)":
 
 - four spaces for indentation-level
 - single quotes for strings

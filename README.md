@@ -80,9 +80,9 @@ To quickly test some built-in templates, without writing a text file:
 > $ echo 'sun / moon ? \<emoji_sun_moon />' | 2fold<br />
 > $ echo 'emoji time hehe \<emoji_clock />' | 2fold
 
-For the full list of tags, check the [src/functions](src/functions) folder.
+For the full list of available tags, check the [src/functions](src/functions) folder.
 
-For a list of IDEAS for tags, check [issue #1](https://github.com/ShinyTrinkets/twofold.js/issues/1). Feel free to add your comments!!
+For a list of IDEAS for tags, check [issue #1](https://github.com/ShinyTrinkets/twofold.js/issues/1). Feel free to add your ideas and vote your favorite tags!!
 
 All tags can be specified as camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
 
