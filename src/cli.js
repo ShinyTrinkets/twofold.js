@@ -6,13 +6,19 @@ const scan = require('./scan')
 const util = require('./util')
 const files = require('./files')
 const p = require('../package')
+const crypto = require('crypto')
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
 const cosmiConfig = require('cosmiconfig')
+const chokidar = require('chokidar')
 
 const options = cmdOptions({
     scan: {
         alias: 's',
+        type: 'string',
+    },
+    watch: {
+        alias: 'w',
         type: 'string',
     },
     funcs: {
@@ -40,18 +46,19 @@ and overwrite the original file:
 
   $ 2fold <file>
 
-Scan a file to see what tags might be processed:
+Scan a file or folder to see what tags might be processed:
 
   $ 2fold --scan <file>
 
-You can also pipe a stream and see the result on
-the screen:
+Watch or folder to render everytime the files are changed:
+
+  $ 2fold --watch <file>
+
+If you want to test some tags, or chain multiple
+CLI apps together, you can use pipes:
 
   $ echo "yes or no: <replace-yes-or-no />" | 2fold
   $ cat my-file.md | 2fold
-
-If you want to test some tags, or chain multiple
-CLI apps together, just use the stdin.
 `
 
 ;(async function main() {
@@ -98,6 +105,45 @@ CLI apps together, just use the stdin.
         } else {
             console.error('Unknown path type:', fstat)
         }
+        return
+    }
+
+    if (args.watch) {
+        const locks = {}
+        const hashes = {}
+        const callback = async fname => {
+            // console.log(`File ${fname} is changed`)
+            if (locks[fname]) {
+                // disable writing lock
+                locks[fname] = false
+                return false
+            }
+            const result = await twofold.renderFile(fname, {}, funcs, config)
+            const hash = crypto
+                .createHash('sha256')
+                .update(result)
+                .digest('hex')
+            // compare last hash and skip writing
+            // if the file is not changed
+            if (hashes[fname] === hash) {
+                return false
+            }
+            console.log('(2✂︎f)', fname)
+            fs.writeFileSync(fname, result, { encoding: 'utf8' })
+            locks[fname] = true
+            hashes[fname] = hash
+        }
+
+        const watcher = chokidar.watch(args.watch, {
+            persistent: true,
+            ignoreInitial: true,
+            followSymlinks: true,
+            // awaitWriteFinish: {
+            //     stabilityThreshold: 2000,
+            //     pollInterval: 250,
+            // },
+        })
+        watcher.on('add', callback).on('change', callback)
         return
     }
 
