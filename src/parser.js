@@ -45,7 +45,7 @@ function parse(tokens, customConfig = {}) {
     }
 
     for (const token of tokens) {
-        if (!token.rawText) {
+        if (!token || !token.rawText) {
             continue
         }
         // console.log('TOKEN ::', token)
@@ -75,10 +75,12 @@ function parse(tokens, customConfig = {}) {
                     // console.log(`Non matching double Tag "${topTag.name}" != "${token.name}"`)
                     // Remove the tag from the stack and prepare to cleanup
                     stack.pop()
-                    commitToken({ rawText: topTag.firstTagText || topTag.rawText })
-                    if (topTag.children) {
-                        for (const child of topTag.children) {
-                            commitToken(child)
+                    if (topTag && topTag.rawText) {
+                        commitToken({ rawText: topTag.firstTagText || topTag.rawText })
+                        if (topTag.children) {
+                            for (const child of topTag.children) {
+                                commitToken(child)
+                            }
                         }
                     }
                     commitToken({ rawText: token.rawText })

@@ -34,6 +34,10 @@ const TESTS = [
         [{ rawText: ' <a_b></b_c>' }] // this is raw-text
     ],
     [
+        '\n<I am doing>some</stuff>\n',
+        [{ rawText: '\n<I am doing>some</stuff>\n' }] // this is raw-text
+    ],
+    [
         'less < and > but <yesOrNo></yesOrNo>',
         [
             { rawText: 'less < and > but ' },

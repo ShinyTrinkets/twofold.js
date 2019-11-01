@@ -93,13 +93,13 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
     return new Promise(resolve => {
         // const label = 'tf-' + (Math.random() * 100 * Math.random()).toFixed(6)
         // console.time(label)
-        const p = new Lexer(customConfig)
+        const lex = new Lexer(customConfig)
 
-        stream.on('data', data => {
-            p.push(data)
+        stream.on('data', text => {
+            lex.push(text)
         })
         stream.on('close', async () => {
-            const ast = parse(p.finish(), customConfig)
+            const ast = parse(lex.finish(), customConfig)
             let final = ''
 
             // Convert single tags into raw text and deep flatten double tags

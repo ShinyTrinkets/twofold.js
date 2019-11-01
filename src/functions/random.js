@@ -3,12 +3,16 @@ function randomChoice(choices) {
     return choices[index]
 }
 
-function randomFloat(_, { min = 1, max = 100 } = {}) {
+function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
     /**
      * Return a random float number.
      * Returns a pseudo-random float in the range min–max (inclusive of min, but not max).
      */
-    return Math.random() * (max - min) + min
+    const precision = parseInt(decimals)
+    min = Math.ceil(parseInt(min))
+    max = Math.floor(parseInt(max))
+    const nr = Math.random() * (max - min) + min
+    return nr.toFixed(precision)
 }
 
 function randomInt(_, { min = 1, max = 100 } = {}) {
@@ -16,8 +20,8 @@ function randomInt(_, { min = 1, max = 100 } = {}) {
      * Return a random integer number.
      * Returns a pseudo-random integer in the range min–max (inclusive of min, but not max).
      */
-    min = Math.ceil(min)
-    max = Math.floor(max)
+    min = Math.ceil(parseInt(min))
+    max = Math.floor(parseInt(max))
     return Math.floor(Math.random() * (max - min)) + min
 }
 
