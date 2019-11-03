@@ -207,7 +207,9 @@ class Lexer {
                 // Is this the beginning of a param name?
                 else if (LOWER_LETTERS.test(char)) {
                     this.pendingState.rawText += char
-                    this.pendingState.params = {}
+                    if (!this.pendingState.params) {
+                        this.pendingState.params = {}
+                    }
                     this.pendingState.param_key = char
                     transition(STATE_PARAM)
                 }

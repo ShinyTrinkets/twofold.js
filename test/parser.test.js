@@ -75,14 +75,14 @@ const TESTS = [
         ]
     ],
     [
-        '<temp type=f>0</temp>',
+        '<temp type=f deep=no>0</temp>',
         [
             {
                 double: true,
-                firstTagText: '<temp type=f>',
+                firstTagText: '<temp type=f deep=no>',
                 secondTagText: '</temp>',
                 name: 'temp',
-                params: { type: 'f' },
+                params: { type: 'f', deep: 'no' },
                 children: [
                     { rawText: '0' }
                 ]

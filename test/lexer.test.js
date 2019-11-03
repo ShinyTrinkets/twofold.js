@@ -160,13 +160,13 @@ const TESTS = [
         ]
     ],
     [
-        '?<increment nr1=99/>!',
+        '?<increment nr1=99 nr2=0/>!',
         [
             { rawText: '?' },
             {
                 name: 'increment',
-                params: { nr1: '99' },
-                rawText: '<increment nr1=99/>',
+                params: { nr1: '99', nr2: '0' },
+                rawText: '<increment nr1=99 nr2=0/>',
                 single: true,
             },
             { rawText: '!' }
