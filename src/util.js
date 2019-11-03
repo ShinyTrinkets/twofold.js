@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const { isRawText, isDoubleTag } = require('./tags')
 
 // Credit: https://stackoverflow.com/a/32604073/498361
 function toCamelCase(str) {
@@ -20,12 +21,6 @@ function toCamelCase(str) {
             .replace(/ /g, '')
     )
 }
-
-const isDoubleTag = t => !!(t && t.name && t.double)
-const isSingleTag = t => !!(t && t.name && t.single && t.rawText)
-const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
-
-const shouldConsume = t => t.params && t.params['consume'] === 'true'
 
 function getText(node) {
     let text = ''
@@ -89,10 +84,6 @@ function requireFolder(dir) {
 
 module.exports = {
     toCamelCase,
-    isDoubleTag,
-    isSingleTag,
-    isRawText,
-    shouldConsume,
     getText,
     unParse,
     requireFolder,

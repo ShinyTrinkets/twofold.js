@@ -22,7 +22,7 @@ function randomInt(_, { min = 1, max = 100 } = {}) {
      */
     min = Math.ceil(parseInt(min))
     max = Math.floor(parseInt(max))
-    return Math.floor(Math.random() * (max - min)) + min
+    return Math.floor(max - Math.random() * (max - min))
 }
 
 function yesOrNo() {

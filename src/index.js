@@ -3,6 +3,7 @@ const util = require('./util')
 const functions = require('./functions')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
+const { isDoubleTag, isSingleTag, optRenderOnce, optShouldConsume } = require('./tags')
 
 const readdirp = require('readdirp')
 const { promisify } = require('util')
@@ -35,24 +36,24 @@ async function flattenDoubleTag(tag, data, allFunctions) {
      */
     if (tag.children) {
         for (const c of tag.children) {
-            if (util.isDoubleTag(c)) {
+            if (isDoubleTag(c)) {
                 await flattenDoubleTag(c, data, allFunctions)
-            } else if (util.isSingleTag(c)) {
+            } else if (isSingleTag(c)) {
                 await flattenSingleTag(c, data, allFunctions)
             }
         }
     }
     // At this point all children are flat
     const func = allFunctions[util.toCamelCase(tag.name)]
-    const params = Object.assign({}, data, tag.params)
+    const params = { ...data, ...tag.params }
     const text = util.getText(tag)
-    if (text && util.isDoubleTag(tag) && tag.params && tag.params.once === 'true') {
+    if (text && optRenderOnce(tag)) {
         return
     }
     let result = text
     try {
         result = await func({ text }, params)
-        if (util.shouldConsume(tag)) {
+        if (optShouldConsume(tag)) {
             delete tag.name
             delete tag.double
             delete tag.params
@@ -80,9 +81,9 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
     let final = ''
     // Convert single tags into raw text and deep flatten double tags
     for (const t of ast) {
-        if (util.isDoubleTag(t)) {
+        if (isDoubleTag(t)) {
             await flattenDoubleTag(t, data, allFunctions)
-        } else if (util.isSingleTag(t)) {
+        } else if (isSingleTag(t)) {
             await flattenSingleTag(t, data, allFunctions)
         }
         final += util.unParse(t)
@@ -108,9 +109,9 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
 
             // Convert single tags into raw text and deep flatten double tags
             for (const t of ast) {
-                if (util.isDoubleTag(t)) {
+                if (isDoubleTag(t)) {
                     await flattenDoubleTag(t, data, allFunctions)
-                } else if (util.isSingleTag(t)) {
+                } else if (isSingleTag(t)) {
                     await flattenSingleTag(t, data, allFunctions)
                 }
                 final += util.unParse(t)

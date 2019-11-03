@@ -162,9 +162,9 @@ CLI apps together, you can use pipes:
             }
             if (fstat.isFile()) {
                 console.log('(2✂︎f)', fname)
-                await twofold.renderFile(fname, {}, funcs, {...config, write: true })
+                await twofold.renderFile(fname, {}, funcs, { ...config, write: true })
             } else if (fstat.isDirectory()) {
-                await twofold.renderFolder(fname, {}, funcs, {...config, write: true })
+                await twofold.renderFolder(fname, {}, funcs, { ...config, write: true })
             } else {
                 console.error('Unknown path type:', fstat)
                 continue

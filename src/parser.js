@@ -1,5 +1,5 @@
 const config = require('./config')
-const { isRawText, isSingleTag, isDoubleTag } = require('./util')
+const { isRawText, isSingleTag, isDoubleTag } = require('./tags')
 
 const isFullDoubleTag = t => isDoubleTag(t) && t.firstTagText && t.secondTagText
 
