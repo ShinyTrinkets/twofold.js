@@ -76,9 +76,13 @@ function requireFolder(dir) {
     const normalizedPath = path.join(process.cwd(), dir)
     // console.log('Require:', normalizedPath)
     fs.readdirSync(normalizedPath).forEach(function(fname) {
-        const f = require(path.join(normalizedPath, fname))
-        // side-effect: overwrite any duplicate functions
-        functions = Object.assign(functions, f)
+        try {
+            // side-effect: overwrite any duplicate functions
+            const f = require(path.join(normalizedPath, fname))
+            functions = Object.assign(functions, f)
+        } catch (err) {
+            console.error(err)
+        }
     })
     return functions
 }

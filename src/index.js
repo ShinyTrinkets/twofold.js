@@ -42,7 +42,7 @@ async function flattenDoubleTag(tag, data, allFunctions) {
     const func = allFunctions[util.toCamelCase(tag.name)]
     const params = Object.assign({}, data, tag.params)
     const text = util.getText(tag)
-    if (text && tag.params && tag.params.once === 'true') {
+    if (text && util.isDoubleTag(tag) && tag.params && tag.params.once === 'true') {
         return
     }
     let result = text

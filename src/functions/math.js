@@ -1,3 +1,7 @@
+/**
+ * Super basic math functions.
+ */
+
 function parseNumber(text) {
     if (typeof text !== 'string') {
         return text

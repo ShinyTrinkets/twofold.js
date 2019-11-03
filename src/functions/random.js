@@ -5,7 +5,7 @@ function randomChoice(choices) {
 
 function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
     /**
-     * Return a random float number.
+     * Generate a random float number.
      * Returns a pseudo-random float in the range min–max (inclusive of min, but not max).
      */
     const precision = parseInt(decimals)
@@ -17,7 +17,7 @@ function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
 
 function randomInt(_, { min = 1, max = 100 } = {}) {
     /**
-     * Return a random integer number.
+     * Generate a random integer number.
      * Returns a pseudo-random integer in the range min–max (inclusive of min, but not max).
      */
     min = Math.ceil(parseInt(min))
@@ -70,7 +70,7 @@ function randomDice() {
 
 function randomCard() {
     /**
-     * Get a random game card.
+     * Fetch a random game card.
      * Aces, Twos, Threes, Fours, Fives, Sixes, Sevens, Eights, Nines, Tens,
      * Jacks, Queens, Kings
      * Spades (♠) Hearts (♥) Diamonds (♦) Clubs (♣)

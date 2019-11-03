@@ -1,6 +1,6 @@
 function sortLines({ text }, { caseSensitive = false } = {}) {
     /**
-     * TwoFold helper: sort lines of text alphabetically.
+     * Sort lines of text alphabetically.
      * By default, the sorting is case insensitive.
      */
     let sortFunc = null
