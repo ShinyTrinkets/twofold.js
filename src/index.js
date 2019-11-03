@@ -4,6 +4,10 @@ const functions = require('./functions')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 
+const readdirp = require('readdirp')
+const { promisify } = require('util')
+const writeFile = promisify(fs.writeFile)
+
 async function flattenSingleTag(tag, data, allFunctions) {
     // Convert a single tag into raw text,
     // by evaluating the tag function
@@ -68,7 +72,7 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
     /**
      * TwoFold render text string.
      */
-    const allFunctions = Object.assign({}, functions, customFunctions)
+    const allFunctions = { ...functions, ...customFunctions }
     // const label = 'tf-' + (Math.random() * 100 * Math.random()).toFixed(6)
     // console.time(label)
     const ast = parse(new Lexer(customConfig).lex(text), customConfig)
@@ -88,7 +92,7 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
 }
 
 async function renderStream(stream, data = {}, customFunctions = {}, customConfig = {}) {
-    const allFunctions = Object.assign({}, functions, customFunctions)
+    const allFunctions = { ...functions, ...customFunctions }
 
     return new Promise(resolve => {
         // const label = 'tf-' + (Math.random() * 100 * Math.random()).toFixed(6)
@@ -120,7 +124,19 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
 
 async function renderFile(fname, data = {}, customFunctions = {}, customConfig = {}) {
     const stream = fs.createReadStream(fname, { encoding: 'utf8' })
-    return renderStream(stream, data, customFunctions, customConfig)
+    const presult = await renderStream(stream, data, customFunctions, customConfig)
+    if (customConfig.write) {
+        await writeFile(fname, await presult, { encoding: 'utf8' })
+        return true
+    }
+    return presult
 }
 
-module.exports = { renderText, renderStream, renderFile }
+async function renderFolder(dir, data = {}, customFunctions = {}, customConfig = {}) {
+    for await (const pth of readdirp(dir, { fileFilter: ['*.*'], depth: 3 })) {
+        const fname = `${dir}/${pth.path}`
+        await renderFile(fname, data, customFunctions, customConfig)
+    }
+}
+
+module.exports = { renderText, renderStream, renderFile, renderFolder }

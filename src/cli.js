@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
+const crypto = require('crypto')
+
 const twofold = require('./')
 const scan = require('./scan')
 const util = require('./util')
-const files = require('./files')
-const p = require('../package')
-const crypto = require('crypto')
+const pkg = require('../package')
+
 const minimist = require('minimist')
 const cmdOptions = require('minimist-options')
 const cosmiConfig = require('cosmiconfig')
@@ -39,7 +40,7 @@ const options = cmdOptions({
     arguments: 'string',
 })
 
-const usage = `TwoFold (2✂︎f) v${p.version}
+const usage = `TwoFold (2✂︎f) v${pkg.version}
 
 Process a file that contains TwoFold template tags
 and overwrite the original file:
@@ -65,7 +66,7 @@ CLI apps together, you can use pipes:
     const args = minimist(process.argv.slice(2), options)
 
     if (args.version) {
-        console.log('TwoFold (2✂︎f) v' + p.version)
+        console.log('TwoFold (2✂︎f) v' + pkg.version)
         return
     }
 
@@ -161,16 +162,9 @@ CLI apps together, you can use pipes:
             }
             if (fstat.isFile()) {
                 console.log('(2✂︎f)', fname)
-                const result = await twofold.renderFile(fname, {}, funcs, config)
-                fs.writeFileSync(fname, result, { encoding: 'utf8' })
+                await twofold.renderFile(fname, {}, funcs, {...config, write: true })
             } else if (fstat.isDirectory()) {
-                const allFiles = await files.listFiles(fname)
-                for (let f of allFiles) {
-                    f = `${fname}/${f}`
-                    console.log('(2✂︎f)', f)
-                    const result = await twofold.renderFile(f, {}, funcs, config)
-                    fs.writeFileSync(f, result, { encoding: 'utf8' })
-                }
+                await twofold.renderFolder(fname, {}, funcs, {...config, write: true })
             } else {
                 console.error('Unknown path type:', fstat)
                 continue

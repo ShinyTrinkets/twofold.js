@@ -1,6 +1,6 @@
 {
   "authors": [
-    "Cristi Constantin <cristi.constantin@live.com>"
+    "Cristi Constantin <cristi.constantin@speedpost.net>"
   ],
   "ava": {
     "failFast": true,
@@ -18,7 +18,8 @@
     "cosmiconfig": "5.2.x",
     "micromatch": "4.x",
     "minimist": "1.2.x",
-    "minimist-options": "^4.0.1"
+    "minimist-options": "^4.0.1",
+    "readdirp": "3.x"
   },
   "description": "Glorified curly bubbly templates",
   "devDependencies": {

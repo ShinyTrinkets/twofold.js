@@ -3,18 +3,13 @@
  */
 const fs = require('fs')
 const util = require('./util')
-const files = require('./files')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 const functions = require('./functions')
+const readdirp = require('readdirp')
 
 async function scanFile(fname, customFunctions = {}, customConfig = {}) {
-    // if (!fs.existsSync(fname)) {
-    //     console.error(`\nInvalid file: "${fname}" !`)
-    //     return
-    // }
-
-    const allFunctions = Object.assign({}, functions, customFunctions)
+    const allFunctions = { ...functions, ...customFunctions }
     const nodes = []
 
     const walk = tag => {
@@ -65,17 +60,13 @@ async function scanFile(fname, customFunctions = {}, customConfig = {}) {
 }
 
 async function scanFolder(dir, customFunctions = {}, customConfig = {}) {
-    // if (!fs.existsSync(dir)) {
-    //     console.error(`\nInvalid folder: "${fname}" !`)
-    //     return
-    // }
     const label = 'scan-' + dir
     console.time(label)
 
-    const allFiles = await files.listFiles(dir)
-    for (const fname of allFiles) {
+    for await (const pth of readdirp(dir, { fileFilter: ['*.*'], depth: 3 })) {
         try {
-            await scanFile(`${dir}/${fname}`, customFunctions, customConfig)
+            const fname = `${dir}/${pth.path}`
+            await scanFile(fname, customFunctions, customConfig)
         } catch (err) {
             console.error(err)
         }
