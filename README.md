@@ -66,14 +66,13 @@ Should I play with TwoFold some more ? <yesOrNo></yesOrNo> ugh...
 Now, from command line, call TwoFold to scan your file, to see what tags are available:
 
 > $ 2fold -s example.md
-```
-(2✂︎f) Scan: example.md
-Text length :: 151
-Number of tags :: 3
-✓ { single: true, name: 'emojiSunMoon', tag: '<emojiSunMoon />' }
-✓ { single: true, name: 'emojiClock', tag: '<emojiClock />' }
-✓ { double: true, name: 'yesOrNo', tag: '<yesOrNo></yesOrNo>' }
-```
+
+> (2✂︎f) Scan: example.md<br/>
+> Text length :: 151<br/>
+> Number of tags :: 3<br/>
+> ✓ { single: true, name: 'emojiSunMoon', tag: '&lt;emojiSunMoon />' }<br/>
+> ✓ { single: true, name: 'emojiClock', tag: '&lt;emojiClock />' }<br/>
+> ✓ { double: true, name: 'yesOrNo', tag: '&lt;yesOrNo></yesOrNo>' }
 
 Now call TwoFold again, to convert your file:
 
@@ -89,11 +88,11 @@ Should I play with TwoFold some more ? <yesOrNo>Yes</yesOrNo> ugh...
 
 To quickly test some built-in templates, without writing a text file:
 
-> $ echo 'yes or no ? \<yes_or_no />' | 2fold<br />
-> $ echo 'random number: \<random_int />' | 2fold<br />
-> $ echo 'gimme a random game card ! \<random_card />' | 2fold<br />
-> $ echo 'sun / moon ? \<emoji_sun_moon />' | 2fold<br />
-> $ echo 'emoji time hehe \<emoji_clock />' | 2fold
+> $ echo 'yes or no ? &lt;yes_or_no />' | 2fold<br/>
+> $ echo 'random number: &lt;random_int />' | 2fold<br/>
+> $ echo 'gimme a random game card ! &lt;random_card />' | 2fold<br/>
+> $ echo 'sun / moon ? &lt;emoji_sun_moon />' | 2fold<br/>
+> $ echo 'emoji time hehe &lt;emoji_clock />' | 2fold
 
 For the full list of available tags, check the [Tags Documentation](/docs/doc-tags.md).
 
