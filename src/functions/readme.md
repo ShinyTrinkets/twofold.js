@@ -8,7 +8,7 @@ There are two types of tags, and multiple options that make them behave differen
 
 ## Single tags
 
-Example: `<randomFloat decimals=2 />`.
+Example: `<randomFloat decimals=2 //>`
 
 Single tags are consumed after they are rendered, so they are one use only.
 Some functions make more sense as single tags (eg: emojiClock).
@@ -20,9 +20,11 @@ They are useful in case of composing a document, when you want TwoFold to quickl
 Example:
 
 ```md
-&gt;sortLines caseSensitive=true>
-
-</sortLines>
+<sortLines caseSensitive=true>
+* a
+* b
+* c
+<//sortLines>
 ```
 
 Double tags are persistent and are normally rendered every time the file is processed by TwoFold.
@@ -34,7 +36,7 @@ They are useful in case of documentation, for example, to keep the document in s
 
 #### once
 
-Example: `&gt;randomCard once=true></randomCard>`.
+Example: `<randomCard once=true><//randomCard>`
 
 "Once" is a built-in option that tells TwoFold to not replace the text of the double tag, if there's already text inside it.
 It works only with double tags.
@@ -42,7 +44,14 @@ To make TwoFold render the text again, you just need to delete the text inside t
 
 #### consume
 
-Example: `&gt;sortLines consume=true>some text here</sortLines>`.
+Example: `<sortLines consume=true>some text here<//sortLines>`
 
 "Consume" is a built-in option that tells TwoFold to consume a double tag after it's rendered, basically to convert it into a single tag.
 It works only with double tags.
+
+#### text
+
+Example: `<increment text=9 //>`
+
+"Consume" is a built-in option that allows single tags to receive text, just like double tags.
+They will still be consumed after the first use. This option works only with single tags.

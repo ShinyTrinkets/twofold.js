@@ -16,6 +16,7 @@ async function flattenSingleTag(tag, data, allFunctions) {
     // by evaluating the tag function
     const func = allFunctions[util.toCamelCase(tag.name)]
     const params = Object.assign({}, data, tag.params)
+    // Text inside the single tag?
     const text = params.text ? params.text : ''
     let result = tag.rawText
     try {
