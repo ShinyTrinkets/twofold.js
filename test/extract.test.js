@@ -3,7 +3,7 @@ import test from 'ava'
 import twofold from '../src'
 import lexer from '../src/lexer'
 import parser from '../src/parser'
-import { isRawText, isSingleTag, isDoubleTag } from '../src/util'
+import { isRawText, isSingleTag, isDoubleTag } from '../src/tags'
 //
 // Testing the extraction of the blocks
 // A more serious testing is done in render tests

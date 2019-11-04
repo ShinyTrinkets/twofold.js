@@ -3,7 +3,9 @@ const util = require('./util')
 const functions = require('./functions')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
-const { isDoubleTag, isSingleTag, optRenderOnce, optShouldConsume } = require('./tags')
+const { getText, unParse } = require('./tags')
+const { isDoubleTag, isSingleTag } = require('./tags')
+const { optRenderOnce, optShouldConsume } = require('./tags')
 
 const readdirp = require('readdirp')
 const { promisify } = require('util')
@@ -46,7 +48,7 @@ async function flattenDoubleTag(tag, data, allFunctions) {
     // At this point all children are flat
     const func = allFunctions[util.toCamelCase(tag.name)]
     const params = { ...data, ...tag.params }
-    const text = util.getText(tag)
+    const text = getText(tag)
     if (text && optRenderOnce(tag)) {
         return
     }
@@ -86,7 +88,7 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
         } else if (isSingleTag(t)) {
             await flattenSingleTag(t, data, allFunctions)
         }
-        final += util.unParse(t)
+        final += unParse(t)
     }
     // console.timeEnd(label)
     return final
@@ -114,7 +116,7 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
                 } else if (isSingleTag(t)) {
                     await flattenSingleTag(t, data, allFunctions)
                 }
-                final += util.unParse(t)
+                final += unParse(t)
             }
 
             // console.timeEnd(label)
