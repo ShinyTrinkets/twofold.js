@@ -13,20 +13,20 @@ function parseNumber(text) {
     }
 }
 
-function multiply({ text }, { number = 1 } = {}) {
+function multiply({ text }, { nr = 1 } = {}) {
     /**
      * Multiply the input with a number.
      * The number can be any integer, or float.
      */
-    return parseNumber(text) * parseNumber(number)
+    return parseNumber(text) * parseNumber(nr)
 }
 
-function increment({ text }, { number = 1 } = {}) {
+function increment({ text }, { nr = 1 } = {}) {
     /**
      * Increment the input with a number.
      * The increment can be any integer, or float, positive or negative.
      */
-    return parseNumber(text) + parseNumber(number)
+    return parseNumber(text) + parseNumber(nr)
 }
 
 module.exports = {

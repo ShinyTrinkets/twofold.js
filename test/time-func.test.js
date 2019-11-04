@@ -30,13 +30,3 @@ test('emoji clock', async t => {
   d = { date: new Date(2012, 11, 21, 12, 46), showHalf: false }
   t.is(func.emojiClock(0, d), '🕛')
 })
-
-test('horoscop sign', async t => {
-  let d
-  d = { date: new Date(2012, 0, 23, 11) }
-  t.is(func.zodiacSign(0, d), 'Aquarius')
-  d = { date: new Date(2012, 2, 23, 11) }
-  t.is(func.zodiacSign(0, d), 'Aries')
-  d = { date: new Date(2012, 6, 23, 11) }
-  t.is(func.zodiacSign(0, d), 'Leo')
-})

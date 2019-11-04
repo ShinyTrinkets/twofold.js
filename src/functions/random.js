@@ -1,3 +1,7 @@
+/**
+ * Functions for generating randomness, available as tags.
+ */
+
 function randomChoice(choices) {
     const index = Math.floor(Math.random() * choices.length)
     return choices[index]
@@ -11,7 +15,7 @@ function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
     const precision = parseInt(decimals)
     min = Math.ceil(parseInt(min))
     max = Math.floor(parseInt(max))
-    const nr = Math.random() * (max - min) + min
+    const nr = max - Math.random() * (max - min)
     return nr.toFixed(precision)
 }
 
@@ -68,9 +72,9 @@ function randomDice() {
     return randomChoice(['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'])
 }
 
-function randomCard() {
+function randomCard(_, { nr = 0 } = {}) {
     /**
-     * Fetch a random game card.
+     * Fetch one, or more random game cards.
      * Aces, Twos, Threes, Fours, Fives, Sixes, Sevens, Eights, Nines, Tens,
      * Jacks, Queens, Kings
      * Spades (♠) Hearts (♥) Diamonds (♦) Clubs (♣)
@@ -83,7 +87,15 @@ function randomCard() {
             all.push(`${c}${s}`)
         }
     }
-    return randomChoice(all)
+
+    if (nr <= 1) {
+        return randomChoice(all)
+    }
+    const choices = []
+    for (let i = 0; i < nr; i++) {
+        choices.push(randomChoice(all))
+    }
+    return choices.join(' ')
 }
 
 module.exports = {
