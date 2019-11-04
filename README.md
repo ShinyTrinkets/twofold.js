@@ -30,11 +30,12 @@ The React-like `<whatever />` tags are customizable and ideally should be invisi
 
 The *single tags* are one use only, the are consumed after they render the response.
 The *double tags* are refreshed every time the file is rendered.<br/>
-They have different use-cases, different pros and cons.<br/>
+They have different use-cases, different pros and cons. Read more in the [Tags Documentation](/docs/doc-tags.md).<br/>
 Example: `<random_int />` might be converted into `3` and the tag disappears, but `<random_int></random_int>` might generate `<random_int>3</random_int>` the first time, and a new random number EVERY time the file is rendered by TwoFold.
 
-Note that currently the majority of tags mentioned as examples are NOT yet implemented!
-This repository provides the core framework and some of the tools for rendering the files.
+Note that currently not all the tags mentioned as examples are implemented!<br/>
+This repository provides the core framework and just a few tags.
+
 
 ### Notable features
 
@@ -43,7 +44,7 @@ This repository provides the core framework and some of the tools for rendering 
 * fun fun fun
 
 
-### Install and use
+### Install
 
 Simply install with NPM:
 
@@ -51,7 +52,10 @@ Simply install with NPM:
 
 The NPM package is called `twofold` and the CLI app is called `2fold`.
 
-Create a file called for example `something.md` and write inside it:
+
+### Usage
+
+Create a file called... `example.md` and write inside it:
 
 ```md
 ## Hello world!
@@ -59,11 +63,23 @@ It's a nice <emojiSunMoon /> outside and the time is <emojiClock /> .
 Should I play with TwoFold some more ? <yesOrNo></yesOrNo> ugh...
 ```
 
-Now, from command line, call TwoFold to convert your file:
+Now, from command line, call TwoFold to scan your file, to see what tags are available:
 
-> $ 2fold something.md
+> $ 2fold -s example.md
+```
+(2✂︎f) Scan: example.md
+Text length :: 151
+Number of tags :: 3
+✓ { single: true, name: 'emojiSunMoon', tag: '<emojiSunMoon />' }
+✓ { single: true, name: 'emojiClock', tag: '<emojiClock />' }
+✓ { double: true, name: 'yesOrNo', tag: '<yesOrNo></yesOrNo>' }
+```
 
-Open the file again and look at the changes :grin: You should see something like:
+Now call TwoFold again, to convert your file:
+
+> $ 2fold example.md
+
+Open the file and look at the changes :grin: You should see something like:
 
 ```md
 ## Hello world!
@@ -74,23 +90,33 @@ Should I play with TwoFold some more ? <yesOrNo>Yes</yesOrNo> ugh...
 To quickly test some built-in templates, without writing a text file:
 
 > $ echo 'yes or no ? \<yes_or_no />' | 2fold<br />
-> $ echo '< left < or > right > ? \<left_or_right />' | 2fold<br />
 > $ echo 'random number: \<random_int />' | 2fold<br />
 > $ echo 'gimme a random game card ! \<random_card />' | 2fold<br />
 > $ echo 'sun / moon ? \<emoji_sun_moon />' | 2fold<br />
 > $ echo 'emoji time hehe \<emoji_clock />' | 2fold
 
-For the full list of available tags, check the [src/functions](src/functions) folder.
+For the full list of available tags, check the [Tags Documentation](/docs/doc-tags.md).
 
-For a list of IDEAS for tags, check [issue #1](https://github.com/ShinyTrinkets/twofold.js/issues/1). Feel free to add your ideas and vote your favorite tags!!
-
-All tags can be specified as camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
+For a list of IDEAS for tags, check [issue #1](https://github.com/ShinyTrinkets/twofold.js/issues/1).
+Feel free to add your ideas and vote your favorite tags!!
 
 
 ### Notes
 
 * it is tested on Linux and MacOS and "Should just work ™" on Windows, but I haven't tested it.
 * it is a free & open-source software that comes **without warranty of any kind** that it works "as expected". The maintainers are trying really hard to write quality code and tests, but there will be bugs and there are risks to lose your valuable data. **Always make copies and backups, to make sure your data is safe**.
+
+
+### TwoFold vs other templates
+
+There are a few differences between TwoFold and other templating libraries:
+
+* TwoFold parser is designed to never crash. If it crashes, it's a bug and must be fixed.
+  Tipically 99% of the text processed by TwoFold is just regular text and only a few XML-like tags would be processed.
+  And it's expected that a large number of tags are badly formed, invalid XML.
+* Usually templating libraries convert a data structure + a template file into another file.
+  TwoFold is intended to use the same file as a template, and as output.
+  And the tags are always functions, never data structures.
 
 
 ## Similar libraries
