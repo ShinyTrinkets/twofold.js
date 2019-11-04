@@ -8,62 +8,43 @@ const scan = require('./scan')
 const util = require('./util')
 const pkg = require('../package')
 
-const minimist = require('minimist')
-const cmdOptions = require('minimist-options')
-const cosmiConfig = require('cosmiconfig')
+const mri = require('mri')
+const loadConfig = require('cosmiconfig')
 const chokidar = require('chokidar')
 
-const options = cmdOptions({
-    scan: {
-        alias: 's',
-        type: 'string',
-    },
-    watch: {
-        alias: 'w',
-        type: 'string',
-    },
-    funcs: {
-        alias: 'f',
-        type: 'string',
-    },
-    help: {
-        alias: 'h',
-        type: 'boolean',
-        default: false,
-    },
-    version: {
-        alias: 'v',
-        type: 'boolean',
-        default: false,
-    },
-    // Special option for positional arguments (`_` in minimist)
-    arguments: 'string',
-})
+const options = {
+    boolean: ['help', 'version'],
+    alias: {
+        s: 'scan',
+        w: 'watch',
+        f: 'funcs',
+    }
+}
 
 const usage = `TwoFold (2✂︎f) v${pkg.version}
 
-Process a file that contains TwoFold template tags
-and overwrite the original file:
+Process a file that contains TwoFold template tags and
+overwrite the original file:
 
   $ 2fold <file>
 
 Scan a file or folder to see what tags might be processed:
 
-  $ 2fold --scan <file>
+  $ 2fold -s|--scan <file>
 
 Watch or folder to render everytime the files are changed:
 
-  $ 2fold --watch <file>
+  $ 2fold -w|--watch <file>
 
-If you want to test some tags, or chain multiple
-CLI apps together, you can use pipes:
+To test some tags, or chain multiple CLI apps together,
+you can use pipes:
 
-  $ echo "yes or no: <replace-yes-or-no />" | 2fold
+  $ echo "yes or no: <yes_or_no />" | 2fold
   $ cat my-file.md | 2fold
 `
 
 ;(async function main() {
-    const args = minimist(process.argv.slice(2), options)
+    const args = mri(process.argv.slice(2), options)
 
     if (args.version) {
         console.log('TwoFold (2✂︎f) v' + pkg.version)
@@ -82,7 +63,7 @@ CLI apps together, you can use pipes:
         funcs = util.importAny(args.funcs)
     }
     // Explore all possible config locations
-    const explorer = cosmiConfig('twofold')
+    const explorer = loadConfig('twofold')
     let config = explorer.searchSync()
     if (config) {
         config = config.config

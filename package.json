@@ -17,8 +17,7 @@
     "chokidar": "3.x",
     "cosmiconfig": "5.2.x",
     "micromatch": "4.x",
-    "minimist": "1.2.x",
-    "minimist-options": "^4.0.1",
+    "mri": "1.x",
     "readdirp": "3.x"
   },
   "description": "Glorified curly bubbly templates",
