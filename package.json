@@ -42,8 +42,7 @@
   "name": "twofold",
   "nyc": {
     "exclude": [
-      "src/cli.js",
-      "src/util.js"
+      "src/cli.js"
     ]
   },
   "prettier": {
