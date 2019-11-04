@@ -79,7 +79,7 @@ CLI apps together, you can use pipes:
     let funcs = {}
     if (args.funcs) {
         console.debug('(2✂︎f) Funcs:', args.funcs)
-        funcs = util.requireFolder(args.funcs)
+        funcs = util.importAny(args.funcs)
     }
     // Explore all possible config locations
     const explorer = cosmiConfig('twofold')

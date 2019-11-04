@@ -21,17 +21,36 @@ function toCamelCase(str) {
     )
 }
 
-function requireFolder(dir) {
+function importAny(dir) {
+    /**
+     * Import any local file, module, or all JS files from a folder.
+     */
     let functions = {}
     const normalizedPath = path.join(process.cwd(), dir)
-    // console.log('Require:', normalizedPath)
+
+    let fstat
+    try {
+        fstat = fs.statSync(normalizedPath + '.js')
+    } catch (err) {
+        console.error('Stat error:', dir, err.message)
+    }
+    if (fstat && fstat.isFile()) {
+        try {
+            // side-effect: overwrite any duplicate functions
+            functions = require(normalizedPath + '.js')
+        } catch (err) {
+            console.error(`Import error: ${err.message}, require '${dir}'`)
+        }
+        return functions
+    }
+
     fs.readdirSync(normalizedPath).forEach(function(fname) {
         try {
             // side-effect: overwrite any duplicate functions
             const f = require(path.join(normalizedPath, fname))
             functions = Object.assign(functions, f)
         } catch (err) {
-            console.error(err)
+            console.error(`Import error: ${err.message}, require '${dir}'`)
         }
     })
     return functions
@@ -39,5 +58,5 @@ function requireFolder(dir) {
 
 module.exports = {
     toCamelCase,
-    requireFolder,
+    importAny,
 }
