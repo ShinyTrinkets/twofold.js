@@ -2,11 +2,11 @@
  * Scan files and return info about them.
  */
 const fs = require('fs')
-const util = require('./util')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 const functions = require('./functions')
 const readdirp = require('readdirp')
+const { isDoubleTag, isSingleTag } = require('./tags')
 
 async function scanFile(fname, customFunctions = {}, customConfig = {}) {
     const allFunctions = { ...functions, ...customFunctions }
@@ -14,16 +14,16 @@ async function scanFile(fname, customFunctions = {}, customConfig = {}) {
 
     const walk = tag => {
         // Deep walk into tag and list all tags
-        if (util.isDoubleTag(tag)) {
+        if (isDoubleTag(tag)) {
             nodes.push({ double: true, name: tag.name, tag: tag.firstTagText + tag.secondTagText })
-        } else if (util.isSingleTag(tag)) {
+        } else if (isSingleTag(tag)) {
             nodes.push({ single: true, name: tag.name, tag: tag.rawText })
         }
         if (tag.children) {
             for (const c of tag.children) {
-                if (util.isDoubleTag(c)) {
+                if (isDoubleTag(c)) {
                     walk(c)
-                } else if (util.isSingleTag(c)) {
+                } else if (isSingleTag(c)) {
                     nodes.push({ single: true, name: tag.name, tag: tag.rawText })
                 }
             }

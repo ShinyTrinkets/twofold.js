@@ -4,14 +4,19 @@ const fs = require('fs')
 // so I'm comparing TwoFold with similar libraries,
 // by feeding them the same file.
 //
-const FILE = 'random1.txt'
+// To generate a big random file in Python:
+// import os, base64
+// base64.a85encode(os.urandom(396_040), wrapcol=100).replace(b'{',b'x')
+// open('random.txt', 'wb').write(txt)
+//
+const file = 'random.txt'
+const text = fs.readFileSync(file, { encoding: 'utf8' })
 
 function benchTwofold() {
     const twofold = require('../src')
     const label = 'bench-twofold'
     console.time(label)
-    const txt = fs.readFileSync(FILE, { encoding: 'utf8' })
-    twofold.renderText(txt)
+    twofold.renderText(text)
     console.timeEnd(label)
 }
 
@@ -19,8 +24,7 @@ function benchNunjucks() {
     const nunjucks = require('nunjucks')
     const label = 'bench-nunjucks'
     console.time(label)
-    const txt = fs.readFileSync(FILE, { encoding: 'utf8' })
-    nunjucks.renderString(txt)
+    nunjucks.renderString(text)
     console.timeEnd(label)
 }
 
@@ -28,8 +32,7 @@ function benchMustache() {
     const mustache = require('mustache')
     const label = 'bench-mustache'
     console.time(label)
-    const txt = fs.readFileSync(FILE, { encoding: 'utf8' })
-    mustache.render(txt)
+    mustache.render(text)
     console.timeEnd(label)
 }
 
@@ -37,9 +40,8 @@ function benchLiquid() {
     const { Liquid } = require('liquidjs')
     const label = 'bench-liquid'
     console.time(label)
-    const txt = fs.readFileSync(FILE, { encoding: 'utf8' })
     const engine = new Liquid()
-    engine.parseAndRender(txt)
+    engine.parseAndRender(text)
         .then(() => {
             console.timeEnd(label)
         })
