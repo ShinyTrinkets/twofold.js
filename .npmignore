@@ -1,7 +1,9 @@
 docs
+funcs
 .babelrc
 .editorconfig
 .gitignore
 .npmignore
 .npmrc
 .travis.yml
+.nyc_output
