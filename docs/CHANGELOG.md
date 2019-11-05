@@ -1,5 +1,11 @@
 # TwoFold.js (2✂︎f) changelog
 
+## v0.4 [WIP]
+
+- allow space and slash in the props values
+- added "--tags" option in CLI to list all available tags
+
+
 ## v0.3
 
 - evaluate Async tag functions

@@ -7,13 +7,14 @@ const twofold = require('./')
 const scan = require('./scan')
 const util = require('./util')
 const pkg = require('../package')
+const tags = require('./functions')
 
 const mri = require('mri')
 const loadConfig = require('cosmiconfig')
 const chokidar = require('chokidar')
 
 const options = {
-    boolean: ['help', 'version'],
+    boolean: ['help', 'version', 'tags'],
     alias: {
         s: 'scan',
         w: 'watch',
@@ -76,6 +77,12 @@ you can use pipes:
         console.debug('(2✂︎f) Config:', config)
     } else {
         config = {}
+    }
+
+    if (args.tags) {
+        const allFunctions = { ...tags, ...funcs }
+        console.log(allFunctions)
+        return
     }
 
     if (args.scan) {
