@@ -74,6 +74,8 @@ you can use pipes:
     if (config) {
         config = config.config
         console.debug('(2✂︎f) Config:', config)
+    } else {
+        config = {}
     }
 
     if (args.scan) {

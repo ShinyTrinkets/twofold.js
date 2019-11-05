@@ -1,21 +1,27 @@
 const fs = require('fs')
-const util = require('./util')
 const functions = require('./functions')
 const { Lexer } = require('./lexer')
 const { parse } = require('./parser')
 const { getText, unParse } = require('./tags')
 const { isDoubleTag, isSingleTag } = require('./tags')
 const { optRenderOnce, optShouldConsume } = require('./tags')
+const { toCamelCase } = require('./util')
 
 const readdirp = require('readdirp')
-const { promisify } = require('util')
+const { promisify, types } = require('util')
 const writeFile = promisify(fs.writeFile)
+
+const isFunction = f => typeof f === 'function' || types.isAsyncFunction(f)
 
 async function flattenSingleTag(tag, data, allFunctions) {
     // Convert a single tag into raw text,
     // by evaluating the tag function
-    const func = allFunctions[util.toCamelCase(tag.name)]
-    const params = Object.assign({}, data, tag.params)
+    const func = allFunctions[toCamelCase(tag.name)]
+    if (!isFunction(func)) {
+        console.warn(`Unknown single tag "${tag.name}"!`)
+        return
+    }
+    const params = { ...data, ...tag.params }
     // Text inside the single tag?
     const text = params.text ? params.text : ''
     let result = tag.rawText
@@ -47,7 +53,11 @@ async function flattenDoubleTag(tag, data, allFunctions) {
         }
     }
     // At this point all children are flat
-    const func = allFunctions[util.toCamelCase(tag.name)]
+    const func = allFunctions[toCamelCase(tag.name)]
+    if (!isFunction(func)) {
+        console.warn(`Unknown double tag "${tag.name}"!`)
+        return
+    }
     const params = { ...data, ...tag.params }
     const text = getText(tag)
     if (text && optRenderOnce(tag)) {
@@ -128,15 +138,24 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
 
 async function renderFile(fname, data = {}, customFunctions = {}, customConfig = {}) {
     const stream = fs.createReadStream(fname, { encoding: 'utf8' })
-    const presult = await renderStream(stream, data, customFunctions, customConfig)
+    const result = await renderStream(stream, data, customFunctions, customConfig)
     if (customConfig.write) {
-        await writeFile(fname, await presult, { encoding: 'utf8' })
-        return true
+        await writeFile(fname, result, { encoding: 'utf8' })
+        return ''
     }
-    return presult
+    return result
 }
 
 async function renderFolder(dir, data = {}, customFunctions = {}, customConfig = {}) {
+    if (!data) {
+        data = {}
+    }
+    if (!customFunctions) {
+        customFunctions = {}
+    }
+    if (!customConfig) {
+        customConfig = {}
+    }
     for await (const pth of readdirp(dir, { fileFilter: ['*.*'], depth: 3 })) {
         const fname = `${dir}/${pth.path}`
         await renderFile(fname, data, customFunctions, customConfig)

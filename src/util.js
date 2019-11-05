@@ -32,14 +32,14 @@ function importAny(dir) {
     try {
         fstat = fs.statSync(normalizedPath + '.js')
     } catch (err) {
-        console.error('Stat error:', dir, err.message)
+        // console.warn('Stat error:', dir, err.message)
     }
     if (fstat && fstat.isFile()) {
         try {
             // side-effect: overwrite any duplicate functions
             functions = require(normalizedPath + '.js')
         } catch (err) {
-            console.error(`Import error: ${err.message}, require '${dir}'`)
+            console.warn(`Import error: ${err.message}, require '${dir}'`)
         }
         return functions
     }
@@ -50,7 +50,7 @@ function importAny(dir) {
             const f = require(path.join(normalizedPath, fname))
             functions = Object.assign(functions, f)
         } catch (err) {
-            console.error(`Import error: ${err.message}, require '${dir}'`)
+            console.warn(`Import error: ${err.message}, require '${dir}'`)
         }
     })
     return functions
