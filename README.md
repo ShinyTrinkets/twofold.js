@@ -86,7 +86,15 @@ It's a nice 🌙 outside and the time is 🕥 .
 Should I play with TwoFold some more ? <yesOrNo>Yes</yesOrNo> ugh...
 ```
 
-To quickly test some built-in templates, without writing a text file:
+For any operations like scan, render and watch you can load a folder with any number
+of Javascript files that expose extra functions, that will be available as tags.
+You can load the folder with `--funcs`:
+
+> $ 2fold --funcs folder --scan file
+
+Read more about it in the [Tags Documentation](/docs/doc-tags.md).
+
+To quickly test some built-in templates, or chain multiple CLI apps together, you can use pipes:
 
 > $ echo 'yes or no ? &lt;yes_or_no />' | 2fold<br/>
 > $ echo 'random number: &lt;random_int />' | 2fold<br/>

@@ -23,18 +23,24 @@ const options = {
 
 const usage = `TwoFold (2✂︎f) v${pkg.version}
 
-Process a file that contains TwoFold template tags and
-overwrite the original file:
+Process a file or folder that contains TwoFold template tags
+and overwrite the original files:
 
-  $ 2fold <file>
+  $ 2fold <file|folder>
 
-Scan a file or folder to see what tags might be processed:
+Scan a file or folder to see what tags might be processed,
+without processing the files:
 
-  $ 2fold -s|--scan <file>
+  $ 2fold -s|--scan <file|folder>
 
-Watch or folder to render everytime the files are changed:
+Watch or folder to render everytime the files change:
 
-  $ 2fold -w|--watch <file>
+  $ 2fold -w|--watch <file|folder>
+
+For the scan, render and watch you can load a folder
+with extra functions (tags):
+
+  $ 2fold -f|--funcs <folder> --scan <file>
 
 To test some tags, or chain multiple CLI apps together,
 you can use pipes:

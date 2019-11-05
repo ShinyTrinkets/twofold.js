@@ -3,7 +3,19 @@
 The TwoFold tags are just regular Javascript functions, there's nothing special about them.<br/>
 They can receive as input the text inside the tags (in case of double tags), extra props of the tag and user settings (in case they are defined).
 
-All tags can be specified as camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
+For example, the `increment()` function looks like this:
+
+```js
+// math.js file
+function increment({ text }, { nr = 1 } = {}) {
+    return parseNumber(text) + parseNumber(nr)
+}
+```
+
+And it can be called like: "&lt;increment nr=4>6&lt;/increment>".
+The function will receive the args as: text="6" and nr="4".
+
+All tags can be called in camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
 
 There are two types of tags, and multiple options that make them behave differently.
 
