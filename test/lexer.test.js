@@ -145,6 +145,32 @@ const TESTS = [
         ]
     ],
     [
+        '<httpGet url="https://httpbin.org/uuid" />',
+        [
+            {
+                rawText: '<httpGet url="https://httpbin.org/uuid" />',
+                name: 'httpGet',
+                single: true,
+                params: {
+                    url: 'https://httpbin.org/uuid'
+                },
+            }
+        ]
+    ],
+    [
+        '<echo text=" <>//<> " />',
+        [
+            {
+                rawText: '<echo text=" <>//<> " />',
+                name: 'echo',
+                single: true,
+                params: {
+                    text: ' <>//<> ',
+                },
+            }
+        ]
+    ],
+    [
         '< temp_f />< temp_c />',
         [
             {
@@ -165,7 +191,7 @@ const TESTS = [
             { rawText: '?' },
             {
                 name: 'increment',
-                params: { nr1: '99', nr2: '0' },
+                params: { nr1: 99, nr2: 0 },
                 rawText: '<increment nr1=99 nr2=0/>',
                 single: true,
             },
@@ -173,12 +199,12 @@ const TESTS = [
         ]
     ],
     [
-        '< dayOrNight date="2019-07"\t/>',
+        '< dayOrNight date="2019-07" void=null\t/>',
         [
             {
                 name: 'dayOrNight',
-                params: { date: '"2019-07"' },
-                rawText: '< dayOrNight date="2019-07"\t/>',
+                params: { date: '2019-07', void: null },
+                rawText: '< dayOrNight date="2019-07" void=null\t/>',
                 single: true,
             }
         ]
@@ -216,12 +242,12 @@ const TESTS = [
         ]
     ],
     [
-        '<dayOrNight date="2019-07">...</dayOrNight>',
+        '<dayOrNight date="2019-07" emoji=false>...</dayOrNight>',
         [
             {
                 name: 'dayOrNight',
-                params: { date: '"2019-07"' },
-                rawText: '<dayOrNight date="2019-07">',
+                params: { date: '2019-07', emoji: false },
+                rawText: '<dayOrNight date="2019-07" emoji=false>',
                 double: true,
             },
             { rawText: '...' },
@@ -237,7 +263,7 @@ const TESTS = [
         [
             {
                 name: 'increment',
-                params: { nr: '5' },
+                params: { nr: 5 },
                 rawText: '< increment nr=5\n>',
                 double: true,
             },
@@ -249,12 +275,12 @@ const TESTS = [
         ]
     ],
     [
-        '<increment nr=1>></  increment  >',
+        '<increment nr=-1>></  increment  >',
         [
             {
                 name: 'increment',
-                params: { nr: '1' },
-                rawText: '<increment nr=1>',
+                params: { nr: -1 },
+                rawText: '<increment nr=-1>',
                 double: true,
             },
             { rawText: '>' },

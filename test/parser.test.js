@@ -75,14 +75,27 @@ const TESTS = [
         ]
     ],
     [
-        '<temp type=f deep=no>0</temp>',
+        '<httpGet url="https://httpbin.org/uuid" />',
+        [
+            {
+                rawText: '<httpGet url="https://httpbin.org/uuid" />',
+                name: 'httpGet',
+                single: true,
+                params: {
+                    url: 'https://httpbin.org/uuid'
+                },
+            }
+        ]
+    ],
+    [
+        '<temp type=f deep=no null=null>0</temp>',
         [
             {
                 double: true,
-                firstTagText: '<temp type=f deep=no>',
+                firstTagText: '<temp type=f deep=no null=null>',
                 secondTagText: '</temp>',
                 name: 'temp',
-                params: { type: 'f', deep: 'no' },
+                params: { type: 'f', deep: 'no', null: null },
                 children: [
                     { rawText: '0' }
                 ]

@@ -91,9 +91,19 @@ class Lexer {
              * Commit pending tag key + value as a dict
              * and delete the temporary variables.
              */
-            self.pendingState.params[self.pendingState.param_key] = self.pendingState.param_value
+            let value = self.pendingState.param_value
+            try {
+                value = JSON.parse(self.pendingState.param_value)
+            } catch (err) {
+                /* */
+            }
+            self.pendingState.params[self.pendingState.param_key] = value
             delete self.pendingState.param_key
             delete self.pendingState.param_value
+        }
+
+        const pendParamValueOpen = function() {
+            return self.pendingState.param_value[0] === '"'
         }
 
         for (const char of text) {
@@ -256,25 +266,32 @@ class Lexer {
             }
 
             // Anything is valid as a VALUE
-            // TODO: support spaces inside values
             else if (this.state === STATE_VALUE && this.pendingState.param_key) {
-                // Is this a tag stopper?
+                // Is this a quote?
+                if (char === '"' && pendParamValueOpen()) {
+                    this.pendingState.rawText += char
+                    this.pendingState.param_value += char
+                    commitTag()
+                    transition(STATE_INSIDE_TAG)
+                }
+                // Is this a tag stopper? And the param value is closed?
                 // In this case, it's a single tag
-                if (char === lastStopper[0]) {
+                else if (char === lastStopper[0] && !pendParamValueOpen()) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     commitTag()
                     transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
-                else if (char === closeTag[0]) {
+                // And the param value is closed?
+                else if (char === closeTag[0] && !pendParamValueOpen()) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
                     commitTag()
                     commitAndTransition(STATE_RAW_TEXT)
                 }
                 // Is this a space char inside the tag?
-                else if (SPACE_LETTERS.test(char)) {
+                else if (SPACE_LETTERS.test(char) && !pendParamValueOpen()) {
                     this.pendingState.rawText += char
                     commitTag()
                     transition(STATE_INSIDE_TAG)
@@ -286,9 +303,9 @@ class Lexer {
                 }
             }
 
-            // UGH THIS SHOULDN'T HAPPEN
+            // UGH THIS SHOULDN'T HAPPEN, TIME TO PANIC
             else {
-                console.error('Parser ERROR! This is probably a BUG!')
+                console.error('Lexer ERROR! This is probably a BUG!')
                 console.error(`Char: ${char}; State: ${this.state}; PriorState: ${this.priorState}`)
                 commitAndTransition(STATE_RAW_TEXT, true)
             }

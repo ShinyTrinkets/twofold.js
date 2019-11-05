@@ -1,5 +1,8 @@
 // This is the default config
 
+// The openTag, closeTag and lastStopper must be strings
+// of length 1.
+
 // In <random-int />
 // If you change open-tag to "{" and close-tag to "}"
 // the tag will become: {random-int /}

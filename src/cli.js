@@ -18,7 +18,7 @@ const options = {
         s: 'scan',
         w: 'watch',
         f: 'funcs',
-    }
+    },
 }
 
 const usage = `TwoFold (2✂︎f) v${pkg.version}
