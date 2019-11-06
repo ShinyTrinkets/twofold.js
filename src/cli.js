@@ -10,8 +10,8 @@ const pkg = require('../package')
 const tags = require('./functions')
 
 const mri = require('mri')
-const loadConfig = require('cosmiconfig')
 const chokidar = require('chokidar')
+const { cosmiconfig } = require('cosmiconfig')
 
 const options = {
     boolean: ['help', 'version', 'tags'],
@@ -76,8 +76,8 @@ you can use pipes:
     if (args.config) {
         config_name = args.config
     }
-    const explorer = loadConfig(config_name)
-    let config = explorer.searchSync()
+    const explorer = cosmiconfig(config_name)
+    let config = await explorer.search()
     if (config) {
         console.debug('(2✂︎f) Config:', config)
         config = config.config

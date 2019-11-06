@@ -15,7 +15,7 @@
   "contributors": [],
   "dependencies": {
     "chokidar": "3.x",
-    "cosmiconfig": "5.2.x",
+    "cosmiconfig": "6.x",
     "micromatch": "4.x",
     "mri": "1.x",
     "readdirp": "3.x"
@@ -34,6 +34,9 @@
   "keywords": [
     "app",
     "cli",
+    "tags",
+    "tool",
+    "util",
     "template"
   ],
   "license": "MIT",
