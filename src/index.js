@@ -13,7 +13,7 @@ const writeFile = promisify(fs.writeFile)
 
 const isFunction = f => typeof f === 'function' || types.isAsyncFunction(f)
 
-async function flattenSingleTag(tag, data, allFunctions) {
+async function flattenSingleTag(tag, data, allFunctions, config) {
     // Convert a single tag into raw text,
     // by evaluating the tag function
     const func = allFunctions[toCamelCase(tag.name)]
@@ -21,7 +21,11 @@ async function flattenSingleTag(tag, data, allFunctions) {
         console.warn(`Unknown single tag "${tag.name}"!`)
         return
     }
-    const params = { ...data, ...tag.params }
+    // Params for the tag come from custom data, parsed params and config
+    let params = { ...data, ...tag.params }
+    if (config.tags && typeof config.tags[tag.name] === 'object') {
+        params = { ...config.tags[tag.name], ...params }
+    }
     // Text inside the single tag?
     const text = params.text ? params.text : ''
     let result = tag.rawText
@@ -35,7 +39,7 @@ async function flattenSingleTag(tag, data, allFunctions) {
     }
 }
 
-async function flattenDoubleTag(tag, data, allFunctions) {
+async function flattenDoubleTag(tag, data, allFunctions, config) {
     /*
      * Deep evaluate all tags, by calling the tag function.
      * If the double tag has param consume=true, it will be destroyed
@@ -46,9 +50,9 @@ async function flattenDoubleTag(tag, data, allFunctions) {
     if (tag.children) {
         for (const c of tag.children) {
             if (isDoubleTag(c)) {
-                await flattenDoubleTag(c, data, allFunctions)
+                await flattenDoubleTag(c, data, allFunctions, config)
             } else if (isSingleTag(c)) {
-                await flattenSingleTag(c, data, allFunctions)
+                await flattenSingleTag(c, data, allFunctions, config)
             }
         }
     }
@@ -58,7 +62,11 @@ async function flattenDoubleTag(tag, data, allFunctions) {
         console.warn(`Unknown double tag "${tag.name}"!`)
         return
     }
-    const params = { ...data, ...tag.params }
+    // Params for the tag come from custom data, parsed params and config
+    let params = { ...data, ...tag.params }
+    if (config.tags && typeof config.tags[tag.name] === 'object') {
+        params = { ...config.tags[tag.name], ...params }
+    }
     const text = getText(tag)
     if (text && optRenderOnce(tag)) {
         return
@@ -95,9 +103,9 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
     // Convert single tags into raw text and deep flatten double tags
     for (const t of ast) {
         if (isDoubleTag(t)) {
-            await flattenDoubleTag(t, data, allFunctions)
+            await flattenDoubleTag(t, data, allFunctions, customConfig)
         } else if (isSingleTag(t)) {
-            await flattenSingleTag(t, data, allFunctions)
+            await flattenSingleTag(t, data, allFunctions, customConfig)
         }
         final += unParse(t)
     }
@@ -106,6 +114,9 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
 }
 
 async function renderStream(stream, data = {}, customFunctions = {}, customConfig = {}) {
+    /**
+     * TwoFold render stream.
+     */
     const allFunctions = { ...functions, ...customFunctions }
 
     return new Promise(resolve => {
@@ -123,9 +134,9 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
             // Convert single tags into raw text and deep flatten double tags
             for (const t of ast) {
                 if (isDoubleTag(t)) {
-                    await flattenDoubleTag(t, data, allFunctions)
+                    await flattenDoubleTag(t, data, allFunctions, customConfig)
                 } else if (isSingleTag(t)) {
-                    await flattenSingleTag(t, data, allFunctions)
+                    await flattenSingleTag(t, data, allFunctions, customConfig)
                 }
                 final += unParse(t)
             }
