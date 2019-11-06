@@ -16,9 +16,10 @@ const chokidar = require('chokidar')
 const options = {
     boolean: ['help', 'version', 'tags'],
     alias: {
+        c: 'config',
+        f: 'funcs',
         s: 'scan',
         w: 'watch',
-        f: 'funcs',
     },
 }
 
@@ -69,12 +70,17 @@ you can use pipes:
         console.debug('(2✂︎f) Funcs:', args.funcs)
         funcs = util.importAny(args.funcs)
     }
+
     // Explore all possible config locations
-    const explorer = loadConfig('twofold')
+    let config_name = 'twofold'
+    if (args.config) {
+        config_name = args.config
+    }
+    const explorer = loadConfig(config_name)
     let config = explorer.searchSync()
     if (config) {
-        config = config.config
         console.debug('(2✂︎f) Config:', config)
+        config = config.config
     } else {
         config = {}
     }
