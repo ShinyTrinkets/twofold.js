@@ -73,15 +73,15 @@ const TESTS = [
     ],
     [
         '<tag a />',
-        [{ rawText: '<tag a />' }] // this is raw-text
+        [{ rawText: '<tag a />' }] // this is raw-text (no equal after prop)
     ],
     [
         '<tag x=/>',
-        [{ rawText: '<tag x=/>' }] // this is raw-text
+        [{ rawText: '<tag x=/>' }] // this is raw-text (no value after prop)
     ],
     [
         '<tag x= />',
-        [{ rawText: '<tag x= />' }] // this is raw-text
+        [{ rawText: '<tag x= />' }] // this is raw-text (no value after prop)
     ],
     [
         '< /tag >',
@@ -110,6 +110,10 @@ const TESTS = [
     [
         '<</ tag <<',
         [{ rawText: '<</ tag <<' }] // this is raw-text
+    ],
+    [
+        '<echo text="\n" />',
+        [{ rawText: '<echo text="\n" />' }] // raw-text (newline not allowed in param values)
     ],
 
     [
@@ -259,12 +263,13 @@ const TESTS = [
         ]
     ],
     [
-        '< increment nr=5\n></ increment  >',
+        // dealing with newlines is messy ...
+        '< increment nr="5\\\\n"\n></ increment  >',
         [
             {
                 name: 'increment',
-                params: { nr: 5 },
-                rawText: '< increment nr=5\n>',
+                params: { nr: '5\\n' },
+                rawText: '< increment nr="5\\\\n"\n>',
                 double: true,
             },
             {

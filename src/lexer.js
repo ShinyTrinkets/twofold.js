@@ -205,7 +205,7 @@ class Lexer {
                     transition(STATE_CLOSE_TAG)
                 }
                 // Is this a space char inside the tag?
-                else if (SPACE_LETTERS.test(char) && this.pendingState.name.trim()) {
+                else if (SPACE_LETTERS.test(char) && this.pendingState.name) {
                     this.pendingState.rawText += char
                 }
                 // Is this the end of the First tag from a Double tag?
@@ -267,14 +267,22 @@ class Lexer {
 
             // Anything is valid as a VALUE
             else if (this.state === STATE_VALUE && this.pendingState.param_key) {
+                // Newline not allowed inside prop values
+                if (char === '\n') {
+                    delete this.pendingState.params
+                    delete this.pendingState.param_key
+                    delete this.pendingState.param_value
+                    this.pendingState.rawText += char
+                    commitAndTransition(STATE_RAW_TEXT, true)
+                }
                 // Is this a quote?
-                if (char === '"' && pendParamValueOpen()) {
+                else if (char === '"' && pendParamValueOpen()) {
                     this.pendingState.rawText += char
                     this.pendingState.param_value += char
                     commitTag()
                     transition(STATE_INSIDE_TAG)
                 }
-                // Is this a tag stopper? And the param value is closed?
+                // Is this a tag stopper? And the prop value not a string?
                 // In this case, it's a single tag
                 else if (char === lastStopper[0] && !pendParamValueOpen()) {
                     this.pendingState.rawText += char
@@ -283,7 +291,7 @@ class Lexer {
                     transition(STATE_CLOSE_TAG)
                 }
                 // Is this the end of the First tag from a Double tag?
-                // And the param value is closed?
+                // And the prop value is not a string?
                 else if (char === closeTag[0] && !pendParamValueOpen()) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
