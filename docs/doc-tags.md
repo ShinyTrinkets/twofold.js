@@ -79,7 +79,7 @@ They will still be consumed after the first use. This option works only with sin
 
 TODO: Replace this manual list with the auto-generated list, when it's ready
 
-Note: The built-in tags are simple and ZERO dependencies, just enough to have some tags available to start with.
+Note: The built-in tags are simple and ZERO ext dependencies, just enough to have some tags available to start with.
 There are extra tags available in the [twofold-extras](https://github.com/ShinyTrinkets/twofold-extras) repository.
 You can of course, write your own tags, and load them with the `--funcs` cmd line switch.
 
