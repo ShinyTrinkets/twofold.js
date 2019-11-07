@@ -3,6 +3,8 @@
 ## v0.4 [WIP]
 
 - allow space and slash in the props values
+- fixed newline bug in the props values
+- tag functions receive options from config
 - added "--tags" option in CLI to list all available tags
 - added "--glob" and "--depth" options in CLI for scan, render, watch
 

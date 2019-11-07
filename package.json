@@ -16,8 +16,8 @@
   "dependencies": {
     "chokidar": "3.x",
     "cosmiconfig": "6.x",
-    "micromatch": "4.x",
     "mri": "1.x",
+    "picomatch": "2.x",
     "readdirp": "3.x"
   },
   "description": "Glorified curly bubbly templates",

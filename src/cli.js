@@ -11,6 +11,7 @@ const tags = require('./functions')
 
 const mri = require('mri')
 const chokidar = require('chokidar')
+const picomatch = require('picomatch')
 const { cosmiconfig } = require('cosmiconfig')
 
 const options = {
@@ -124,8 +125,16 @@ you can use pipes:
         const locks = {}
         const hashes = {}
         const callback = async fname => {
-            // ignored ??
-
+            // ignore files that don't match the pattern
+            if (
+                config.glob &&
+                !picomatch.isMatch(fname, config.glob, {
+                    basename: true,
+                    contains: true,
+                })
+            ) {
+                return
+            }
             // console.log(`File ${fname} is changed`)
             if (locks[fname]) {
                 // disable writing lock

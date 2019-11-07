@@ -117,3 +117,7 @@ You can of course, write your own tags, and load them with the `--funcs` cmd lin
 #### emojiDayNight date=now
 
 #### emojiClock date=now showHalf=true
+
+#### cat start=0 limit=250
+
+#### listDir dir li='*' space=' '
