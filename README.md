@@ -1,6 +1,7 @@
 # TwoFold.js (2✂︎f)
 
 [![Project name][project-img]][project-url]
+[![NPM version][npm-img]][npm-url]
 [![Build status][build-img]][build-url]
 [![Coverage][coverage-img]][coverage-url]
 [![Prettier Style][style-img]][style-url]
@@ -159,6 +160,8 @@ https://github.com/croqaz/awesome-markup
 
 [project-img]: https://badgen.net/badge/%E2%AD%90/Trinkets/4B0082
 [project-url]: https://github.com/ShinyTrinkets
+[npm-img]: https://badgen.net/npm/v/twofold?icon=npm&label
+[npm-url]: https://npmjs.com/package/twofold
 [build-img]: https://badgen.net/travis/ShinyTrinkets/twofold.js
 [build-url]: https://travis-ci.org/ShinyTrinkets/twofold.js
 [coverage-img]: https://codecov.io/gh/ShinyTrinkets/twofold.js/branch/master/graph/badge.svg

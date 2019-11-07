@@ -32,11 +32,13 @@
   },
   "homepage": "https://github.com/ShinyTrinkets/twofold.js#readme",
   "keywords": [
+    "✂",
     "app",
     "cli",
     "tags",
     "tool",
     "util",
+    "2fold",
     "template"
   ],
   "license": "MIT",
