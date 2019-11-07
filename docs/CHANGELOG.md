@@ -4,6 +4,7 @@
 
 - allow space and slash in the props values
 - added "--tags" option in CLI to list all available tags
+- added "--glob" and "--depth" options in CLI for scan, render, watch
 
 
 ## v0.3
