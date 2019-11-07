@@ -49,3 +49,11 @@ test('render file some tags', async t => {
   const final = await twofold.renderFile(fname)
   t.is(txt, final)
 })
+
+test('render folder', async t => {
+  const folder = __dirname + '/fixtures/'
+  let result = await twofold.renderFolder(folder)
+  t.is(3, result)
+  result = await twofold.renderFolder(folder, {}, {}, { glob: '*.js' })
+  t.is(1, result)
+})
