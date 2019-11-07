@@ -7,3 +7,4 @@ funcs
 .npmrc
 .travis.yml
 .nyc_output
+.*rc.json
