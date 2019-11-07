@@ -34,7 +34,8 @@ They have different use-cases, different pros and cons. Read more in the [Tags D
 Example: `<random_int />` might be converted into `3` and the tag disappears, but `<random_int></random_int>` might generate `<random_int>3</random_int>` the first time, and a new random number EVERY time the file is rendered by TwoFold.
 
 Note that currently not all the tags mentioned as examples are implemented!<br/>
-This repository provides the core framework and just a few tags.
+This repository provides the core framework and just a few tags. There are extra tags available in the [twofold-extras](https://github.com/ShinyTrinkets/twofold-extras) repository. You can of course, write your own tags, and load them with a cmd line switch.
+
 
 
 ### Notable features

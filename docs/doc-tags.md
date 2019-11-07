@@ -17,6 +17,11 @@ The function will receive the args as: text="6" and nr="4".
 
 All tags can be called in camelCase (eg: emojiClock), or separated by underline (eg: emoji_clock).
 
+The built-in tags are located in "/src/functions" and are available automatically.
+To create extra tags, make a folder eg: "mkdir myFuncs" and create as many Javascript files as you want and expose the functions that you want.<br/>
+Then run `2fold` with "--funcs myFuncs" to point it to your folder. All Javascript files will be scanned and all exposed functions will be available as tags.<br/>
+You can check the "/src/functions" for examples to get you started.
+
 There are **two types of tags**, and multiple options that make them behave differently.
 
 **Note**: All examples here use double slash instead of single slash, to disable the tags, so that TwoFold doesn't accidentally render them. If you want to copy paste the examples, just remove the extra slash.<br/>
