@@ -65,5 +65,5 @@
     "fmt": "npx prettier --write ./src/{*,*/}*.js",
     "test": "npx nyc ava test/*.test.js"
   },
-  "version": "0.3.1"
+  "version": "0.4.0"
 }
