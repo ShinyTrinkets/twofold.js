@@ -6,6 +6,7 @@ const readDir = promisify(fs.readdir)
 
 async function cat(_, { file, start = 0, limit = 250 }) {
     file = path.normalize(file)
+    // HACK: should use read, offset, length, position
     const result = await readFile(file)
     return result.slice(start, limit)
 }

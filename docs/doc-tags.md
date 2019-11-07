@@ -25,7 +25,7 @@ You can check the "/src/functions" for examples to get you started.
 There are **two types of tags**, and multiple options that make them behave differently.
 
 **Note**: All examples here use double slash instead of single slash, to disable the tags, so that TwoFold doesn't accidentally render them. If you want to copy paste the examples, just remove the extra slash.<br/>
-We are collecting ideas about how to selectively disable tags from a text file in [issue #2](https://github.com/ShinyTrinkets/twofold.js/issues/2). Feel free to add your ideas!!
+We are brainstorming ideas⚡️ about how to selectively disable tags from a text file in [issue #2](https://github.com/ShinyTrinkets/twofold.js/issues/2). Feel free to add your ideas!!
 
 
 ## Single tags

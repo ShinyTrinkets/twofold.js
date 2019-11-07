@@ -1,6 +1,6 @@
 // This is the default config
 
-// The openTag, closeTag and lastStopper must be strings
+// Currently openTag, closeTag and lastStopper must be strings
 // of length 1.
 
 // In <random-int />
