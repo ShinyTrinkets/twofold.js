@@ -147,30 +147,36 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
     })
 }
 
-async function renderFile(fname, data = {}, customFunctions = {}, customConfig = {}) {
+async function renderFile(fname, data = {}, customFunctions = {}, config = {}) {
     const stream = fs.createReadStream(fname, { encoding: 'utf8' })
-    const result = await renderStream(stream, data, customFunctions, customConfig)
-    if (customConfig.write) {
+    const result = await renderStream(stream, data, customFunctions, config)
+    if (config.write) {
         await writeFile(fname, result, { encoding: 'utf8' })
         return ''
     }
     return result
 }
 
-async function renderFolder(dir, data = {}, customFunctions = {}, customConfig = {}) {
+async function renderFolder(dir, data = {}, customFunctions = {}, config = {}) {
     if (!data) {
         data = {}
+    }
+    if (!config) {
+        config = {}
     }
     if (!customFunctions) {
         customFunctions = {}
     }
-    if (!customConfig) {
-        customConfig = {}
-    }
-    for await (const pth of readdirp(dir, { fileFilter: ['*.*'], depth: 3 })) {
+    const glob = config.glob || ['*.*']
+    const depth = config.depth || 3
+
+    let index = 0
+    for await (const pth of readdirp(dir, { fileFilter: glob, depth })) {
         const fname = `${dir}/${pth.path}`
-        await renderFile(fname, data, customFunctions, customConfig)
+        await renderFile(fname, data, customFunctions, config)
+        index++
     }
+    return index
 }
 
 module.exports = { renderText, renderStream, renderFile, renderFolder }

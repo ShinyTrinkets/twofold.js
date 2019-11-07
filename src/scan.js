@@ -59,14 +59,17 @@ async function scanFile(fname, customFunctions = {}, customConfig = {}) {
     })
 }
 
-async function scanFolder(dir, customFunctions = {}, customConfig = {}) {
+async function scanFolder(dir, customFunctions = {}, config = {}) {
     const label = 'scan-' + dir
     console.time(label)
 
-    for await (const pth of readdirp(dir, { fileFilter: ['*.*'], depth: 3 })) {
+    const glob = config.glob || ['*.*']
+    const depth = config.depth || 3
+
+    for await (const pth of readdirp(dir, { fileFilter: glob, depth })) {
         try {
             const fname = `${dir}/${pth.path}`
-            await scanFile(fname, customFunctions, customConfig)
+            await scanFile(fname, customFunctions, config)
         } catch (err) {
             console.error(err)
         }

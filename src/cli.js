@@ -20,6 +20,8 @@ const options = {
         f: 'funcs',
         s: 'scan',
         w: 'watch',
+        // 'glob',
+        // 'depth',
     },
 }
 
@@ -79,7 +81,6 @@ you can use pipes:
     const explorer = cosmiconfig(config_name)
     let config = await explorer.search()
     if (config) {
-        console.debug('(2✂︎f) Config:', config)
         config = config.config
     } else {
         config = {}
@@ -91,6 +92,14 @@ you can use pipes:
         return
     }
 
+    if (args.glob) {
+        config = { ...config, glob: args.glob }
+    }
+    if (args.depth) {
+        config = { ...config, depth: args.depth }
+    }
+    console.debug('(2✂︎f) Config:', config)
+
     if (args.scan) {
         const fname = args.scan
         let fstat
@@ -100,7 +109,7 @@ you can use pipes:
             console.error(err)
             return
         }
-        console.log('(2✂︎f) Scan:', fname)
+        console.log('(2✂︎f) Scan:', fname, config.glob ? config.glob : '')
         if (fstat.isFile()) {
             await scan.scanFile(fname, funcs, config)
         } else if (fstat.isDirectory()) {
@@ -115,6 +124,8 @@ you can use pipes:
         const locks = {}
         const hashes = {}
         const callback = async fname => {
+            // ignored ??
+
             // console.log(`File ${fname} is changed`)
             if (locks[fname]) {
                 // disable writing lock
@@ -123,11 +134,10 @@ you can use pipes:
             }
             const result = await twofold.renderFile(fname, {}, funcs, config)
             const hash = crypto
-                .createHash('sha256')
+                .createHash('sha224')
                 .update(result)
                 .digest('hex')
-            // compare last hash and skip writing
-            // if the file is not changed
+            // compare hashes and skip writing if the file is not changed
             if (hashes[fname] === hash) {
                 return false
             }
@@ -137,14 +147,12 @@ you can use pipes:
             hashes[fname] = hash
         }
 
+        const depth = args.depth ? args.depth : 3
         const watcher = chokidar.watch(args.watch, {
+            depth,
             persistent: true,
             ignoreInitial: true,
             followSymlinks: true,
-            // awaitWriteFinish: {
-            //     stabilityThreshold: 2000,
-            //     pollInterval: 250,
-            // },
         })
         watcher.on('add', callback).on('change', callback)
         return
