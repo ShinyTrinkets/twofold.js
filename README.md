@@ -92,7 +92,7 @@ For any operations like scan, render and watch you can load a folder with any nu
 of Javascript files that expose extra functions, that will be available as tags.
 You can load the folder with `--funcs`:
 
-> $ 2fold --funcs folder --scan file
+> $ 2fold --funcs myFuncs --scan file
 
 Read more about it in the [Tags Documentation](/docs/doc-tags.md).
 
