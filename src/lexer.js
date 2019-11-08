@@ -3,6 +3,8 @@ const config = require('./config')
 const STATE_RAW_TEXT = 's__text'
 const STATE_OPEN_TAG = 's_<_tag'
 const STATE_CLOSE_TAG = 's_>_tag'
+// const STATE_FIRS_STOPPER = 's_1_stop'
+// const STATE_LAST_STOPPER = 's_2_stop'
 const STATE_TAG_NAME = 's__tag_name'
 const STATE_INSIDE_TAG = 's__in_tag'
 const STATE_PARAM = 's__param'
@@ -35,7 +37,7 @@ class Lexer {
         // Current State Data
         // * rawText - the text that represents the current state
         // * name  - the name of the tag
-        // * param - parameters as key=value
+        // * params - parameters as key=value
         this.pendingState = { rawText: '' }
     }
 

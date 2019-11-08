@@ -6,6 +6,7 @@ const crypto = require('crypto')
 const twofold = require('./')
 const scan = require('./scan')
 const util = require('./util')
+const conf = require('./config')
 const pkg = require('../package')
 const tags = require('./functions')
 
@@ -83,6 +84,7 @@ you can use pipes:
     let config = await explorer.search()
     if (config) {
         config = config.config
+        conf.validate(config)
     } else {
         config = {}
     }

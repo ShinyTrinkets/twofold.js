@@ -17,5 +17,22 @@ const closeTag = '>'
 // If you change it to "?", it will become: <random-int><?random-int>
 // In double tags, the stopper only affects the start of the last tag
 const lastStopper = '/'
+const ALLOWED_LAST_STOPPER = /^[\/\?\!]{1,2}$/
 
-module.exports = { openTag, closeTag, lastStopper }
+class ConfigError extends Error {
+    /* ... */
+}
+
+function validate(cfg) {
+    if (cfg.openTag && cfg.openTag.length !== 1) {
+        throw new ConfigError('Open tag validation error')
+    }
+    if (cfg.closeTag && cfg.closeTag.length !== 1) {
+        throw new ConfigError('Close tag validation error')
+    }
+    if (cfg.lastStopper && !ALLOWED_LAST_STOPPER.test(cfg.lastStopper)) {
+        throw new ConfigError('Last stopper validation error')
+    }
+}
+
+module.exports = { validate, openTag, closeTag, lastStopper }
