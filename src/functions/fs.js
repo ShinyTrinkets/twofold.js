@@ -1,14 +1,16 @@
 const fs = require('fs')
 const path = require('path')
 const { promisify } = require('util')
-const readFile = promisify(fs.readFile)
+const fsOpen = promisify(fs.open)
+const fsRead = promisify(fs.read)
 const readDir = promisify(fs.readdir)
 
 async function cat(_, { file, start = 0, limit = 250 }) {
     file = path.normalize(file)
-    // HACK: should use read, offset, length, position
-    const result = await readFile(file)
-    return result.slice(start, limit)
+    const fd = await fsOpen(file, 'r')
+    const buffer = Buffer.alloc(limit)
+    await fsRead(fd, buffer, 0, limit, start)
+    return buffer.toString()
 }
 
 async function listDir(_, { dir, li = '*', space = ' ' }) {
