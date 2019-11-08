@@ -190,19 +190,14 @@ you can use pipes:
             }
         }
     } else {
-        const stdin = process.stdin
+        const { stdin } = process
+        if (stdin.isTTY) {
+            console.error('(2✂︎f) Nothing to to')
+            process.exit()
+        }
+
         stdin.setEncoding('utf8')
-        let result = ''
-
-        // This is probably not a good idea, hmm
-        setTimeout(function() {
-            if (!result && !result.trim()) {
-                console.error('(2✂︎f) Nothing to to')
-                process.exit()
-            }
-        }, 50)
-
-        result = await twofold.renderStream(stdin, {}, funcs, config)
+        const result = await twofold.renderStream(stdin, {}, funcs, config)
         console.log(result)
     }
 })()
