@@ -26,7 +26,7 @@ function importAny(dir) {
      * Import any local file, module, or all JS files from a folder.
      */
     let functions = {}
-    const normalizedPath = path.join(process.cwd(), dir)
+    const normalizedPath = dir[0] === '/' ? dir : path.join(process.cwd(), dir)
 
     let fstat
     try {
