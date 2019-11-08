@@ -18,6 +18,7 @@ const TESTS = [
     ['<1tag />', [{ rawText: '<1tag />' }]],
     ['<tag X=0 />', [{ rawText: '<tag X=0 />' }]],
     ['<tag 1=2 />', [{ rawText: '<tag 1=2 />' }]],
+    ['<tag t="` />', [{ rawText: '<tag t="` />' }]],
 
     ['<x1>',
         [{ rawText: '<x1>', name: 'x1', double: true }],
@@ -111,6 +112,9 @@ const TESTS = [
         '<</ tag <<',
         [{ rawText: '<</ tag <<' }] // this is raw-text
     ],
+    [   '<tag t="\"" />',
+        [{ rawText: '<tag t="\"" />' }] // this is raw-text (escaped quotes not supported)
+    ],
     [
         '<echo text="\n" />',
         [{ rawText: '<echo text="\n" />' }] // raw-text (newline not allowed in param values)
@@ -162,14 +166,28 @@ const TESTS = [
         ]
     ],
     [
-        '<echo text=" <>//<> " />',
+        `<echo text1='' text2="" />`,
+        [{
+            rawText: `<echo text1='' text2="" />`,
+            name: 'echo',
+                single: true,
+                params: {
+                    text1: '',
+                    text2: '',
+                },
+        }]
+    ],
+    [
+        `<echo text1=" <>//<> " text2=' <>// <>' text2=\`<> //<>\` />`,
         [
             {
-                rawText: '<echo text=" <>//<> " />',
+                rawText: `<echo text1=" <>//<> " text2=' <>// <>' text2=\`<> //<>\` />`,
                 name: 'echo',
                 single: true,
                 params: {
-                    text: ' <>//<> ',
+                    text1: ' <>//<> ',
+                    text2: ' <>// <>',
+                    text2: '<> //<>',
                 },
             }
         ]
@@ -203,12 +221,12 @@ const TESTS = [
         ]
     ],
     [
-        '< dayOrNight date="2019-07" void=null\t/>',
+        '< dayOrNight date=`2019-07` void=null\t/>',
         [
             {
                 name: 'dayOrNight',
                 params: { date: '2019-07', void: null },
-                rawText: '< dayOrNight date="2019-07" void=null\t/>',
+                rawText: '< dayOrNight date=`2019-07` void=null\t/>',
                 single: true,
             }
         ]

@@ -11,6 +11,7 @@ const STATE_VALUE = 's__value'
 const STATE_FINAL = 's__final'
 
 const SPACE_LETTERS = /[ \t\n]/
+const QUOTE_LETTERS = /['"`]/
 const LOWER_LETTERS = /[a-z]/
 const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
 
@@ -86,24 +87,33 @@ class Lexer {
             transition(newState)
         }
 
-        const commitTag = function() {
+        const commitTag = function(quote = false) {
             /*
              * Commit pending tag key + value as a dict
              * and delete the temporary variables.
              */
-            let value = self.pendingState.param_value
-            try {
-                value = JSON.parse(self.pendingState.param_value)
-            } catch (err) {
-                /* */
+            const pending = self.pendingState
+            let value = pending.param_value
+            if (quote && value.length > 2) {
+                value = '"' + value.slice(1, -1) + '"'
+            } else if (quote) {
+                value = '""'
             }
-            self.pendingState.params[self.pendingState.param_key] = value
-            delete self.pendingState.param_key
-            delete self.pendingState.param_value
+            try {
+                value = JSON.parse(value)
+            } catch (err) {
+                // console.error('Cannot parse param value:', pending.param_key, value)
+            }
+            pending.params[pending.param_key] = value
+            delete pending.param_key
+            delete pending.param_value
         }
 
-        const pendParamValueOpen = function() {
-            return self.pendingState.param_value[0] === '"'
+        const hasParamValueQuote = function() {
+            return QUOTE_LETTERS.test(self.pendingState.param_value[0])
+        }
+        const getParamValueQuote = function() {
+            return self.pendingState.param_value[0]
         }
 
         for (const char of text) {
@@ -265,7 +275,7 @@ class Lexer {
                 }
             }
 
-            // Anything is valid as a VALUE
+            // Most characters are valid as a VALUE
             else if (this.state === STATE_VALUE && this.pendingState.param_key) {
                 // Newline not allowed inside prop values
                 if (char === '\n') {
@@ -275,16 +285,16 @@ class Lexer {
                     this.pendingState.rawText += char
                     commitAndTransition(STATE_RAW_TEXT, true)
                 }
-                // Is this a quote?
-                else if (char === '"' && pendParamValueOpen()) {
+                // Is this a closing quote?
+                else if (QUOTE_LETTERS.test(char) && char === getParamValueQuote()) {
                     this.pendingState.rawText += char
                     this.pendingState.param_value += char
-                    commitTag()
+                    commitTag(true)
                     transition(STATE_INSIDE_TAG)
                 }
                 // Is this a tag stopper? And the prop value not a string?
                 // In this case, it's a single tag
-                else if (char === lastStopper[0] && !pendParamValueOpen()) {
+                else if (char === lastStopper[0] && !hasParamValueQuote()) {
                     this.pendingState.rawText += char
                     this.pendingState.single = true
                     commitTag()
@@ -292,14 +302,14 @@ class Lexer {
                 }
                 // Is this the end of the First tag from a Double tag?
                 // And the prop value is not a string?
-                else if (char === closeTag[0] && !pendParamValueOpen()) {
+                else if (char === closeTag[0] && !hasParamValueQuote()) {
                     this.pendingState.rawText += char
                     this.pendingState.double = true
                     commitTag()
                     commitAndTransition(STATE_RAW_TEXT)
                 }
                 // Is this a space char inside the tag?
-                else if (SPACE_LETTERS.test(char) && !pendParamValueOpen()) {
+                else if (SPACE_LETTERS.test(char) && !hasParamValueQuote()) {
                     this.pendingState.rawText += char
                     commitTag()
                     transition(STATE_INSIDE_TAG)
