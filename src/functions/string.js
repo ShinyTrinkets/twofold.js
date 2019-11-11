@@ -7,6 +7,16 @@ function sortLines({ text }, { caseSensitive = false } = {}) {
     if (!caseSensitive) {
         sortFunc = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase())
     }
+    let m
+    let spaceBefore = ''
+    let spaceAfter = ''
+    if (m = text.match(/[ \r\n]+/)) {
+        spaceBefore = m[0]
+    }
+    if (m = text.match(/[ \r\n]+$/)) {
+        spaceAfter = m[0]
+    }
+
     const lines = []
     const group = []
     for (let line of text.split(/[\r\n]/)) {
@@ -19,13 +29,13 @@ function sortLines({ text }, { caseSensitive = false } = {}) {
     }
     if (lines[0] === '' && lines[1] === '') {
         lines.shift()
-        lines.push('')
     }
     if (group.length) {
         group.sort()
         lines.push(group.join('\n'))
     }
-    return lines.join('\n')
+    text = lines.join('\n').trim()
+    return spaceBefore + text + spaceAfter
 }
 
 module.exports = {
