@@ -13,21 +13,22 @@
 > Context aware frames,<br />
 > Self-replicating, self-terminating forms.
 
-## What is this
+## ❓ What is this
 
 TwoFold is a small Node.js library and command line app that allows plain text files to behave like dynamic files.
 **Use-cases** include: auto updating documentation, text based dashboards, text virtual assistants, text spreadsheets, turn based games, etc.
 
-This can done by writing React-like `<whatever />` tags in your text files and calling TwoFold CLI to convert all known tags into useful responses. TwoFold can watch your files for changes and colaborate with you in the same file and the same place in the file, for example to validate some information, or calculate some min/ max or statistics, similar to a Spreadsheet application, or check for spelling, or grammar errors, similar to a Document editor, etc.
+This can done by writing XML-like `<whatever />` tags in your text files and calling TwoFold CLI to convert all known tags into useful responses. TwoFold can watch your files for changes and colaborate with you in the same file and the same place in the file, for example to validate some information, or calculate some min/ max or statistics, similar to a Spreadsheet application, or check for spelling, or grammar errors, similar to a Document editor, etc.
 
 TwoFold CLI can be run manually to render a file or folder, or from a CRON job every X interval, or as a Git hook maybe to auto-update some documents, or can be run as a service to watch a list of folders and render the files matching some patterns everytime they change.
 
-It will work with any file like: "*.txt", Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.
-It could also work with Python/ Javascript/ Go-lang/ whatever programming language you use; probably it makes sense to write the tags as comments inside the code.
+It **will work** with any file like: "*.txt", Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.<br/>
+It could also work with Python/ Javascript/ Go-lang/ whatever programming language you use; probably it makes sense to write the tags as comments inside the code.<br/>
+It **WON'T work** with binary files like: .doc, .pages, .xls, .numbers, .pdf, images, audio, or video. Running TwoFold on binary files MIGHT break them (with the default config), because media files contain XML-like tags [Exif](https://en.wikipedia.org/wiki/Exif) or [IPTC](https://en.wikipedia.org/wiki/IPTC_Information_Interchange_Model).
 
 If you're editing your file with [Visual Studio Code](https://github.com/microsoft/vscode), [Atom editor](https://github.com/atom/atom), [Sublime text](https://sublimetext.com), [Micro terminal text editor](https://github.com/zyedidia/micro) (and others), you'll see the changes instantly, because they automatically refresh the text when the file changes.
 
-The React-like `<whatever />` tags are customizable and ideally should be invisible in the type of text file you're using (eg: React-like tags are invisible when viewing the Markdown format).
+The XML-like `<whatever />` tags are customizable and ideally should be invisible in the type of text file you're using (eg: XML-like tags are invisible when viewing the Markdown format).
 
 The *single tags* are one use only, the are consumed after they render the response.
 The *double tags* are refreshed every time the file is rendered.<br/>
@@ -38,15 +39,14 @@ Note that currently not all the tags mentioned as examples are implemented!<br/>
 This repository provides the core framework and just a few tags. There are extra tags available in the [twofold-extras](https://github.com/ShinyTrinkets/twofold-extras) repository. You can of course, write your own tags, and load them with a cmd line switch.
 
 
+## Notable features
 
-### Notable features
-
-* really small
+* really extensible
 * well tested
 * fun fun fun
 
 
-### Install
+## 🔩 Instalation
 
 Simply install with NPM:
 
@@ -55,7 +55,24 @@ Simply install with NPM:
 The NPM package is called `twofold` and the CLI app is called `2fold`.
 
 
-### Usage
+### 🔨 Usage
+
+There are three types of commands available from the CLI:
+
+* scan - scan one file, or a list of files using a pattern and list the known and unknown tags. The files are not modified.
+* render - one time render of a file, or a list of files using a pattern
+* watch - watch a file, or a list of files and render everytime the files change
+
+The "--funcs" flag allows loading folders with any number
+of Javascript files that expose extra functions, available as tags.
+
+There's also "--tags" which lists all the available tags to be used,
+including the ones loaded with the "--funcs" option.
+
+Read more about the tags in the [Tags Documentation](/docs/doc-tags.md).
+
+
+## 🚶‍♂️ Tutorial
 
 Create a file called... `example.md` and write inside it:
 
@@ -65,18 +82,20 @@ It's a nice <emojiSunMoon /> outside and the time is <emojiClock /> .
 Should I play with TwoFold some more ? <yesOrNo></yesOrNo> ugh...
 ```
 
-Now, from command line, call TwoFold to scan your file, to see what tags are available:
+Now, from command line, call TwoFold to scan the file, and see what tags are available:
 
 > $ 2fold -s example.md
 
-> (2✂︎f) Scan: example.md<br/>
-> Text length :: 151<br/>
-> Number of tags :: 3<br/>
-> ✓ { single: true, name: 'emojiSunMoon', tag: '&lt;emojiSunMoon />' }<br/>
-> ✓ { single: true, name: 'emojiClock', tag: '&lt;emojiClock />' }<br/>
-> ✓ { double: true, name: 'yesOrNo', tag: '&lt;yesOrNo></yesOrNo>' }
+```
+(2✂︎f) Scan: example.md
+Text length :: 151
+Number of tags :: 3
+✓ { single: true, name: 'emojiSunMoon', tag: '&lt;emojiSunMoon />' }
+✓ { single: true, name: 'emojiClock', tag: '&lt;emojiClock />' }
+✓ { double: true, name: 'yesOrNo', tag: '&lt;yesOrNo></yesOrNo>' }
+```
 
-Now call TwoFold again, to convert your file:
+Call TwoFold again, to convert your file:
 
 > $ 2fold example.md
 
@@ -88,21 +107,15 @@ It's a nice 🌙 outside and the time is 🕥 .
 Should I play with TwoFold some more ? <yesOrNo>Yes</yesOrNo> ugh...
 ```
 
-For any operations like scan, render and watch you can load a folder with any number
-of Javascript files that expose extra functions, that will be available as tags.
-You can load the folder with `--funcs`:
-
-> $ 2fold --funcs myFuncs --scan file
-
-Read more about it in the [Tags Documentation](/docs/doc-tags.md).
-
 To quickly test some built-in templates, or chain multiple CLI apps together, you can use pipes:
 
-> $ echo 'yes or no ? &lt;yes_or_no />' | 2fold<br/>
-> $ echo 'random number: &lt;random_int />' | 2fold<br/>
-> $ echo 'gimme a random game card ! &lt;random_card />' | 2fold<br/>
-> $ echo 'sun / moon ? &lt;emoji_sun_moon />' | 2fold<br/>
-> $ echo 'emoji time hehe &lt;emoji_clock />' | 2fold
+```sh
+$ echo 'yes or no ? <yes_or_no />' | 2fold
+$ echo 'random number: <random_int />' | 2fold
+$ echo 'gimme a random game card ! <random_card />' | 2fold
+$ echo 'sun / moon ? <emoji_sun_moon />' | 2fold
+$ echo 'emoji time hehe <emoji_clock />' | 2fold
+```
 
 For the full list of available tags, check the [Tags Documentation](/docs/doc-tags.md).
 
@@ -110,10 +123,10 @@ For a list of IDEAS for tags, check [issue #1](https://github.com/ShinyTrinkets/
 Feel free to add your ideas and vote your favorite tags!!
 
 
-### Notes
+## 📝 Notes
 
-* it is tested on Linux and MacOS and "Should just work ™" on Windows, but I haven't tested it.
-* it is a free & open-source software that comes **without warranty of any kind** that it works "as expected". The maintainers are trying really hard to write quality code and tests, but there will be bugs and there are risks to lose your valuable data. **Always make copies and backups, to make sure your data is safe**.
+* it is tested on Linux and MacOS and "Should just work ™" on Windows, but it's not tested.
+* it is a free & open-source software that comes **without warranty of any kind** that it works "as expected". The maintainers are trying really hard to write quality code and many tests, but there will be small 🐛 bugs, large 🐉 dragons and there are risks to lose your valuable data. **Always make copies and backups, to make sure your data is safe**.
 
 
 ### TwoFold vs other templates
@@ -124,13 +137,13 @@ There are a few differences between TwoFold and other templating libraries:
   Tipically 99% of the text processed by TwoFold is just regular text and only a few XML-like tags would be processed.
   And it's expected that a large number of tags are badly formed, invalid XML.
 * Usually templating libraries convert a data structure + a template file into another file.
-  TwoFold is intended to use the same file as a template, and as output.
+  By default TwoFold uses the same file as both input, and output.
   And the tags are always functions, never data structures.
 
 
 ## Similar libraries
 
-My original inspiration: https://nedbatchelder.com/code/cog
+The original inspiration: https://nedbatchelder.com/code/cog
 > Cog transforms files in a very simple way: it finds chunks of Python code embedded in them, executes the Python code, and inserts its output back into the original file. The file can contain whatever text you like around the Python code. It will usually be source code.
 
 Very similar:
