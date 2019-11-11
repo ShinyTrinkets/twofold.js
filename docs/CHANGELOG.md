@@ -1,5 +1,12 @@
 # TwoFold.js (2✂︎f) changelog
 
+## v0.5 !WIP
+
+- tag prop values can now be surrounded by: single quote `'`, double quote `"` and backtick \`
+- tag functions now receive info if the tag is Single or Double
+- CLI option to render all files on watch start (not just on change)
+
+
 ## v0.4
 
 - allow space and slash in the props values
