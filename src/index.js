@@ -5,13 +5,11 @@ const { parse } = require('./parser')
 const { getText, unParse } = require('./tags')
 const { isDoubleTag, isSingleTag } = require('./tags')
 const { optRenderOnce, optShouldConsume } = require('./tags')
-const { toCamelCase } = require('./util')
+const { isFunction, toCamelCase } = require('./util')
 
 const readdirp = require('readdirp')
-const { promisify, types } = require('util')
+const { promisify } = require('util')
 const writeFile = promisify(fs.writeFile)
-
-const isFunction = f => typeof f === 'function' || types.isAsyncFunction(f)
 
 async function flattenSingleTag(tag, data, allFunctions, config) {
     // Convert a single tag into raw text,
@@ -30,7 +28,8 @@ async function flattenSingleTag(tag, data, allFunctions, config) {
     const text = params.text ? params.text : ''
     let result = tag.rawText
     try {
-        result = await func({ text }, params)
+        // Execute the tag function with params
+        result = await func({ text }, params, { single: true })
         delete tag.name
         delete tag.single
         tag.rawText = result.toString()
@@ -73,7 +72,8 @@ async function flattenDoubleTag(tag, data, allFunctions, config) {
     }
     let result = text
     try {
-        result = await func({ text }, params)
+        // Execute the tag function with params
+        result = await func({ text }, params, { double: true })
         if (optShouldConsume(tag)) {
             delete tag.name
             delete tag.double

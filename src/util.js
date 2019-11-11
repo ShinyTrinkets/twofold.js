@@ -1,5 +1,8 @@
 const fs = require('fs')
 const path = require('path')
+const { types } = require('util')
+
+const isFunction = f => typeof f === 'function' || types.isAsyncFunction(f)
 
 // Credit: https://stackoverflow.com/a/32604073/498361
 function toCamelCase(str) {
@@ -57,6 +60,7 @@ function importAny(dir) {
 }
 
 module.exports = {
+    isFunction,
     toCamelCase,
     importAny,
 }
