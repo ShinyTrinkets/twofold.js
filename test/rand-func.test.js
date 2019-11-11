@@ -35,3 +35,17 @@ test('up or down function', async t => {
     t.regex(r, /up|down/)
   }
 })
+
+test('random dice function', async t => {
+  for (let i = 0; i < 5; i++) {
+    const r = func.randomDice(0, { emoji: false }).toLowerCase()
+    t.regex(r, /⚀|⚁|⚂|⚃|⚄|⚅/)
+  }
+})
+
+test('random card function', async t => {
+  for (let i = 0; i < 5; i++) {
+    const r = func.randomCard(0, { emoji: false }).toLowerCase()
+    t.regex(r, /[AJQK1-9]0?[♤♡♢♧]/i)
+  }
+})
