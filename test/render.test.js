@@ -74,7 +74,7 @@ test('separated sort render', async t => {
   const li2 = ['4', '2']
   const li3 = ['x2', 'x1']
   let blob = li1.join('\n') + '\n\n' + li2.join('\n') + '\n\n' + li3.join('\n')
-  let txt = `... <sort>\n${blob}</sort> ...`
+  let txt = `... <sort>\n${blob}\n</sort> ...`
   let tmp = await twofold.renderText(txt, {}, { sort: helpers.sortLines })
   t.not(tmp, txt)
   t.is(tmp.length, txt.length)
