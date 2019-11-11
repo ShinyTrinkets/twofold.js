@@ -16,7 +16,7 @@ const picomatch = require('picomatch')
 const { cosmiconfig } = require('cosmiconfig')
 
 const options = {
-    boolean: ['help', 'version', 'tags'],
+    boolean: ['help', 'version', 'tags', 'initialRender'],
     alias: {
         c: 'config',
         f: 'funcs',
@@ -159,10 +159,11 @@ you can use pipes:
         }
 
         const depth = args.depth ? args.depth : 3
+        const ignoreInitial = !args.initialRender
         const watcher = chokidar.watch(args.watch, {
             depth,
+            ignoreInitial,
             persistent: true,
-            ignoreInitial: true,
             followSymlinks: true,
         })
         watcher.on('add', callback).on('change', callback)
