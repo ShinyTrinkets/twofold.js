@@ -1,3 +1,4 @@
+const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const { types } = require('util')
@@ -28,35 +29,16 @@ function importAny(dir) {
     /**
      * Import any local file, module, or all JS files from a folder.
      */
-    let functions = {}
-    const normalizedPath = dir[0] === '/' ? dir : path.join(process.cwd(), dir)
-
-    let fstat
+    if (dir[0] === '~') {
+        const homeDir = os.homedir()
+        dir = dir.replace(/^~(?=$|\/|\\)/, homeDir)
+    }
+    dir = dir[0] === '/' ? dir : path.join(process.cwd(), dir)
     try {
-        fstat = fs.statSync(normalizedPath + '.js')
+        return require(dir)
     } catch (err) {
-        // console.warn('Stat error:', dir, err.message)
+        console.warn(`Import error: ${err.message}, require '${dir}'`)
     }
-    if (fstat && fstat.isFile()) {
-        try {
-            // side-effect: overwrite any duplicate functions
-            functions = require(normalizedPath + '.js')
-        } catch (err) {
-            console.warn(`Import error: ${err.message}, require '${dir}'`)
-        }
-        return functions
-    }
-
-    fs.readdirSync(normalizedPath).forEach(function(fname) {
-        try {
-            // side-effect: overwrite any duplicate functions
-            const f = require(path.join(normalizedPath, fname))
-            functions = Object.assign(functions, f)
-        } catch (err) {
-            console.warn(`Import error: ${err.message}, require '${dir}'`)
-        }
-    })
-    return functions
 }
 
 module.exports = {

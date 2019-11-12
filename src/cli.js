@@ -72,7 +72,11 @@ you can use pipes:
     let funcs = {}
     if (args.funcs) {
         console.debug('(2✂︎f) Funcs:', args.funcs)
-        funcs = util.importAny(args.funcs)
+        try {
+            funcs = require(args.funcs)
+        } catch (err) {
+            funcs = util.importAny(args.funcs)
+        }
     }
 
     // Explore all possible config locations
