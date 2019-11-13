@@ -15,9 +15,6 @@ test('camel case', async t => {
 
 test('import any', async t => {
     const importedFile = importAny('./test/fixtures/funcs')
-    const importedFolder = importAny('./test/fixtures')
     const expected = ['magic', 'now']
-
     t.deepEqual(expected, Object.keys(importedFile))
-    t.deepEqual(expected, Object.keys(importedFolder))
 })
