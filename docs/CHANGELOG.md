@@ -2,9 +2,11 @@
 
 ## v0.5 !WIP
 
-- tag prop values can now be surrounded by: single quote `'`, double quote `"` and backtick \`
+- tag prop values can now be surrounded by: single quote `'`, double quote `"` and backtick ``` ` ```
 - tag functions now receive info if the tag is Single or Double
 - CLI option to render all files on watch start (not just on change)
+- CLI config now validates the openTag, closeTag and lastStopper
+- some improvements to cat and sortLines tags
 
 
 ## v0.4

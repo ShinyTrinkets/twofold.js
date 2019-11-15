@@ -143,7 +143,7 @@ There are a few differences between TwoFold and other templating libraries:
 
 ## ⌨️ Development
 
-Check the [Changelog](/docs/Changelog.md) (the past) and the [Roadmap](/docs/Roadmap.md) (the future).
+Check the [Changelog](/docs/CHANGELOG.md) (the past) and the [Roadmap](/docs/ROADMAP.md) (the future).
 
 
 ## Similar libraries
