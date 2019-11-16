@@ -1,6 +1,6 @@
 # TwoFold.js (2✂︎f) changelog
 
-## v0.5 !WIP
+## v0.5
 
 - tag prop values can now be surrounded by: single quote `'`, double quote `"` and backtick ``` ` ```
 - tag functions now receive info if the tag is Single or Double
@@ -31,7 +31,7 @@
 
 ## v0.2
 
-- re-written all the core
+- re-written all the core ⚛︎
 - lexer, parser, evaluator, executing functions depth first
 - tags props parsed as an object[string: string]
 - scan files and folders to list all the tags
