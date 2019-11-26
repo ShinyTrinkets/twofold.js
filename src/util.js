@@ -25,14 +25,19 @@ function toCamelCase(str) {
     )
 }
 
+function unTildify(pth) {
+    if (pth[0] === '~') {
+        const homeDir = os.homedir()
+        return pth.replace(/^~(?=$|\/|\\)/, homeDir)
+    }
+    return pth
+}
+
 function importAny(dir) {
     /**
      * Import any local file, module, or all JS files from a folder.
      */
-    if (dir[0] === '~') {
-        const homeDir = os.homedir()
-        dir = dir.replace(/^~(?=$|\/|\\)/, homeDir)
-    }
+    dir = unTildify(dir)
     dir = dir[0] === '/' ? dir : path.join(process.cwd(), dir)
     try {
         return require(dir)
