@@ -23,7 +23,7 @@
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
     "ava": "2.x",
-    "codecov": "3.6.x",
+    "codecov": "3.7.x",
     "nyc": "14.x",
     "prettier": "1.18.2"
   },
