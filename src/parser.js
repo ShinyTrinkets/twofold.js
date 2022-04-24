@@ -31,7 +31,7 @@ function parse(tokens, customConfig = {}) {
     const getTopAst = () => ast[ast.length - 1]
     const getTopStack = () => stack[stack.length - 1]
 
-    const commitToken = function(token) {
+    const commitToken = function (token) {
         const topAst = getTopAst()
         const topStack = getTopStack()
         const parent = topStack || topAst
@@ -93,7 +93,7 @@ function parse(tokens, customConfig = {}) {
         commitToken(token)
     }
 
-    const finalCommit = function(token) {
+    const finalCommit = function (token) {
         const topAst = getTopAst()
         if (isRawText(topAst) && isRawText(token)) {
             topAst.rawText += token.rawText

@@ -15,17 +15,17 @@
   "contributors": [],
   "dependencies": {
     "chokidar": "3.x",
-    "cosmiconfig": "6.x",
-    "mri": "1.x",
-    "picomatch": "2.x",
-    "readdirp": "3.x"
+    "cosmiconfig": "7.0.1",
+    "mri": "1.2.0",
+    "picomatch": "2.3.1",
+    "readdirp": "3.6.0"
   },
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
-    "ava": "2.x",
-    "codecov": "3.6.x",
-    "nyc": "14.x",
-    "prettier": "1.18.2"
+    "ava": "2.4.0",
+    "codecov": "3.8.3",
+    "nyc": "15.1.0",
+    "prettier": "2.6.2"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -50,6 +50,7 @@
     ]
   },
   "prettier": {
+    "arrowParens": "avoid",
     "printWidth": 120,
     "semi": false,
     "singleQuote": true,

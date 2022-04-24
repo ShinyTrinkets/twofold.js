@@ -148,10 +148,7 @@ you can use pipes:
                 return false
             }
             const result = await twofold.renderFile(fname, {}, funcs, config)
-            const hash = crypto
-                .createHash('sha224')
-                .update(result)
-                .digest('hex')
+            const hash = crypto.createHash('sha224').update(result).digest('hex')
             // compare hashes and skip writing if the file is not changed
             if (hashes[fname] === hash) {
                 return false
