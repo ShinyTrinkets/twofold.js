@@ -61,13 +61,13 @@ class Lexer {
 
         const { openTag, closeTag, lastStopper } = Object.assign({}, config, this.customConfig)
 
-        const transition = function(newState) {
+        const transition = function (newState) {
             // console.log(`Transition FROM (${self.state}) TO (${newState})`)
             self.priorState = self.state
             self.state = newState
         }
 
-        const commitAndTransition = function(newState, joinState) {
+        const commitAndTransition = function (newState, joinState) {
             /*
              * Commit old state in the processed list
              * and transition to a new state.
@@ -89,7 +89,7 @@ class Lexer {
             transition(newState)
         }
 
-        const commitTag = function(quote = false) {
+        const commitTag = function (quote = false) {
             /*
              * Commit pending tag key + value as a dict
              * and delete the temporary variables.
@@ -111,10 +111,10 @@ class Lexer {
             delete pending.param_value
         }
 
-        const hasParamValueQuote = function() {
+        const hasParamValueQuote = function () {
             return QUOTE_LETTERS.test(self.pendingState.param_value[0])
         }
-        const getParamValueQuote = function() {
+        const getParamValueQuote = function () {
             return self.pendingState.param_value[0]
         }
 

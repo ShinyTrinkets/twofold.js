@@ -10,10 +10,10 @@ function sortLines({ text }, { caseSensitive = false } = {}) {
     let m
     let spaceBefore = ''
     let spaceAfter = ''
-    if (m = text.match(/[ \r\n]+/)) {
+    if ((m = text.match(/[ \r\n]+/))) {
         spaceBefore = m[0]
     }
-    if (m = text.match(/[ \r\n]+$/)) {
+    if ((m = text.match(/[ \r\n]+$/))) {
         spaceAfter = m[0]
     }
 
