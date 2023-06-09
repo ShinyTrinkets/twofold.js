@@ -27,7 +27,7 @@
     "prettier": "2.8.8"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "homepage": "https://github.com/ShinyTrinkets/twofold.js#readme",
   "keywords": [
@@ -64,5 +64,5 @@
     "fmt": "npx prettier --write ./src/{*,*/}*.js",
     "test": "npx nyc ava test/*.test.js"
   },
-  "version": "0.5.0"
+  "version": "0.5.1"
 }

@@ -2,8 +2,7 @@
 
 [![Project name][project-img]][project-url]
 [![NPM version][npm-img]][npm-url]
-[![Build status][build-img]][build-url]
-[![Coverage][coverage-img]][coverage-url]
+[![CI tests][build-img]][build-url]
 [![Prettier Style][style-img]][style-url]
 
 > Glorified curly bubbly templates,<br />
@@ -22,7 +21,7 @@ This can done by writing XML-like `<whatever />` tags in your text files and cal
 
 TwoFold CLI can be run manually to render a file or folder, or from a CRON job every X interval, or as a Git hook maybe to auto-update some documents, or can be run as a service to watch a list of folders and render the files matching some patterns everytime they change.
 
-It **will work** with any file like: "*.txt", Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.<br/>
+It **will work** with any file like: ".txt", Markdown, reStructuredText, HTML, other templating libraries like Django, Liquid, Mustache, etc.<br/>
 It could also work with Python/ Javascript/ Go-lang/ whatever programming language you use; probably it makes sense to write the tags as comments inside the code.<br/>
 It **WON'T work** with binary files like: .doc, .pages, .xls, .numbers, .pdf, images, audio, or video. Running TwoFold on binary files MIGHT break them (with the default config), because media files contain XML-like tags [Exif](https://en.wikipedia.org/wiki/Exif) or [IPTC](https://en.wikipedia.org/wiki/IPTC_Information_Interchange_Model).
 
@@ -180,9 +179,7 @@ https://github.com/croqaz/awesome-markup
 [project-url]: https://github.com/ShinyTrinkets
 [npm-img]: https://badgen.net/npm/v/twofold?icon=npm&label
 [npm-url]: https://npmjs.com/package/twofold
-[build-img]: https://badgen.net/travis/ShinyTrinkets/twofold.js
-[build-url]: https://travis-ci.org/ShinyTrinkets/twofold.js
-[coverage-img]: https://codecov.io/gh/ShinyTrinkets/twofold.js/branch/master/graph/badge.svg
-[coverage-url]: https://codecov.io/gh/ShinyTrinkets/twofold.js
+[build-img]: https://github.com/ShinyTrinkets/twofold.js/actions/workflows/main.yml/badge.svg
+[build-url]: https://github.com/ShinyTrinkets/twofold.js/actions/workflows/main.yml
 [style-img]: https://badgen.net/badge/Code%20style/prettier/f2a
 [style-url]: https://prettier.io
