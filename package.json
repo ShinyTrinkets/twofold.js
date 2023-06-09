@@ -15,7 +15,7 @@
   "contributors": [],
   "dependencies": {
     "chokidar": "3.x",
-    "cosmiconfig": "7.0.1",
+    "cosmiconfig": "7.1.0",
     "mri": "1.2.0",
     "picomatch": "2.3.1",
     "readdirp": "3.6.0"
@@ -23,9 +23,8 @@
   "description": "Glorified curly bubbly templates",
   "devDependencies": {
     "ava": "2.4.0",
-    "codecov": "3.8.3",
     "nyc": "15.1.0",
-    "prettier": "2.6.2"
+    "prettier": "2.8.8"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -62,7 +61,6 @@
     "url": "git+https://github.com/ShinyTrinkets/twofold.js.git"
   },
   "scripts": {
-    "coverage": "npx nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
     "fmt": "npx prettier --write ./src/{*,*/}*.js",
     "test": "npx nyc ava test/*.test.js"
   },
