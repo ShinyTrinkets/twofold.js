@@ -5,6 +5,7 @@ import parser from '../src/parser'
 // TwoFold Parse testing
 //
 // Tests: raw text and expected result after parsing
+//
 const TESTS = [
     ['?asd 123 qwe!', [{ rawText: '?asd 123 qwe!' }]],
     [

@@ -46,7 +46,7 @@ test('double tag parse unparse 2', async t => {
 })
 
 test('parse unparse 1', async t => {
-    const txt = '<mumu a=b><mumu><mumu><increment>0</increment></mumu></mumu></mumu>'
+    const txt = '<mumu a=b><mumu><mumu><increment>0</increment>\n</mumu></mumu></mumu>'
     const ast = parse(new Lexer().lex(txt))
     const final = unParse(ast[0])
     t.is(final, txt)
@@ -54,8 +54,8 @@ test('parse unparse 1', async t => {
 
 test('parse unparse 2', async t => {
     let txt = ''
-    txt += '<div><span class="title">Hello</span> <br />'
-    txt += '<span class="text">Workd</span> <br /></div>'
+    txt += '<div><span class="title">Hello</span> <br />\n'
+    txt += '<span class="text">Workd</span> <br />\n</div>'
     const ast = parse(new Lexer().lex(txt))
     const final = unParse(ast[0])
     t.is(final, txt)

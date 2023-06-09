@@ -85,6 +85,14 @@ const TESTS = [
         [{ rawText: '<tag x= />' }] // this is raw-text (no value after prop)
     ],
     [
+        '<x="" tag/>',
+        [{ rawText: '<x="" tag/>' }] // this is raw-text (tag must be first)
+    ],
+    [
+        '<x="" tag />',
+        [{ rawText: '<x="" tag />' }] // this is raw-text (tag must be first)
+    ],
+    [
         '< /tag >',
         [{ rawText: '< /tag >' }] // this is raw-text
     ],

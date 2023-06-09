@@ -11,8 +11,7 @@ import { isRawText, isSingleTag, isDoubleTag } from '../src/tags'
 test('no blocks found', async t => {
   const o = new lexer.Lexer()
   const txt = fs.readFileSync(__dirname + '/fixtures/text0.md', { encoding: 'utf8' })
-  o.push(txt)
-  const lex = o.finish()
+  const lex = o.lex(txt)
   t.is(lex.length, 1)
   const ast = parser.parse(lex)
   t.is(ast.length, 1)
@@ -22,8 +21,7 @@ test('no blocks found', async t => {
 test('some blocks found', async t => {
   const o = new lexer.Lexer()
   const txt = fs.readFileSync(__dirname + '/fixtures/text1.md', { encoding: 'utf8' })
-  o.push(txt)
-  const lex = o.finish()
+  const lex = o.lex(txt)
   t.is(lex.length, 13)
   t.true(isRawText(lex[0]))
 
@@ -32,7 +30,9 @@ test('some blocks found', async t => {
 
   t.true(isRawText(ast[0]))
   t.true(isDoubleTag(ast[1]) && ast[1].name === 'open1')
+  t.true(isRawText(ast[2]))
   t.true(isSingleTag(ast[3]) && ast[3].name === 'replaceWeather')
+  t.true(isRawText(ast[4]))
   t.true(isDoubleTag(ast[5]) && ast[5].name === 'replaceSort')
 })
 

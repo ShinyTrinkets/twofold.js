@@ -23,25 +23,29 @@ test('simple random integer', async t => {
   const tmp2 = await twofold.renderText(txt2)
   t.not(tmp1, txt1)
   t.not(tmp2, txt2)
-  t.is(tmp1.indexOf('random'), 0)
-  t.is(tmp2.indexOf('random'), 0)
-  t.true(tmp1.length < txt1.length)
-  t.true(tmp2.length < txt2.length)
+  t.is(tmp1.indexOf('random '), 0)
+  t.is(tmp2.indexOf('random '), 0)
+  t.true(tmp1.length >= 'random 0 ...'.length && tmp1.length <= 'random 999 ...'.length)
+  t.true(tmp2.length >= 'random 0 ...'.length && tmp2.length <= 'random 999 ...'.length)
 })
 
 test('render once', async t => {
   // Test without once
   let text = `random <randomInt></randomInt> ...`
   let tmp1 = await twofold.renderText(text)
+  t.is(tmp1.indexOf('random '), 0)
   t.not(text, tmp1)
   let tmp2 = await twofold.renderText(tmp1)
+  t.is(tmp2.indexOf('random '), 0)
   t.not(tmp1, tmp2)
 
   // Test with once=true
   text = `random <randomInt once=true></randomInt> ...`
   tmp1 = await twofold.renderText(text)
+  t.is(tmp1.indexOf('random '), 0)
   t.not(text, tmp1)
   tmp2 = await twofold.renderText(tmp1)
+  t.is(tmp2.indexOf('random '), 0)
   t.is(tmp1, tmp2)
 })
 
