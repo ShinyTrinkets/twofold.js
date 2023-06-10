@@ -1,14 +1,15 @@
 /*
  * Scan files and return info about them.
  */
-const fs = require('fs')
-const { Lexer } = require('./lexer')
-const { parse } = require('./parser')
-const functions = require('./functions')
-const readdirp = require('readdirp')
-const { isDoubleTag, isSingleTag } = require('./tags')
+import fs from 'fs'
+import readdirp from 'readdirp'
 
-async function scanFile(fname, customFunctions = {}, customConfig = {}) {
+import Lexer from './lexer.js'
+import parse from './parser.js'
+import functions from './functions/index.js'
+import { isDoubleTag, isSingleTag } from './tags.js'
+
+export async function scanFile(fname, customFunctions = {}, customConfig = {}) {
     const allFunctions = { ...functions, ...customFunctions }
     const nodes = []
 
@@ -59,7 +60,7 @@ async function scanFile(fname, customFunctions = {}, customConfig = {}) {
     })
 }
 
-async function scanFolder(dir, customFunctions = {}, config = {}) {
+export async function scanFolder(dir, customFunctions = {}, config = {}) {
     const label = 'scan-' + dir
     console.time(label)
 
@@ -76,5 +77,3 @@ async function scanFolder(dir, customFunctions = {}, config = {}) {
     }
     console.timeEnd(label)
 }
-
-module.exports = { scanFile, scanFolder }

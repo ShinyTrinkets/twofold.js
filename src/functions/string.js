@@ -1,4 +1,4 @@
-function sortLines({ text }, { caseSensitive = false } = {}) {
+export function sortLines({ text }, { caseSensitive = false } = {}) {
     /**
      * Sort lines of text alphabetically.
      * By default, the sorting is case insensitive.
@@ -36,8 +36,4 @@ function sortLines({ text }, { caseSensitive = false } = {}) {
     }
     text = lines.join('\n').trim()
     return spaceBefore + text + spaceAfter
-}
-
-module.exports = {
-    sortLines,
 }

@@ -1,9 +1,10 @@
 import test from 'ava'
-import twofold from '../src/lexer'
+import Lexer from '../src/lexer.js'
 //
 // TwoFold Lexer testing
 //
 // Tests: raw text and expected result after lexing
+//
 const TESTS = [
     ['?asd 123 qwerty!', [{ rawText: '?asd 123 qwerty!' }]],
     ['right >>', [{ rawText: 'right >>' }]],
@@ -326,7 +327,7 @@ const TESTS = [
 
 test('all lex tests', t => {
     for (const [text, expected] of TESTS) {
-        const o = new twofold.Lexer()
+        const o = new Lexer()
         for (const chunk of chunkText(text, 5)) {
             o.push(chunk)
         }
@@ -343,16 +344,16 @@ test('all lex tests', t => {
 })
 
 test('lexer crash', t => {
-    const p = new twofold.Lexer()
+    const p = new Lexer()
     p.push('')
     const lex = p.finish()
     t.deepEqual([{ rawText: '' }], lex)
     t.throws(() => {
         p.push('')
-    }, Error)
+    }, {instanceOf: Error})
     t.throws(() => {
         p.finish()
-    }, Error)
+    }, {instanceOf: Error})
 })
 
 function chunkText(txt, len) {

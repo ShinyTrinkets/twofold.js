@@ -1,7 +1,8 @@
-const fs = require('./fs')
-const math = require('./math')
-const string = require('./string')
-const rand = require('./random')
-const time = require('./time')
+import * as fs from './fs.js'
+import * as math from './math.js'
+import * as string from './string.js'
+import * as rand from './random.js'
+import * as time from './time.js'
+import * as shell from './shell.js'
 
-module.exports = Object.assign({}, fs, math, string, rand, time)
+export default Object.assign({}, fs, math, string, rand, time, shell)

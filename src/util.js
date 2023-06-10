@@ -1,12 +1,12 @@
-const os = require('os')
-const fs = require('fs')
-const path = require('path')
-const { types } = require('util')
+import os from 'os'
+import fs from 'fs'
+import path from 'path'
+import { types } from 'util'
 
-const isFunction = f => typeof f === 'function' || types.isAsyncFunction(f)
+export const isFunction = f => typeof f === 'function' || types.isAsyncFunction(f)
 
 // Credit: https://stackoverflow.com/a/32604073/498361
-function toCamelCase(str) {
+export function toCamelCase(str) {
     return (
         str
             // Replace any - or _ characters with a space
@@ -33,21 +33,15 @@ function unTildify(pth) {
     return pth
 }
 
-function importAny(dir) {
+export async function importAny(dir) {
     /**
      * Import any local file, module, or all JS files from a folder.
      */
     dir = unTildify(dir)
     dir = dir[0] === '/' ? dir : path.join(process.cwd(), dir)
     try {
-        return require(dir)
+        return await import(dir)
     } catch (err) {
         console.warn(`Import error: ${err.message}, require '${dir}'`)
     }
-}
-
-module.exports = {
-    isFunction,
-    toCamelCase,
-    importAny,
 }

@@ -1,5 +1,5 @@
 import test from 'ava'
-import { toCamelCase, importAny } from '../src/util'
+import { toCamelCase, importAny } from '../src/util.js'
 
 test('camel case', async t => {
     let text = 'blah blah'
@@ -14,7 +14,8 @@ test('camel case', async t => {
 })
 
 test('import any', async t => {
-    const importedFile = importAny('./test/fixtures/funcs')
+    const importedFile = await importAny('./test/fixtures/funcs.js')
     const expected = ['magic', 'now']
     t.deepEqual(expected, Object.keys(importedFile))
+    t.is(importedFile.magic(), 'magic')
 })

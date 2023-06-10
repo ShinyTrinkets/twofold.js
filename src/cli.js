@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 
-const fs = require('fs')
-const crypto = require('crypto')
+import fs from 'fs'
+import crypto from 'crypto'
 
-const twofold = require('./')
-const scan = require('./scan')
-const util = require('./util')
-const conf = require('./config')
-const pkg = require('../package')
-const tags = require('./functions')
+import twofold from './index.js'
+import tags from './functions/index.js'
 
-const mri = require('mri')
-const chokidar = require('chokidar')
-const picomatch = require('picomatch')
-const { cosmiconfig } = require('cosmiconfig')
+import * as conf from './config.js'
+import * as scan from './scan.js'
+import * as util from './util.js'
+import pkg from '../package.json' assert { type: 'json' }
+
+import mri from 'mri'
+import chokidar from 'chokidar'
+import picomatch from 'picomatch'
+import { cosmiconfig } from 'cosmiconfig'
 
 const options = {
     boolean: ['help', 'version', 'tags', 'initialRender'],
@@ -43,12 +44,12 @@ Watch or folder to render everytime the files change:
 
   $ 2fold -w|--watch <file|folder>
 
-For the scan, render and watch you can load a folder
+For scan, render and watch you can load a folder
 with extra functions (tags):
 
-  $ 2fold -f|--funcs <folder> --scan <file>
+  $ 2fold -f|--funcs <folder> --scan|--watch <file>
 
-To test some tags, or chain multiple CLI apps together,
+To test tags, or chain multiple CLI apps together,
 you can use pipes:
 
   $ echo "yes or no: <yes_or_no />" | 2fold

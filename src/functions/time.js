@@ -15,7 +15,7 @@ function getDate(text) {
 /**
  * Helper that returns day or night.
  */
-function dayOrNight(_, { date = null, splitHour = 6 } = {}) {
+export function dayOrNight(_, { date = null, splitHour = 6 } = {}) {
     date = getDate(date)
     const h = date.getHours()
     if (h > splitHour && h <= splitHour + 12) {
@@ -29,7 +29,7 @@ function dayOrNight(_, { date = null, splitHour = 6 } = {}) {
  * Returns an emoji representing day or night.
  * Day=☀️ ; Night=🌙 ;
  */
-function emojiSunMoon(whatever, { date = null, splitHour = 6 } = {}) {
+export function emojiSunMoon(whatever, { date = null, splitHour = 6 } = {}) {
     const dn = dayOrNight(whatever, { date, splitHour })
     if (dn === 'day') {
         return '☀️'
@@ -42,7 +42,7 @@ function emojiSunMoon(whatever, { date = null, splitHour = 6 } = {}) {
  * Returns an emoji representing day or night.
  * Day=🏙 ; Night=🌃 ;
  */
-function emojiDayNight(whatever, { date = null, splitHour = 6 } = {}) {
+export function emojiDayNight(whatever, { date = null, splitHour = 6 } = {}) {
     const dn = dayOrNight(whatever, { date, splitHour })
     if (dn === 'day') {
         return '🏙'
@@ -87,7 +87,7 @@ const halfHours = {
 /**
  * Returns the current time as emoji cliock.
  */
-function emojiClock(_, { date = null, showHalf = true } = {}) {
+export function emojiClock(_, { date = null, showHalf = true } = {}) {
     date = getDate(date)
     let h = date.getHours()
     if (h > 12) {
@@ -107,11 +107,4 @@ function emojiClock(_, { date = null, showHalf = true } = {}) {
         result = fixHours[h]
     }
     return result
-}
-
-module.exports = {
-    dayOrNight,
-    emojiDayNight,
-    emojiSunMoon,
-    emojiClock,
 }

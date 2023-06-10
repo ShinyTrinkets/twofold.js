@@ -7,7 +7,7 @@ function randomChoice(choices) {
     return choices[index]
 }
 
-function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
+export function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
     /**
      * Generate a random float number.
      * Returns a pseudo-random float in the range min–max (inclusive of min, but not max).
@@ -19,7 +19,7 @@ function randomFloat(_, { min = 1, max = 100, decimals = 2 } = {}) {
     return nr.toFixed(precision)
 }
 
-function randomInt(_, { min = 1, max = 100 } = {}) {
+export function randomInt(_, { min = 1, max = 100 } = {}) {
     /**
      * Generate a random integer number.
      * Returns a pseudo-random integer in the range min–max (inclusive of min, but not max).
@@ -29,14 +29,14 @@ function randomInt(_, { min = 1, max = 100 } = {}) {
     return Math.floor(max - Math.random() * (max - min))
 }
 
-function yesOrNo() {
+export function yesOrNo() {
     /**
      * Random Yes or No.
      */
     return randomChoice(['Yes', 'No'])
 }
 
-function leftOrRight(_, { emoji = true } = {}) {
+export function leftOrRight(_, { emoji = true } = {}) {
     /**
      * Random left or right (arrow, or text).
      */
@@ -47,7 +47,7 @@ function leftOrRight(_, { emoji = true } = {}) {
     }
 }
 
-function upOrDown(_, { emoji = true } = {}) {
+export function upOrDown(_, { emoji = true } = {}) {
     /**
      * Random up or down arrow (arrow, or text).
      */
@@ -58,21 +58,21 @@ function upOrDown(_, { emoji = true } = {}) {
     }
 }
 
-function randomSlice() {
+export function randomSlice() {
     /**
      * Random quadrant (the quarter of a pizza).
      */
     return randomChoice(['◴', '◵', '◶', '◷'])
 }
 
-function randomDice() {
+export function randomDice() {
     /**
      * Random die from 1 to 6.
      */
     return randomChoice(['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'])
 }
 
-function randomCard(_, { nr = 0 } = {}) {
+export function randomCard(_, { nr = 0 } = {}) {
     /**
      * Fetch one, or more random game cards.
      * Aces, Twos, Threes, Fours, Fives, Sixes, Sevens, Eights, Nines, Tens,
@@ -96,15 +96,4 @@ function randomCard(_, { nr = 0 } = {}) {
         choices.push(randomChoice(all))
     }
     return choices.join(' ')
-}
-
-module.exports = {
-    randomFloat,
-    randomInt,
-    leftOrRight,
-    upOrDown,
-    yesOrNo,
-    randomSlice,
-    randomDice,
-    randomCard,
 }

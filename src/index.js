@@ -1,15 +1,14 @@
-const fs = require('fs')
-const functions = require('./functions')
-const { Lexer } = require('./lexer')
-const { parse } = require('./parser')
-const { getText, unParse } = require('./tags')
-const { isDoubleTag, isSingleTag } = require('./tags')
-const { optRenderOnce, optShouldConsume } = require('./tags')
-const { isFunction, toCamelCase } = require('./util')
+import * as fs from 'node:fs/promises'
+import { createReadStream } from 'node:fs'
+import readdirp from 'readdirp'
 
-const readdirp = require('readdirp')
-const { promisify } = require('util')
-const writeFile = promisify(fs.writeFile)
+import Lexer from './lexer.js'
+import parse from './parser.js'
+import functions from './functions/index.js'
+import { getText, unParse } from './tags.js'
+import { isDoubleTag, isSingleTag } from './tags.js'
+import { optRenderOnce, optShouldConsume } from './tags.js'
+import { isFunction, toCamelCase } from './util.js'
 
 async function flattenSingleTag(tag, data, allFunctions, config) {
     // Convert a single tag into raw text,
@@ -90,7 +89,7 @@ async function flattenDoubleTag(tag, data, allFunctions, config) {
     }
 }
 
-async function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
+export async function renderText(text, data = {}, customFunctions = {}, customConfig = {}) {
     /**
      * TwoFold render text string.
      */
@@ -113,7 +112,7 @@ async function renderText(text, data = {}, customFunctions = {}, customConfig = 
     return final
 }
 
-async function renderStream(stream, data = {}, customFunctions = {}, customConfig = {}) {
+export async function renderStream(stream, data = {}, customFunctions = {}, customConfig = {}) {
     /**
      * TwoFold render stream.
      */
@@ -147,17 +146,17 @@ async function renderStream(stream, data = {}, customFunctions = {}, customConfi
     })
 }
 
-async function renderFile(fname, data = {}, customFunctions = {}, config = {}) {
-    const stream = fs.createReadStream(fname, { encoding: 'utf8' })
+export async function renderFile(fname, data = {}, customFunctions = {}, config = {}) {
+    const stream = createReadStream(fname, { encoding: 'utf8' })
     const result = await renderStream(stream, data, customFunctions, config)
     if (config.write) {
-        await writeFile(fname, result, { encoding: 'utf8' })
+        await fs.writeFile(fname, result, { encoding: 'utf8' })
         return ''
     }
     return result
 }
 
-async function renderFolder(dir, data = {}, customFunctions = {}, config = {}) {
+export async function renderFolder(dir, data = {}, customFunctions = {}, config = {}) {
     if (!data) {
         data = {}
     }
@@ -179,4 +178,4 @@ async function renderFolder(dir, data = {}, customFunctions = {}, config = {}) {
     return index
 }
 
-module.exports = { renderText, renderStream, renderFile, renderFolder }
+export default { renderText, renderStream, renderFile, renderFolder }

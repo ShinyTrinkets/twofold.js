@@ -41,10 +41,9 @@ function benchLiquid() {
     const label = 'bench-liquid'
     console.time(label)
     const engine = new Liquid()
-    engine.parseAndRender(text)
-        .then(() => {
-            console.timeEnd(label)
-        })
+    engine.parseAndRender(text).then(() => {
+        console.timeEnd(label)
+    })
 }
 
 module.exports = { benchTwofold, benchNunjucks, benchMustache, benchLiquid }

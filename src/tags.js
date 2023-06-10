@@ -1,11 +1,11 @@
-const isDoubleTag = t => !!(t && t.name && t.double)
-const isSingleTag = t => !!(t && t.name && t.single && t.rawText)
-const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
+export const isDoubleTag = t => !!(t && t.name && t.double)
+export const isSingleTag = t => !!(t && t.name && t.single && t.rawText)
+export const isRawText = t => t && t.name === undefined && t.single === undefined && t.double === undefined
 
-const optRenderOnce = t => !!(t && t.params && t.params.once === true)
-const optShouldConsume = t => !!(t && t.params && t.params.consume === true)
+export const optRenderOnce = t => !!(t && t.params && t.params.once === true)
+export const optShouldConsume = t => !!(t && t.params && t.params.consume === true)
 
-function getText(node) {
+export function getText(node) {
     /*
      * Deeply extract text from a node and all its children.
      */
@@ -27,7 +27,7 @@ function getText(node) {
     return text
 }
 
-function unParse(node) {
+export function unParse(node) {
     /*
      * Deeply convert a node and all its children into text.
      */
@@ -53,14 +53,4 @@ function unParse(node) {
         }
     }
     return text
-}
-
-module.exports = {
-    getText,
-    unParse,
-    isRawText,
-    isDoubleTag,
-    isSingleTag,
-    optRenderOnce,
-    optShouldConsume,
 }

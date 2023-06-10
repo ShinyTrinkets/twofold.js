@@ -1,7 +1,7 @@
 import test from 'ava'
-import { Lexer } from '../src/lexer'
-import { parse } from '../src/parser'
-import { getText, unParse } from '../src/tags'
+import Lexer from '../src/lexer.js'
+import parse from '../src/parser.js'
+import { getText, unParse } from '../src/tags.js'
 
 test('raw text getText', async t => {
     const txt = ' blah blah...'

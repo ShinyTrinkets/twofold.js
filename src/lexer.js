@@ -1,4 +1,4 @@
-const config = require('./config')
+import * as config from './config.js'
 
 const STATE_RAW_TEXT = 's__text'
 const STATE_OPEN_TAG = 's_<_tag'
@@ -25,7 +25,7 @@ const ALLOWED_ALPHA = /[_0-9a-zA-Z]/
  * and return the processed tags.
  * The lexer should never crash, even if the text is "bad".
  */
-class Lexer {
+export default class Lexer {
     constructor(customConfig = {}) {
         this.state = STATE_RAW_TEXT
         this.priorState = STATE_RAW_TEXT
@@ -361,5 +361,3 @@ class Lexer {
         return this._processed
     }
 }
-
-module.exports = { Lexer }

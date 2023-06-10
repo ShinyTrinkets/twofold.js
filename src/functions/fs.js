@@ -1,11 +1,12 @@
-const fs = require('fs')
-const path = require('path')
-const { promisify } = require('util')
+import fs from 'fs'
+import path from 'path'
+import { promisify } from 'util'
+
 const fsOpen = promisify(fs.open)
 const fsRead = promisify(fs.read)
 const readDir = promisify(fs.readdir)
 
-async function cat(_, { file, start = 0, limit = 250 }) {
+export async function cat(_, { file, start = 0, limit = 250 }) {
     file = path.normalize(file)
     const fd = await fsOpen(file, 'r')
     const buffer = Buffer.alloc(limit)
@@ -13,7 +14,7 @@ async function cat(_, { file, start = 0, limit = 250 }) {
     return buffer.toString()
 }
 
-async function listDir(_, { dir, li = '*', space = ' ' }) {
+export async function listDir(_, { dir, li = '*', space = ' ' }) {
     let result = ''
     dir = path.normalize(dir)
     const files = await readDir(dir)
@@ -21,9 +22,4 @@ async function listDir(_, { dir, li = '*', space = ' ' }) {
         result += `${li}${space}${f}\n`
     }
     return result.trim()
-}
-
-module.exports = {
-    cat,
-    listDir,
 }

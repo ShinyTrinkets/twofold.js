@@ -1,6 +1,6 @@
 import test from 'ava'
-import lexer from '../src/lexer'
-import parser from '../src/parser'
+import Lexer from '../src/lexer.js'
+import parse from '../src/parser.js'
 //
 // TwoFold Parse testing
 //
@@ -10,33 +10,32 @@ const TESTS = [
     ['?asd 123 qwe!', [{ rawText: '?asd 123 qwe!' }]],
     [
         '<tag x= />',
-        [{ rawText: '<tag x= />' }] // this is raw-text
+        [{ rawText: '<tag x= />' }], // this is raw-text
     ],
-    ['<x1>',
-        [{ rawText: '<x1>' }] // this is raw-text
+    [
+        '<x1>',
+        [{ rawText: '<x1>' }], // this is raw-text
     ],
-    ['<wrong>, very wrong',
-        [{ rawText: '<wrong>, very wrong' }] // this is raw-text
+    [
+        '<wrong>, very wrong',
+        [{ rawText: '<wrong>, very wrong' }], // this is raw-text
     ],
     [
         '<temp type=f>0</',
-        [{ rawText: '<temp type=f>0</' }] // this is raw-text
+        [{ rawText: '<temp type=f>0</' }], // this is raw-text
     ],
     [
         'blah <tesTing>!!',
-        [{ rawText: 'blah <tesTing>!!' }] // this is raw-text
+        [{ rawText: 'blah <tesTing>!!' }], // this is raw-text
     ],
-    [
-        'less < and >',
-        [{ rawText: 'less < and >' }]
-    ],
+    ['less < and >', [{ rawText: 'less < and >' }]],
     [
         ' <a_b></b_c>',
-        [{ rawText: ' <a_b></b_c>' }] // this is raw-text
+        [{ rawText: ' <a_b></b_c>' }], // this is raw-text
     ],
     [
         '\n<I am doing>some</stuff>\n',
-        [{ rawText: '\n<I am doing>some</stuff>\n' }] // this is raw-text
+        [{ rawText: '\n<I am doing>some</stuff>\n' }], // this is raw-text
     ],
     [
         'less < and > but <yesOrNo></yesOrNo>',
@@ -47,8 +46,8 @@ const TESTS = [
                 firstTagText: '<yesOrNo>',
                 secondTagText: '</yesOrNo>',
                 name: 'yesOrNo',
-            }
-        ]
+            },
+        ],
     ],
 
     [
@@ -60,8 +59,8 @@ const TESTS = [
                 rawText: '<tesTing/>',
                 single: true,
             },
-            { rawText: ' zxc' }
-        ]
+            { rawText: ' zxc' },
+        ],
     ],
     [
         '<asd> <tesTing/> </zxc>',
@@ -72,8 +71,8 @@ const TESTS = [
                 rawText: '<tesTing/>',
                 single: true,
             },
-            { rawText: ' </zxc>' }
-        ]
+            { rawText: ' </zxc>' },
+        ],
     ],
     [
         '<httpGet url="https://httpbin.org/uuid" />',
@@ -83,10 +82,10 @@ const TESTS = [
                 name: 'httpGet',
                 single: true,
                 params: {
-                    url: 'https://httpbin.org/uuid'
+                    url: 'https://httpbin.org/uuid',
                 },
-            }
-        ]
+            },
+        ],
     ],
     [
         '<temp type=f deep=no null=null>0</temp>',
@@ -97,11 +96,9 @@ const TESTS = [
                 secondTagText: '</temp>',
                 name: 'temp',
                 params: { type: 'f', deep: 'no', null: null },
-                children: [
-                    { rawText: '0' }
-                ]
-            }
-        ]
+                children: [{ rawText: '0' }],
+            },
+        ],
     ],
     [
         '<stuff><other /></stuff>',
@@ -116,10 +113,10 @@ const TESTS = [
                         name: 'other',
                         rawText: '<other />',
                         single: true,
-                    }
-                ]
-            }
-        ]
+                    },
+                ],
+            },
+        ],
     ],
     [
         '<aA> <bB /> </aA>',
@@ -137,9 +134,9 @@ const TESTS = [
                         single: true,
                     },
                     { rawText: ' ' },
-                ]
-            }
-        ]
+                ],
+            },
+        ],
     ],
     [
         // correct deeply nested tags
@@ -169,13 +166,13 @@ const TESTS = [
                                         single: true,
                                     },
                                     { rawText: '?' },
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
     ],
     [
         // wrong deeply nested tags
@@ -201,12 +198,12 @@ const TESTS = [
                                 single: true,
                             },
                             { rawText: '?' },
-                        ]
+                        ],
                     },
                     { rawText: '</ty>' },
-                ]
-            }
-        ]
+                ],
+            },
+        ],
     ],
     [
         // wrong nested tags, 1 level deep
@@ -217,11 +214,9 @@ const TESTS = [
                 firstTagText: '<t1>',
                 secondTagText: '</t1>',
                 name: 't1',
-                children: [
-                    { rawText: '<t2></t3>' },
-                ]
-            }
-        ]
+                children: [{ rawText: '<t2></t3>' }],
+            },
+        ],
     ],
     [
         // wrong nested tags, 1 level deep
@@ -233,22 +228,20 @@ const TESTS = [
                 firstTagText: '<t2>',
                 secondTagText: '</t2>',
                 name: 't2',
-                children: [
-                    { rawText: ' ' },
-                ]
+                children: [{ rawText: ' ' }],
             },
             { rawText: '</tx>' },
-        ]
+        ],
     ],
 ]
 
 test('all parse tests', t => {
     for (const [text, expected] of TESTS) {
-        const o = new lexer.Lexer()
+        const o = new Lexer()
         o.push(text)
         const lex = o.finish()
         // console.log('-T- LEXED ::', JSON.stringify(lex, null, ' '), '\n')
-        const ast = parser.parse(lex)
+        const ast = parse(lex)
         // console.log('-T- PARSED ::', JSON.stringify(ast, null, ' '), '\n')
         t.deepEqual(expected, ast)
     }
@@ -257,15 +250,15 @@ test('all parse tests', t => {
 test('weird parse tests', t => {
     let lex, ast
 
-    lex = new lexer.Lexer().lex('')
-    ast = parser.parse(lex)
+    lex = new Lexer().lex('')
+    ast = parse(lex)
     t.deepEqual([], ast)
 
     lex = [{}]
-    ast = parser.parse(lex)
+    ast = parse(lex)
     t.deepEqual([], ast)
 
     lex = [{ rawText: '1' }, { rawText: '2' }]
-    ast = parser.parse(lex)
+    ast = parse(lex)
     t.deepEqual([{ rawText: '12' }], ast)
 })

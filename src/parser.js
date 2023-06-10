@@ -1,5 +1,6 @@
-const config = require('./config')
-const { isRawText, isSingleTag, isDoubleTag } = require('./tags')
+import * as config from './config.js'
+
+import { isRawText, isSingleTag, isDoubleTag } from './tags.js'
 
 const isFullDoubleTag = t => isDoubleTag(t) && t.firstTagText && t.secondTagText
 
@@ -21,7 +22,7 @@ function addChild(parent, c) {
  * If the tag is double, it will have children of type raw text,
  * or other single or double tags.
  */
-function parse(tokens, customConfig = {}) {
+export default function parse(tokens, customConfig = {}) {
     const { openTag, lastStopper } = Object.assign({}, config, customConfig)
     const RE_FIRST_START = new RegExp(`^${openTag[0]}[ ]*[a-z]`)
     const RE_SECOND_START = new RegExp(`^${openTag[0]}[${lastStopper[0]}][ ]*[a-z]`)
@@ -123,5 +124,3 @@ function parse(tokens, customConfig = {}) {
 
     return ast
 }
-
-module.exports = { parse }
