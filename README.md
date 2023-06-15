@@ -5,6 +5,10 @@
 [![CI tests][build-img]][build-url]
 [![Prettier Style][style-img]][style-url]
 
+## DEPRECATED
+in favor of the new repo at: https://github.com/ShinyTrinkets/twofold.ts
+
+
 > Glorified curly bubbly templates,<br />
 > Templates with a twist,<br />
 > Duplex templates,<br />
